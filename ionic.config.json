@@ -1,0 +1,7 @@
+{
+  "name": "PontoCooper",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
