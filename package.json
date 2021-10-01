@@ -1,5 +1,5 @@
 {
-  "name": "PontoCooper",
+  "name": "pontocooper",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -9,7 +9,13 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "android-build": "ionic capacitor build android",
+    "android-run": "ionic capacitor run android",
+    "android-open": "ionic capacitor open android",
+    "android-run-live": "ionic capacitor run android -l --external",
+    "generate-icon-ios": "cordova-res ios --skip-config --copy",
+    "generate-icon-android": "cordova-res android --skip-config --copy"
   },
   "private": true,
   "dependencies": {
@@ -19,12 +25,14 @@
     "@angular/platform-browser": "~12.1.1",
     "@angular/platform-browser-dynamic": "~12.1.1",
     "@angular/router": "~12.1.1",
+    "@capacitor/android": "3.2.4",
     "@capacitor/app": "1.0.3",
     "@capacitor/core": "3.2.4",
     "@capacitor/haptics": "1.1.0",
     "@capacitor/keyboard": "1.1.0",
     "@capacitor/status-bar": "1.0.3",
     "@ionic/angular": "^5.5.2",
+    "date-fns": "^2.24.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"

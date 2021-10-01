@@ -1,20 +1,38 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Blank 1
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<!--  <div id="container">-->
+<!--    <strong>Ready to create an app?</strong>-->
+<!--    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>-->
+<!--  </div>-->
+  <ion-card>
+    <ion-item>
+      <ion-icon name="pin" slot="start"></ion-icon>
+      <ion-label>ion-item in a card, icon left, button right</ion-label>
+      <ion-button fill="outline" slot="end">View</ion-button>
+    </ion-item>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+    <ion-card-content>
+      {{summary.workingHours}}h
+      <ion-progress-bar
+        [color]="jornadaDiaria > 99 ? 'success' : 'warning'"
+        [value]="jornadaDiaria / 100"
+      ></ion-progress-bar>
+      <ion-button
+        type="button"
+        [color]="ponto.trabalhando ? 'danger' : 'success'"
+        expand="full"
+        (click)="registrarPonto()"
+      >
+        <ion-icon slot="start" [name]="ponto.trabalhando ? 'exit-outline' : 'enter-outline'"></ion-icon>
+        {{ponto.trabalhando ? 'Saida' : 'Entrada'}}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
