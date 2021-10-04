@@ -1,37 +1,74 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank 1
-    </ion-title>
+  <ion-toolbar color="primary">
+    <ion-menu-button [autoHide]="true" slot="start" menu="principal"></ion-menu-button>
+    <ion-img style="height: 45px;" src="assets/logo-horizontal-white.png"></ion-img>
+    <ion-button [routerLink]="['/perfil']" slot="end" fill="clear" color="light">
+      <ion-icon name="person-circle-outline" style="font-size: 1.8rem;"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-<!--  <div id="container">-->
-<!--    <strong>Ready to create an app?</strong>-->
-<!--    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>-->
-<!--  </div>-->
+  <p class="ion-padding-horizontal">Arraste para atualizar</p>
+  <ion-refresher slot="fixed" (ionRefresh)="getDados($event)" pullFactor="0.5" pullMin="120" pullMax="120">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Atualizando aguarde...">
+    </ion-refresher-content>
+  </ion-refresher>
   <ion-card>
     <ion-item>
       <ion-icon name="pin" slot="start"></ion-icon>
-      <ion-label>ion-item in a card, icon left, button right</ion-label>
-      <ion-button fill="outline" slot="end">View</ion-button>
+      <ion-label>Minha Produção</ion-label>
+      <ion-button fill="outline" slot="end">{{dataAtual | date : 'MMMM'}}</ion-button>
     </ion-item>
 
     <ion-card-content>
-      {{summary.workingHours}}h
+      <ion-row>
+        <ion-col size="6">
+          <h2>Jornada:</h2>
+          <h1>{{summary.workingHours}}h</h1>
+        </ion-col>
+        <ion-col size="6">
+          <h2>Carga Horária:</h2>
+          <h1>{{summary.hoursToWork}}h</h1>
+        </ion-col>
+        <ion-col size="6">
+          <h2>Dias úteis:</h2>
+          <h1>{{summary.businessDays}}</h1>
+        </ion-col>
+        <ion-col size="6">
+          <h2>Restante:</h2>
+          <h1>{{summary.remainingHours}}h</h1>
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let batida of ponto.batidas; let i = index">
+          <ion-icon [color]="i % 2 === 0 ? 'success' : 'danger'" name="pin" slot="start"></ion-icon>
+          <ion-label>{{batida | date : 'HH:mm:ss'}}</ion-label>
+        </ion-item>
+      </ion-list>
+      <h1 style="margin-top: 30px; text-align: center;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>
       <ion-progress-bar
         [color]="jornadaDiaria > 99 ? 'success' : 'warning'"
         [value]="jornadaDiaria / 100"
       ></ion-progress-bar>
       <ion-button
+        size="large"
         type="button"
-        [color]="ponto.trabalhando ? 'danger' : 'success'"
         expand="full"
+        [color]="ponto.trabalhando ? 'danger' : 'success'"
         (click)="registrarPonto()"
+        [disabled]="ponto.isInterval()"
+        style="margin-top: 30px;"
       >
         <ion-icon slot="start" [name]="ponto.trabalhando ? 'exit-outline' : 'enter-outline'"></ion-icon>
-        {{ponto.trabalhando ? 'Saida' : 'Entrada'}}
+        {{ponto.trabalhando ? 'Saida' : 'Entrada' + (ponto.isInterval() ? ponto.getTempoPonto() : '')}}
       </ion-button>
     </ion-card-content>
   </ion-card>

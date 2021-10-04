@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "no-duplicate-variable": true,
+    "no-unused-variable": [
+      true
+    ],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore"
+    ]
+  },
+  "rulesDirectory": [
+    "node_modules/tslint-eslint-rules/dist/rules"
+  ]
+}

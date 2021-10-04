@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router, RouterStateSnapshot} from "@angular/router";
-import {AuthService} from "../services/auth.service";
-import {Observable} from "rxjs";
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router, RouterStateSnapshot} from '@angular/router';
+import {AuthService} from '../services/auth.service';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
     return this.checkRoute(state);
   }
 
-  private checkRoute(state: RouterStateSnapshot): boolean {
+  private checkRoute = (state: RouterStateSnapshot): boolean => {
     if (state.url !== '/') {
       const routes = [
         'login',
@@ -44,5 +44,5 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
       }
     }
     return true;
-  }
+  };
 }

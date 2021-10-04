@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
-import {LoginPageRoutingModule} from './login-routing.module';
-import {LoginPage} from './login.page';
+import {ProducaoPageRoutingModule} from './producao-routing.module';
+import {ProducaoPage} from './producao.page';
 import {RouterModule} from '@angular/router';
 
 @NgModule({
@@ -11,11 +11,10 @@ import {RouterModule} from '@angular/router';
     CommonModule,
     FormsModule,
     IonicModule,
-    LoginPageRoutingModule,
-    ReactiveFormsModule,
+    ProducaoPageRoutingModule,
     RouterModule
   ],
-  declarations: [LoginPage]
+  declarations: [ProducaoPage]
 })
-export class LoginPageModule {
+export class ProducaoPageModule {
 }

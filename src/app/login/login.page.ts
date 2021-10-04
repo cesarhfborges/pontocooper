@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthService} from "../core/services/auth.service";
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
+import {StatusBar} from '@ionic-native/status-bar/ngx';
+import {MenuController, Platform} from '@ionic/angular';
+import {AuthService} from '../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +19,14 @@ export class LoginPage implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private statusBar: StatusBar,
+    private platform: Platform,
+    private menu: MenuController
   ) {
+    this.platform.ready().then(() => {
+      this.statusBar.overlaysWebView(true);
+      this.statusBar.styleLightContent();
+    });
     this.form = this.fb.group({
       username: this.fb.control('cesar.borges', [Validators.required]),
       password: this.fb.control('@Dj.91344356', [Validators.required]),
@@ -26,6 +35,7 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
+    this.menu.enable(false, 'principal');
   }
 
   onSubmit(): void {
@@ -38,8 +48,10 @@ export class LoginPage implements OnInit {
             localStorage.setItem('$jsghf478==', btoa(JSON.stringify(this.form.value)));
           }
           this.form.enable();
-          this.router.navigate(['/home']);
-          this.loading = false;
+          this.menu.enable(true, 'principal').then(r => {
+            this.loading = false;
+            this.router.navigate(['/home']);
+          });
         },
         error => {
           console.log(error);

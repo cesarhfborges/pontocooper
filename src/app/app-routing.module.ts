@@ -20,6 +20,18 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     canActivateChild: [AuthGuardService]
   },
+  {
+    path: 'producao',
+    loadChildren: () => import('./producao/producao.module').then( m => m.ProducaoPageModule),
+    canActivate: [AuthGuardService],
+    canActivateChild: [AuthGuardService]
+  },
+  {
+    path: 'perfil',
+    loadChildren: () => import('./perfil/perfil.module').then( m => m.PerfilPageModule),
+    canActivate: [AuthGuardService],
+    canActivateChild: [AuthGuardService]
+  },
 ];
 
 @NgModule({

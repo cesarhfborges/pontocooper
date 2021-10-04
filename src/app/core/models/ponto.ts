@@ -1,4 +1,13 @@
-import {addSeconds, set} from 'date-fns';
+import {
+  addMinutes,
+  addSeconds,
+  differenceInMinutes,
+  differenceInSeconds,
+  formatDuration,
+  formatISODuration,
+  intervalToDuration,
+  set
+} from 'date-fns';
 
 export class Ponto {
 
@@ -7,7 +16,7 @@ export class Ponto {
   constructor(batidas: Array<Date>) {
     this.listaBatidas = batidas;
   }
-  
+
   get batidas(): Array<Date> {
     return this.listaBatidas;
   }
@@ -43,7 +52,41 @@ export class Ponto {
     this.listaBatidas.unshift(data);
   }
 
+  public limparPontos(): void {
+    this.listaBatidas = [];
+  }
+
   public isInterval(): boolean {
-    return this.listaBatidas.length === 2;
+    if (this.listaBatidas !== null && this.listaBatidas !== undefined && this.listaBatidas.length > 1 && this.listaBatidas.length % 2 === 0) {
+      const ultimaBatida: Date = this.listaBatidas[this.listaBatidas.length - 1];
+      if (ultimaBatida) {
+        return differenceInMinutes(new Date(), ultimaBatida) < 2;
+      }
+    }
+    return false;
+  }
+
+  getTempoPonto(): string {
+    if (this.isInterval) {
+      const ultimaBatida: Date = this.listaBatidas[this.listaBatidas.length - 1];
+      const dateEntered = addMinutes(ultimaBatida, 30);
+      const now = new Date();
+      const difference = dateEntered.getTime() - now.getTime();
+      if (difference <= 0) {
+        return '00:00:00';
+      }
+      let seconds = Math.floor(difference / 1000);
+      let minutes = Math.floor(seconds / 60);
+      let hours = Math.floor(minutes / 60);
+      hours %= 24;
+      minutes %= 60;
+      seconds %= 60;
+      return ` ${this.format(hours)}:${this.format(minutes)}:${this.format(seconds)}`;
+    }
+    return '';
+  }
+
+  private format(val: number): string {
+    return val.toString().padStart(2, '0');
   }
 }
