@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../core/services/auth.service';
-import {Budget, Usuario} from '../shared/models/usuario';
+import {Budget, Usuario} from '../core/models/usuario';
 import {AlertController} from "@ionic/angular";
 
 @Component({

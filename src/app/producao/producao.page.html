@@ -7,71 +7,73 @@
 
 <ion-content>
 
-  <ion-card *ngFor="let dia of producao">
-    <ion-item>
-      <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
-      <ion-label>{{formatDate(dia.date) | date : 'E dd/MM'}}</ion-label>
-      <ion-button *ngIf="isNow(dia.date)" fill="outline" slot="end">Hoje</ion-button>
-    </ion-item>
+  <div *ngIf="!loading.producao">
+    <ion-card *ngFor="let dia of producao">
+      <ion-item>
+        <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
+        <ion-label>{{formatDate(dia.date) | date : 'E dd/MM'}}</ion-label>
+        <ion-button *ngIf="isNow(dia.date)" fill="outline" slot="end">Hoje</ion-button>
+      </ion-item>
 
-    <ion-card-content>
-      <ion-row class="header-row">
+      <ion-card-content>
+        <ion-row class="header-row">
 
-        <ion-col *ngIf="dia?.timeline?.length === 0" size="12">
-          <p>Nenhum ponto registrado para este dia.</p>
-        </ion-col>
+          <ion-col *ngIf="dia?.timeline?.length === 0" size="12">
+            <p>Nenhum ponto registrado para este dia.</p>
+          </ion-col>
 
-        <ion-col size="12" *ngFor="let detalhes of dia?.timeline; let i = index">
-          <ion-icon [color]="i % 2 === 0 ? 'success' : 'danger'" name="pin"></ion-icon>
-          {{detalhes.worktime_clock | date : 'HH:mm:ss'}}
-        </ion-col>
+          <ion-col size="12" *ngFor="let detalhes of dia?.timeline; let i = index">
+            <h1>
+              <ion-icon [color]="i % 2 === 0 ? 'success' : 'danger'" name="pin"></ion-icon>
+              {{detalhes.worktime_clock | date : 'HH:mm:ss'}}
+              <ion-badge
+                *ngIf="detalhes.rectification"
+                [color]="detalhes.rectification.status === 'aprovado' ? 'success' : 'warning'"
+              >{{detalhes.rectification.status_display}}</ion-badge>
+            </h1>
+          </ion-col>
 
-        <ion-col size="6">
-          <ion-button expand="block" color="primary">Rasurar</ion-button>
-        </ion-col>
+          <ion-col size="6">
+            <ion-button (click)="modalRasura(dia)" expand="block" color="primary">Rasurar</ion-button>
+          </ion-col>
 
-        <ion-col size="6">
-          <ion-button expand="block" color="medium">H. Extra / Ausência</ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-card-content>
-  </ion-card>
+          <ion-col size="6">
+            <ion-button (click)="modalHoraExtra()" expand="block" color="medium">H. Extra / Ausência</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </div>
 
-<!--  <ion-card>-->
-<!--    <ion-item>-->
-<!--      <ion-icon name="pin" slot="start"></ion-icon>-->
-<!--      <ion-label>Minha Produção</ion-label>-->
-<!--      <ion-button fill="outline" slot="end">{{dataAtual | date : 'MMMM'}}</ion-button>-->
-<!--    </ion-item>-->
+  <div *ngIf="loading.producao">
+    <ion-card>
+      <ion-item>
+        <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
+        <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+      </ion-item>
 
-<!--    <ion-card-content>-->
+      <ion-card-content>
+        <ion-row class="header-row">
 
-<!--    </ion-card-content>-->
-<!--  </ion-card>-->
+          <ion-col size="12">
+            <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+          </ion-col>
 
-<!--  <ion-list>-->
-<!--    <ion-item-sliding *ngFor="let dia of producao">-->
-<!--      <ion-item>-->
-<!--        <ion-label>{{toDate(dia.date) | date : 'dd/MM E'}}</ion-label>-->
-<!--        <p>08:00</p>-->
-<!--        <p>08:00</p>-->
-<!--        <p>08:00</p>-->
-<!--        <p>08:00</p>-->
-<!--        <ion-buttons slot="end">-->
-<!--          <ion-button color="primary">-->
-<!--            <ion-icon name="ellipsis-horizontal"></ion-icon>-->
-<!--          </ion-button>-->
-<!--        </ion-buttons>-->
-<!--      </ion-item>-->
-<!--      <ion-item-options side="end">-->
-<!--        <ion-item-option color="warning">Rasurar</ion-item-option>-->
-<!--        <ion-item-option color="medium">H. Extra/Ausencia</ion-item-option>-->
-<!--      </ion-item-options>-->
-<!--    </ion-item-sliding>-->
-<!--  </ion-list>-->
-<!--<pre>-->
-<!--  <code>-->
-<!--    {{producao|json}}-->
-<!--  </code>-->
-<!--</pre>-->
+          <ion-col size="6">
+            <ion-button [disabled]="true" expand="block" color="primary">Rasurar</ion-button>
+          </ion-col>
+
+          <ion-col size="6">
+            <ion-button [disabled]="true" expand="block" color="medium">H. Extra / Ausência</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <pre>
+    <code>
+      {{producao|json}}
+    </code>
+  </pre>
 </ion-content>

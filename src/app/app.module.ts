@@ -2,9 +2,9 @@ import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouteReuseStrategy, RouterModule} from '@angular/router';
 import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
-import {SharedModule} from './shared/shared.module';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {JwtInterceptor} from './core/interceptors/jwt.interceptor';
 import {AuthInterceptor} from './core/interceptors/auth.interceptor';
@@ -23,11 +23,12 @@ registerLocaleData(ptBr);
   entryComponents: [],
   imports: [
     BrowserModule,
+    FormsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
-    SharedModule,
-    RouterModule
+    ReactiveFormsModule,
+    RouterModule,
   ],
   providers: [
     ThemeDetection,

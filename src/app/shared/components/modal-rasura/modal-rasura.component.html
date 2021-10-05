@@ -1,0 +1,60 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button fill="clear" size="large" (click)="cancelar()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title style="text-align: center;">Solicitar Rasura</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" size="large" (click)="salvar()">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-card>
+      <ion-item>
+        <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
+        <ion-label>{{dados?.date | date : 'dd/MM/yyyy'}}</ion-label>
+      </ion-item>
+
+      <ion-card-content>
+        <ion-list>
+          <div formArrayName="rectifications">
+            <ion-item *ngFor="let item of retificacoes.controls; let i = index" [formGroupName]="i">
+              <ion-label position="stacked">{{item.get('position').value}}&deg; {{item.get('checkIn').value ? 'Entrada' : 'Saída'}}</ion-label>
+              <ion-datetime
+                displayFormat="HH:mm"
+                doneText="Ok"
+                cancelText="Cancelar"
+                name="hora"
+                [name]="i"
+                formControlName="worktimeClock"
+              ></ion-datetime>
+              <ion-button *ngIf="(i + 1)> dados.timeline.length" fill="clear" size="large" slot="end" (click)="deleteRetificacao(i)">
+                <ion-icon color="danger" name="trash"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </div>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </form>
+<!--  <pre>-->
+<!--    <code>-->
+<!--      {{form.value | json}}-->
+<!--    </code>-->
+<!--    <code>-->
+<!--      {{dados | json}}-->
+<!--    </code>-->
+<!--  </pre>-->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addRetificacao()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

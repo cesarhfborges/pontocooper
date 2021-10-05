@@ -1,10 +1,12 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 import {ProducaoPageRoutingModule} from './producao-routing.module';
 import {ProducaoPage} from './producao.page';
 import {RouterModule} from '@angular/router';
+import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
+import {ModalHoraExtraComponent} from '../shared/components/modal-hora-extra/modal-hora-extra.component';
 
 @NgModule({
   imports: [
@@ -12,9 +14,15 @@ import {RouterModule} from '@angular/router';
     FormsModule,
     IonicModule,
     ProducaoPageRoutingModule,
+    ReactiveFormsModule,
     RouterModule
   ],
-  declarations: [ProducaoPage]
+  declarations: [
+    ProducaoPage,
+    ModalRasuraComponent,
+    ModalHoraExtraComponent
+  ],
+  exports: []
 })
 export class ProducaoPageModule {
 }

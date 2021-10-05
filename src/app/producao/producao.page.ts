@@ -1,31 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {AlertController, Platform} from '@ionic/angular';
-import {AuthService} from '../core/services/auth.service';
+import {AlertController, ModalController, Platform} from '@ionic/angular';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {parseISO, getDay, getMonth, getYear} from 'date-fns';
-
-interface Dia {
-  balance: string;
-  date: string;
-  day_type: any;
-  paid_leave: any;
-  production: string;
-  timeline: Array<{
-    id: number;
-    check_in: boolean;
-    check_in_display: string;
-    latitude: string;
-    longitude: string;
-    minimum_break: boolean;
-    position: number;
-    rectification: {
-      status: string;
-      status_display: string;
-    };
-    worktime_clock: Date;
-  }>;
-}
+import {AuthService} from '../core/services/auth.service';
+import {Dia} from '../core/models/dia';
+import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
+import {ModalHoraExtraComponent} from '../shared/components/modal-hora-extra/modal-hora-extra.component';
+import {getMonth, getYear, parseISO} from 'date-fns';
 
 @Component({
   selector: 'app-producao',
@@ -38,12 +19,19 @@ export class ProducaoPage implements OnInit {
 
   dataAtual: Date = new Date();
 
+  loading: {
+    producao: boolean;
+  } = {
+    producao: false,
+  };
+
   constructor(
     private dadosService: DadosService,
     private alertController: AlertController,
     private authService: AuthService,
     private platform: Platform,
     private statusBar: StatusBar,
+    private modalController: ModalController
   ) {
   }
 
@@ -52,18 +40,50 @@ export class ProducaoPage implements OnInit {
   }
 
   getProducao(): void {
+    this.loading.producao = true;
     const ano: number = getYear(this.dataAtual);
     const mes: number = getMonth(this.dataAtual);
-    console.log(ano, mes);
     this.dadosService.getProducao(ano, mes + 1).subscribe(
       response => {
-        console.log(response);
         this.producao = response;
+        this.loading.producao = false;
       },
       error => {
         console.log(error);
+        this.loading.producao = false;
       }
     );
+  }
+
+  async modalRasura(dia: Dia) {
+    const modal = await this.modalController.create({
+      component: ModalRasuraComponent,
+      cssClass: 'my-custom-class',
+      swipeToClose: true,
+      backdropDismiss: false,
+      keyboardClose: false,
+      animated: true,
+      componentProps: {
+        dados: dia
+      }
+    });
+    await modal.present();
+    const {data} = await modal.onWillDismiss();
+    console.log(data);
+  }
+
+  async modalHoraExtra() {
+    const modal = await this.modalController.create({
+      component: ModalHoraExtraComponent,
+      cssClass: 'my-custom-class',
+      swipeToClose: true,
+      backdropDismiss: false,
+      keyboardClose: false,
+      animated: true
+    });
+    await modal.present();
+    const {data} = await modal.onWillDismiss();
+    console.log(data);
   }
 
   formatDate(data: string): Date {

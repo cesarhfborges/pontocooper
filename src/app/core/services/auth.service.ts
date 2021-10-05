@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
 import {addMinutes} from 'date-fns';
-import {Usuario} from '../../shared/models/usuario';
+import {Usuario} from '../models/usuario';
 
 @Injectable({
   providedIn: 'root'
@@ -64,5 +64,9 @@ export class AuthService {
 
   perfil(): Observable<Usuario> {
     return this.http.get<Usuario>(`${environment.apiUrl}/person/current`);
+  }
+
+  solicitarRetificacao(data: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/rectification_request/`, data);
   }
 }
