@@ -15,7 +15,8 @@
     "android-open": "ionic cap open android",
     "android-run-live": "ionic cap run android -l --external",
     "generate-icon-ios": "cordova-res ios --skip-config --copy",
-    "generate-icon-android": "cordova-res android --skip-config --copy"
+    "generate-icon-android": "cordova-res android --skip-config --copy",
+    "icons-capacitor": "capacitor-resources"
   },
   "private": true,
   "dependencies": {

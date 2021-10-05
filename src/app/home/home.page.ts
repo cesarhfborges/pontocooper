@@ -25,6 +25,14 @@ export class HomePage implements OnInit, AfterViewInit {
     lon: -47.9481004
   };
 
+  bancoDeHoras: {
+    balance: string;
+    pending: string;
+  } = {
+    balance: null,
+    pending: null
+  };
+
   summary: {
     workingHours: number;
     businessDays: number;
@@ -77,8 +85,10 @@ export class HomePage implements OnInit, AfterViewInit {
       this.geolocation.getCurrentPosition().then((resp) => {
         this.coords.lat = resp.coords.latitude;
         this.coords.lon = resp.coords.longitude;
-      }).catch(e => {});
-    }).catch(e => {});
+      }).catch(e => {
+      });
+    }).catch(e => {
+    });
   }
 
   getDados($event?): void {
@@ -108,6 +118,15 @@ export class HomePage implements OnInit, AfterViewInit {
             $event.target.complete();
           }
         }, 2000);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+
+    this.dadosService.getBancoDeHoras().subscribe(
+      response => {
+        this.bancoDeHoras = response;
       },
       error => {
         console.log(error);

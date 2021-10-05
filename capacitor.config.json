@@ -1,10 +1,11 @@
 {
 	"appId": "br.com.coopersystem.portal",
-	"appName": "PontoCooper",
+	"appName": "Cooper System",
 	"webDir": "www",
   "npmClient": "npm",
 	"bundledWebRuntime": false,
   "windowsAndroidStudioPath": "C:\\Users\\cesar\\AppData\\Local\\JetBrains\\Toolbox\\apps\\AndroidStudio\\ch-0\\203.7678000\\bin\\studio64.exe",
+  "loggingBehavior": "debug",
   "cordova": {
     "preferences": {}
   }
