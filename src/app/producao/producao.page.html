@@ -2,13 +2,18 @@
   <ion-toolbar color="primary">
     <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
     <ion-img src="assets/logo-horizontal-white.png" style="height: 45px;"></ion-img>
+    <ion-buttons slot="end">
+      <ion-button (click)="hoje.click()" fill="clear" size="large">
+        <ion-icon name="calendar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <a #hoje href="/producao#hoje" style="visibility: hidden;"></a>
   <div *ngIf="!loading.producao">
-    <ion-card *ngFor="let dia of producao">
+    <ion-card *ngFor="let dia of producao" [attr.id]="isNow(dia.date) ? 'hoje' : ''">
       <ion-item>
         <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
         <ion-label>{{formatDate(dia.date) | date : 'E dd/MM'}}</ion-label>
@@ -71,9 +76,9 @@
     </ion-card>
   </div>
 
-  <pre>
-    <code>
-      {{producao|json}}
-    </code>
-  </pre>
+<!--  <pre>-->
+<!--    <code>-->
+<!--      {{producao|json}}-->
+<!--    </code>-->
+<!--  </pre>-->
 </ion-content>
