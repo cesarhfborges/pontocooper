@@ -1,7 +1,8 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {Dia} from '../../../core/models/dia';
-import {Form, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {addSeconds, differenceInSeconds, parseISO, set, isDate} from 'date-fns';
 
 @Component({
   selector: 'app-modal-rasura',
@@ -13,6 +14,8 @@ export class ModalRasuraComponent implements OnInit, AfterViewInit {
   @Input() dados: Dia;
 
   form: FormGroup;
+
+  horasTrabalhadas: Date;
 
   constructor(
     private modalController: ModalController,
@@ -30,6 +33,7 @@ export class ModalRasuraComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.horasTrabalhadas = set(parseISO(this.dados.date), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
     this.form.get('date').patchValue(this.dados.date);
     for (const dia of this.dados.timeline) {
       const f: FormGroup = this.createRetificacao();
@@ -42,6 +46,9 @@ export class ModalRasuraComponent implements OnInit, AfterViewInit {
       this.retificacoes.push(f);
       this.form.updateValueAndValidity();
     }
+    setInterval(_ => {
+      this.horasTrabalhadas = this.diferenca();
+    }, 1000);
   }
 
   ngAfterViewInit(): void {
@@ -72,6 +79,30 @@ export class ModalRasuraComponent implements OnInit, AfterViewInit {
   deleteRetificacao(posicao: number): void {
     this.retificacoes.removeAt(posicao);
     this.form.updateValueAndValidity();
+  }
+
+  diferenca(): Date {
+    const hoje: Date = set(parseISO(this.dados.date), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
+    const qtd: number = this.retificacoes.length;
+    if (qtd > 0) {
+      const inicio: string = this.retificacoes.at(0).get('worktimeClock').value;
+      if (inicio !== null && inicio !== '') {
+        if (qtd > 1) {
+          const fim: string = this.retificacoes.at(qtd - 1).get('worktimeClock').value;
+          if (fim !== null && fim !== '') {
+            const diff: number = differenceInSeconds(parseISO(fim), parseISO(inicio));
+            return addSeconds(hoje, diff);
+          }
+        } else {
+          const diff: number = differenceInSeconds(new Date(), parseISO(inicio));
+          return addSeconds(hoje, diff);
+        }
+      } else {
+        const diff: number = differenceInSeconds(new Date(), parseISO(inicio));
+        return addSeconds(hoje, diff);
+      }
+    }
+    return hoje;
   }
 
   cancelar(): void {

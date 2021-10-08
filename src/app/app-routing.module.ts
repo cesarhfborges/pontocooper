@@ -31,6 +31,10 @@ const routes: Routes = [
     loadChildren: () => import('./perfil/perfil.module').then(m => m.PerfilPageModule),
     canActivate: [AuthGuardService],
     canActivateChild: [AuthGuardService]
+  },
+  {
+    path: 'opcoes',
+    loadChildren: () => import('./opcoes/opcoes.module').then( m => m.OpcoesPageModule)
   }
 ];
 
