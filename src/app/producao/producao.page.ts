@@ -6,7 +6,7 @@ import {AuthService} from '../core/services/auth.service';
 import {Dia} from '../core/models/dia';
 import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
 import {ModalHoraExtraComponent} from '../shared/components/modal-hora-extra/modal-hora-extra.component';
-import {getMonth, getYear, parseISO} from 'date-fns';
+import {getMonth, getYear, parseISO, isSameDay} from 'date-fns';
 
 @Component({
   selector: 'app-producao',
@@ -92,8 +92,6 @@ export class ProducaoPage implements OnInit {
 
   isNow(data: string): boolean {
     const dt: Date = parseISO(data);
-    return this.dataAtual.getDay() === dt.getDay() &&
-      this.dataAtual.getMonth() === dt.getMonth() &&
-      this.dataAtual.getFullYear() === dt.getFullYear();
+    return isSameDay(dt, new Date());
   }
 }

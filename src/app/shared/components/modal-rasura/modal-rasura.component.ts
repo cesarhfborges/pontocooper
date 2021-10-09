@@ -1,21 +1,24 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {Dia} from '../../../core/models/dia';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {addSeconds, differenceInSeconds, parseISO, set, isDate} from 'date-fns';
+import {interval, Observable, of} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
+import {addSeconds, differenceInSeconds, parseISO, set} from 'date-fns';
 
 @Component({
   selector: 'app-modal-rasura',
   templateUrl: './modal-rasura.component.html',
   styleUrls: ['./modal-rasura.component.scss']
 })
-export class ModalRasuraComponent implements OnInit, AfterViewInit {
+export class ModalRasuraComponent implements OnInit, OnDestroy {
 
   @Input() dados: Dia;
 
   form: FormGroup;
-
-  horasTrabalhadas: Date;
+  agora: Date = new Date();
+  timer = interval(1000);
+  private alive = false;
 
   constructor(
     private modalController: ModalController,
@@ -32,8 +35,15 @@ export class ModalRasuraComponent implements OnInit, AfterViewInit {
     return this.form.get('rectifications') as FormArray;
   }
 
-  ngOnInit() {
-    this.horasTrabalhadas = set(parseISO(this.dados.date), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
+  ngOnInit(): void {
+    this.alive = true;
+    this.timer.pipe(
+      takeWhile(() => this.alive)
+    ).subscribe(
+      () => {
+        this.agora = new Date();
+      }
+    );
     this.form.get('date').patchValue(this.dados.date);
     for (const dia of this.dados.timeline) {
       const f: FormGroup = this.createRetificacao();
@@ -46,12 +56,10 @@ export class ModalRasuraComponent implements OnInit, AfterViewInit {
       this.retificacoes.push(f);
       this.form.updateValueAndValidity();
     }
-    setInterval(_ => {
-      this.horasTrabalhadas = this.diferenca();
-    }, 1000);
   }
 
-  ngAfterViewInit(): void {
+  ngOnDestroy(): void {
+    this.alive = false;
   }
 
   createRetificacao(): FormGroup {
@@ -81,28 +89,18 @@ export class ModalRasuraComponent implements OnInit, AfterViewInit {
     this.form.updateValueAndValidity();
   }
 
-  diferenca(): Date {
+  diferenca(): Observable<Date> {
     const hoje: Date = set(parseISO(this.dados.date), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
-    const qtd: number = this.retificacoes.length;
-    if (qtd > 0) {
-      const inicio: string = this.retificacoes.at(0).get('worktimeClock').value;
-      if (inicio !== null && inicio !== '') {
-        if (qtd > 1) {
-          const fim: string = this.retificacoes.at(qtd - 1).get('worktimeClock').value;
-          if (fim !== null && fim !== '') {
-            const diff: number = differenceInSeconds(parseISO(fim), parseISO(inicio));
-            return addSeconds(hoje, diff);
-          }
-        } else {
-          const diff: number = differenceInSeconds(new Date(), parseISO(inicio));
-          return addSeconds(hoje, diff);
-        }
-      } else {
-        const diff: number = differenceInSeconds(new Date(), parseISO(inicio));
-        return addSeconds(hoje, diff);
+    const batidas: Array<Date> = this.retificacoes.controls
+      .filter(r => r.get('worktimeClock').value !== null && r.get('worktimeClock').value !== '')
+      .map(r => parseISO(r.get('worktimeClock').value));
+    if (batidas.length > 0) {
+      if (batidas.length % 2 === 1) {
+        return of(addSeconds(hoje, differenceInSeconds(this.agora, batidas[0])));
       }
+      return of(addSeconds(hoje, differenceInSeconds(batidas[batidas.length - 1], batidas[0])));
     }
-    return hoje;
+    return of(hoje);
   }
 
   cancelar(): void {

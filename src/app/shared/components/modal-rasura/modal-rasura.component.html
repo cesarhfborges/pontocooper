@@ -39,24 +39,24 @@
             </ion-button>
           </ion-item>
           <ion-item lines="none">
-            <ion-label>Carga: {{horasTrabalhadas | date : 'HH:mm:ss' }}</ion-label>
+            <ion-label>Carga: {{(diferenca() | async) | date : 'HH:mm:ss' }}</ion-label>
             <ion-icon name="timer-outline" slot="end"></ion-icon>
           </ion-item>
         </ion-list>
       </ion-card-content>
     </ion-card>
   </form>
-  <pre>
-    <code>
-      {{horasTrabalhadas | json}}
-    </code>
-    <code>
-      {{form.value | json}}
-    </code>
-    <code>
-      {{dados | json}}
-    </code>
-  </pre>
+<!--  <pre>-->
+<!--    <code>-->
+<!--      {{(diferenca() | async) | json}}-->
+<!--    </code>-->
+<!--    <code>-->
+<!--      {{form.value | json}}-->
+<!--    </code>-->
+<!--    <code>-->
+<!--      {{dados | json}}-->
+<!--    </code>-->
+<!--  </pre>-->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="addRetificacao()">
       <ion-icon name="add"></ion-icon>
