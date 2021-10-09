@@ -4,7 +4,7 @@ import {Dia} from '../../../core/models/dia';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {interval, Observable, of} from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
-import {addSeconds, differenceInSeconds, parseISO, set} from 'date-fns';
+import {addSeconds, differenceInSeconds, subSeconds, parseISO, set, format} from 'date-fns';
 
 @Component({
   selector: 'app-modal-rasura',
@@ -96,9 +96,19 @@ export class ModalRasuraComponent implements OnInit, OnDestroy {
       .map(r => parseISO(r.get('worktimeClock').value));
     if (batidas.length > 0) {
       if (batidas.length % 2 === 1) {
-        return of(addSeconds(hoje, differenceInSeconds(this.agora, batidas[0])));
+        batidas.push(this.agora);
       }
-      return of(addSeconds(hoje, differenceInSeconds(batidas[batidas.length - 1], batidas[0])));
+      const batida: Date = batidas.reduce((a, b, i, x) => {
+        const diff: number = differenceInSeconds(x[i], x[i - 1]);
+        if (i === 0) {
+          return a;
+        } else if (i % 2 === 1) {
+          return addSeconds(a, diff);
+        } else {
+          return a;
+        }
+      }, hoje);
+      return of(batida);
     }
     return of(hoje);
   }
