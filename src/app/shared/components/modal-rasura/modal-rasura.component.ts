@@ -4,7 +4,8 @@ import {Dia} from '../../../core/models/dia';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {interval, Observable, of} from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
-import {addSeconds, differenceInSeconds, subSeconds, parseISO, set, format} from 'date-fns';
+import {addSeconds, differenceInSeconds, parseISO, set} from 'date-fns';
+import {DadosService} from '../../../core/services/dados.service';
 
 @Component({
   selector: 'app-modal-rasura',
@@ -21,12 +22,13 @@ export class ModalRasuraComponent implements OnInit, OnDestroy {
   private alive = false;
 
   constructor(
+    private dadosService: DadosService,
     private modalController: ModalController,
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
       date: ['', Validators.required],
-      reason: ['', Validators.required],
+      reason: [''],
       rectifications: this.fb.array([]),
     });
   }
@@ -120,9 +122,32 @@ export class ModalRasuraComponent implements OnInit, OnDestroy {
   }
 
   salvar(): void {
-    this.modalController.dismiss({
-      success: true,
-      data: {teste: true}
-    });
+    if (this.form.valid) {
+      const f: any = this.form.value;
+      const dados: any = {
+        ...f,
+        rectifications: f.rectifications.map(
+          (i: any) => ({
+            check_in: i.checkIn,
+            position: i.position,
+            worktime_clock: i.worktimeClock.substr(0, 16)
+          })
+        )
+      };
+      console.log(dados);
+      this.dadosService.solicitarRetificacao([dados]).subscribe(
+        response => {
+          this.modalController.dismiss({
+            success: true,
+            data: dados.rectifications
+          });
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    } else {
+      console.log('Form Invalido');
+    }
   }
 }

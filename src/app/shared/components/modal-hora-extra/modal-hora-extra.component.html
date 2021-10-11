@@ -15,7 +15,32 @@
 </ion-header>
 
 <ion-content>
-  <p>
-    modal-hora-extra works!
-  </p>
+  <form [formGroup]="form">
+    <ion-card>
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <h2 style="width: 100%;">Data:</h2>
+            <h2 style="width: 100%;">{{(formatDate(dados.date) | date : 'E dd/MM') | titlecase}}</h2>
+          </ion-item>
+          <ion-item>
+            <h2 style="width: 100%;">Produção:</h2>
+            <h2 style="width: 100%;">{{formatDate(dados.production) | date : 'HH:mm'}}</h2>
+          </ion-item>
+          <ion-item>
+            <h2 style="width: 100%;">Saldo:</h2>
+            <h2 style="width: 100%;"> {{dados.balance}}</h2>
+          </ion-item>
+          <ion-item>
+            <h2 style="width: 100%;">Solicitação:</h2>
+            <h2 style="width: 100%;">{{getTipo() === 'hora_extra' ? 'Hora Extra' : 'Falta'}}</h2>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Motivo</ion-label>
+            <ion-textarea formControlName="reason"></ion-textarea>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </form>
 </ion-content>

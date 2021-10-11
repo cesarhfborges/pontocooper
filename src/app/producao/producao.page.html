@@ -16,8 +16,17 @@
     <ion-card *ngFor="let dia of producao" [attr.id]="isNow(dia.date) ? 'hoje' : ''">
       <ion-item>
         <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
-        <ion-label>{{formatDate(dia.date) | date : 'E dd/MM'}}</ion-label>
-        <ion-button *ngIf="isNow(dia.date)" fill="outline" slot="end">Hoje</ion-button>
+        <ion-label>{{(formatDate(dia.date) | date : 'E dd/MM') | titlecase}}</ion-label>
+        <ion-item slot="end" lines="none" style="text-align: right;">
+          <ion-badge
+            *ngIf="isNow(dia.date)"
+            color="success"
+          >Hoje</ion-badge>
+          <ion-badge
+            style="margin-left: 8px;"
+            *ngIf="dia.day_type" [color]="dia.day_type.day_type === 'feriado' ? 'warning' : 'tertiary'"
+          >{{dia.day_type.day_type_display}}</ion-badge>
+        </ion-item>
       </ion-item>
 
       <ion-card-content>
@@ -43,7 +52,7 @@
           </ion-col>
 
           <ion-col size="6">
-            <ion-button (click)="modalHoraExtra()" expand="block" color="medium">H. Extra / Ausência</ion-button>
+            <ion-button (click)="modalHoraExtra(dia)" expand="block" color="medium">H. Extra / Ausência</ion-button>
           </ion-col>
         </ion-row>
       </ion-card-content>
@@ -77,9 +86,9 @@
     </ion-card>
   </div>
 
-  <pre>
-    <code>
-      {{producao|json}}
-    </code>
-  </pre>
+<!--  <pre>-->
+<!--    <code>-->
+<!--      {{producao|json}}-->
+<!--    </code>-->
+<!--  </pre>-->
 </ion-content>

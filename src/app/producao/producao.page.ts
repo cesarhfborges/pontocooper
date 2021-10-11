@@ -69,17 +69,22 @@ export class ProducaoPage implements OnInit {
     });
     await modal.present();
     const {data} = await modal.onWillDismiss();
-    console.log(data);
+    if (data.success) {
+      this.getProducao();
+    }
   }
 
-  async modalHoraExtra() {
+  async modalHoraExtra(dia: Dia) {
     const modal = await this.modalController.create({
       component: ModalHoraExtraComponent,
       cssClass: 'my-custom-class',
       swipeToClose: true,
       backdropDismiss: false,
       keyboardClose: false,
-      animated: true
+      animated: true,
+      componentProps: {
+        dados: dia
+      }
     });
     await modal.present();
     const {data} = await modal.onWillDismiss();

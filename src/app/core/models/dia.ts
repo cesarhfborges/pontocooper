@@ -1,7 +1,12 @@
 export interface Dia {
   balance: string;
   date: string;
-  day_type: any;
+  day_type?: {
+    day_type: string;
+    day_type_display: string;
+    status: string;
+    status_display: string;
+  };
   paid_leave: any;
   production: string;
   timeline: Array<Timeline>;

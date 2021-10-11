@@ -40,4 +40,12 @@ export class DadosService {
   getProducao(year: number, month: number): Observable<any> {
     return this.http.get(`${environment.apiUrl}/my_production_history/?year=${year.toString()}&month=${month.toString()}`);
   }
+
+  solicitarRetificacao(dados: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/rectification_request/`, dados);
+  }
+
+  solicitarHoraExtra(dia: string, dados: any): Observable<any> {
+    return this.http.patch(`${environment.apiUrl}/request/past/${dia}/`, dados);
+  }
 }

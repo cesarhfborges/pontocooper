@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {MenuController, Platform} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-login',
@@ -28,10 +29,17 @@ export class LoginPage implements OnInit {
       this.statusBar.styleLightContent();
     });
     this.form = this.fb.group({
-      username: this.fb.control('cesar.borges', [Validators.required]),
-      password: this.fb.control('@Dj.91344356', [Validators.required]),
-      remember: this.fb.control(true, [Validators.required]),
+      username: this.fb.control(null, [Validators.required]),
+      password: this.fb.control(null, [Validators.required]),
+      remember: this.fb.control(false, [Validators.required]),
     });
+    if (!environment.production) {
+      this.form.patchValue({
+        username: 'cesar.borges',
+        password: '@Dj.91344356',
+        remember: true,
+      });
+    }
   }
 
   ngOnInit() {
