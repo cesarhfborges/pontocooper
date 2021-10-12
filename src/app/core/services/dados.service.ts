@@ -37,8 +37,8 @@ export class DadosService {
     return this.http.get(`${environment.apiUrl}/work_month_summary/${year}/${month}/`);
   }
 
-  getProducao(year: number, month: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/my_production_history/?year=${year.toString()}&month=${month.toString()}`);
+  getProducao(year: number, month: number): Observable<Array<any>> {
+    return this.http.get<Array<any>>(`${environment.apiUrl}/my_production_history/?year=${year.toString()}&month=${month.toString()}`);
   }
 
   solicitarRetificacao(dados: any): Observable<any> {

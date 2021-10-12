@@ -57,13 +57,11 @@
           <h1>{{summary.remainingHours}}h</h1>
         </ion-col>
       </ion-row>
-    </ion-card-content>
 
-    <ion-card-content>
       <ion-list>
         <ion-item *ngFor="let batida of ponto.batidas; let i = index">
           <ion-icon [color]="i % 2 === 0 ? 'success' : 'danger'" name="pin" slot="start"></ion-icon>
-          <ion-label>{{batida | date : 'HH:mm:ss'}}</ion-label>
+          <h1>{{batida | date : 'HH:mm:ss'}}</h1>
         </ion-item>
       </ion-list>
       <h1 style="margin-top: 30px; text-align: center;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>
@@ -78,7 +76,7 @@
         [color]="ponto.trabalhando ? 'danger' : 'success'"
         (click)="registrarPonto()"
         [disabled]="ponto.isInterval()"
-        style="margin-top: 30px;"
+        style="margin-top: 10px;"
       >
         <ion-icon slot="start" [name]="ponto.trabalhando ? 'exit-outline' : 'enter-outline'"></ion-icon>
         {{ponto.trabalhando ? 'Saida' : 'Entrada' + (ponto.isInterval() ? ponto.getTempoPonto() : '')}}

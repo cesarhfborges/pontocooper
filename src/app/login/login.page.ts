@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {MenuController, Platform} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
-import {environment} from "../../environments/environment";
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-login',

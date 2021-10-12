@@ -1,0 +1,27 @@
+::ng-deep {
+  .alerta {
+    .alert-wrapper {
+      width: calc(100% - 22px);
+      max-width: 400px;
+
+      .alert-checkbox-group {
+        vertical-align: middle;
+        //background: red;
+        .alert-tappable {
+          margin-top: 32px;
+          margin-bottom: 32px;
+
+          .alert-checkbox-label {
+            white-space: unset;
+          }
+        }
+      }
+    }
+
+    .alert-button-group {
+      .alert-button {
+        font-weight: bold;
+      }
+    }
+  }
+}

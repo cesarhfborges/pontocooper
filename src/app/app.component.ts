@@ -20,6 +20,10 @@ export class AppComponent {
       link: '/producao'
     },
     {
+      label: 'Histórico (GPS)',
+      link: '/historico'
+    },
+    {
       label: 'Opções',
       link: '/opcoes'
     },

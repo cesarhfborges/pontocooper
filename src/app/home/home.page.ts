@@ -136,7 +136,7 @@ export class HomePage implements OnInit, AfterViewInit {
 
   async registrarPonto() {
     const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
+      cssClass: 'alerta',
       header: 'Deseja confirmar Saída?',
       buttons: [
         {
