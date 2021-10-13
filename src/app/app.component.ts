@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
-import {ThemeDetectionResponse} from '@ionic-native/theme-detection';
 import {ToastController} from '@ionic/angular';
 
 @Component({
@@ -10,7 +9,7 @@ import {ToastController} from '@ionic/angular';
 })
 export class AppComponent {
 
-  menus: Array<{label: string; link: string;}> = [
+  menus: Array<{ label: string; link: string; }> = [
     {
       label: 'Home',
       link: '/home'
@@ -37,16 +36,7 @@ export class AppComponent {
     private themeDetection: ThemeDetection,
     private toastController: ToastController,
   ) {
-    this.themeDetection.isAvailable().then((res: ThemeDetectionResponse) => {
-      if (res.value) {
-        this.themeDetection.isDarkModeEnabled().then((r: ThemeDetectionResponse) => {
-          if (r.value) {
-            document.body.setAttribute('data-theme', 'dark');
-            this.presentToast(res.value ? 'Dark mode ativo' : 'Dark mode inativo').then();
-          }
-        }).catch(e => {});
-      }
-    }).catch(e => {});
+    this.changeTheme().then();
   }
 
   async presentToast(mensagem: string): Promise<void> {
@@ -56,5 +46,16 @@ export class AppComponent {
     });
     await toast.present();
     return await Promise.resolve();
+  }
+
+  async changeTheme(): Promise<void> {
+    const isAvailable = await this.themeDetection.isAvailable();
+    if (isAvailable.value) {
+      const isDarkModeEnabled = await this.themeDetection.isDarkModeEnabled();
+      if (isDarkModeEnabled.value) {
+        document.body.setAttribute('data-theme', 'dark');
+        this.presentToast(isDarkModeEnabled.value ? 'Modo escuro ativo.' : 'Modo escuro inativo.').then();
+      }
+    }
   }
 }
