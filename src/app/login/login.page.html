@@ -5,7 +5,7 @@
         <form [formGroup]="form" (submit)="onSubmit()">
           <ion-card>
             <ion-card-header>
-              <ion-img src="assets/logo-horizontal-white.png"></ion-img>
+              <ion-img [src]="darkMode ? logotipo.dark : logotipo.normal"></ion-img>
             </ion-card-header>
             <ion-card-content>
               <ion-item lines="none">

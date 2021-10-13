@@ -4,7 +4,8 @@ import {Router} from '@angular/router';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {MenuController, Platform} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
-import {environment} from '../../environments/environment';
+import {ThemeDetectionResponse} from '@ionic-native/theme-detection';
+import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,16 @@ import {environment} from '../../environments/environment';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+
+  darkMode = false;
+
+  logotipo: {
+    normal: string;
+    dark: string;
+  } = {
+    normal: 'assets/logo-horizontal.png',
+    dark: 'assets/logo-horizontal-white.png'
+  };
 
   form: FormGroup;
   loading = false;
@@ -22,7 +33,8 @@ export class LoginPage implements OnInit {
     private router: Router,
     private statusBar: StatusBar,
     private platform: Platform,
-    private menu: MenuController
+    private menu: MenuController,
+    private themeDetection: ThemeDetection,
   ) {
     this.platform.ready().then(() => {
       this.statusBar.overlaysWebView(true);
@@ -37,6 +49,13 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
     this.menu.enable(false, 'principal');
+    this.themeDetection.isAvailable().then((res: ThemeDetectionResponse) => {
+      if (res.value) {
+        this.themeDetection.isDarkModeEnabled().then((r: ThemeDetectionResponse) => {
+          this.darkMode = r.value;
+        }).catch(e => {});
+      }
+    }).catch(e => {});
   }
 
   onSubmit(): void {
