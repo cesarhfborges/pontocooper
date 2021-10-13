@@ -33,7 +33,7 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
       ],
       target: document.getElementById('map'),
       view: new View({
-        center: this.transformarCoordenadas(-47.9690582, -15.8121796),
+        center: this.transformarCoordenadas(-15.8121796, -47.9690582),
         zoom: 11
       })
     });
@@ -48,8 +48,9 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
       }
       if (this.dados?.length > 0) {
         this.flyTo(this.transformarCoordenadas(
-          this.dados[this.dados.length - 1].longitude,
-          this.dados[this.dados.length - 1].latitude)
+          this.dados[this.dados.length - 1].latitude,
+          this.dados[this.dados.length - 1].longitude
+          )
         );
       }
     }, 500);
