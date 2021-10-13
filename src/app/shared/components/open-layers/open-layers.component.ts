@@ -46,16 +46,27 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
       for (const {latitude, longitude} of this.dados) {
         this.map.addLayer(this.createPin(latitude, longitude));
       }
-      this.map.getView().setCenter(
-        transform(
+      // this.map.getView().setCenter(
+      //   transform(
+      //     [
+      //       this.dados[this.dados.length - 1].longitude,
+      //       this.dados[this.dados.length - 1].latitude
+      //     ],
+      //     'EPSG:4326',
+      //     new OSM().getProjection()
+      //   )
+      // );
+      if (this.dados?.length > 0) {
+        const location: any = transform(
           [
             this.dados[this.dados.length - 1].longitude,
             this.dados[this.dados.length - 1].latitude
           ],
           'EPSG:4326',
           new OSM().getProjection()
-        )
-      );
+        );
+        this.flyTo(location);
+      }
     }, 500);
   }
 
@@ -85,5 +96,40 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
     return new VectorLayer({
       source: vectorSource,
     });
+  }
+
+  private flyTo(location, done?) {
+    const duration = 2000;
+    const zoom = this.map.getView().getZoom();
+    let parts = 2;
+    let called = false;
+    const callback = (complete) => {
+      --parts;
+      if (called) {
+        return;
+      }
+      if (parts === 0 || !complete) {
+        called = true;
+        done(complete);
+      }
+    };
+    this.map.getView().animate(
+      {
+        center: location,
+        duration,
+      },
+      callback
+    );
+    this.map.getView().animate(
+      {
+        zoom: zoom - 1,
+        duration: duration / 2,
+      },
+      {
+        zoom,
+        duration: duration / 2,
+      },
+      callback
+    );
   }
 }

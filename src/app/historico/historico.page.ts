@@ -28,11 +28,11 @@ export class HistoricoPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.menu.swipeGesture(true).then();
+    this.menu.swipeGesture(true, 'principal').then();
   }
 
   ngOnInit() {
-    this.menu.swipeGesture(false).then();
+    this.menu.swipeGesture(false, 'principal').then();
     this.hoje = new Date();
     this.getDados();
   }

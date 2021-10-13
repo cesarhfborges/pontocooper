@@ -33,18 +33,22 @@
         <ion-row class="header-row">
 
           <ion-col *ngIf="dia?.timeline?.length === 0" size="12">
-            <p>Nenhum ponto registrado para este dia.</p>
+            <h2>Nenhum ponto registrado para este dia.</h2>
           </ion-col>
 
           <ion-col size="12" *ngFor="let detalhes of dia?.timeline; let i = index">
             <h1>
               <ion-icon [color]="i % 2 === 0 ? 'success' : 'danger'" name="pin"></ion-icon>
-              {{detalhes.worktime_clock | date : 'HH:mm:ss'}}
+              {{detalhes.worktime_clock | date : 'HH:mm'}}
               <ion-badge
                 *ngIf="detalhes.rectification"
                 [color]="detalhes.rectification.status === 'aprovado' ? 'success' : 'warning'"
               >{{detalhes.rectification.status_display}}</ion-badge>
             </h1>
+          </ion-col>
+
+          <ion-col *ngIf="dia?.timeline?.length > 0" size="12">
+            <h2>Produção: {{dia.production | date : 'HH:mm'}}</h2>
           </ion-col>
 
           <ion-col size="6">
