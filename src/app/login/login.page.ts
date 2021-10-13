@@ -33,13 +33,6 @@ export class LoginPage implements OnInit {
       password: this.fb.control(null, [Validators.required]),
       remember: this.fb.control(false, [Validators.required]),
     });
-    if (!environment.production) {
-      this.form.patchValue({
-        username: 'cesar.borges',
-        password: '@Dj.91344356',
-        remember: true,
-      });
-    }
   }
 
   ngOnInit() {

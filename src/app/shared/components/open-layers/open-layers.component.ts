@@ -33,7 +33,7 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
       ],
       target: document.getElementById('map'),
       view: new View({
-        center: transform([-47.9690582, -15.8121796], 'EPSG:4326', new OSM().getProjection()),
+        center: this.transformarCoordenadas(-47.9690582, -15.8121796),
         zoom: 11
       })
     });
@@ -46,33 +46,18 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
       for (const {latitude, longitude} of this.dados) {
         this.map.addLayer(this.createPin(latitude, longitude));
       }
-      // this.map.getView().setCenter(
-      //   transform(
-      //     [
-      //       this.dados[this.dados.length - 1].longitude,
-      //       this.dados[this.dados.length - 1].latitude
-      //     ],
-      //     'EPSG:4326',
-      //     new OSM().getProjection()
-      //   )
-      // );
       if (this.dados?.length > 0) {
-        const location: any = transform(
-          [
-            this.dados[this.dados.length - 1].longitude,
-            this.dados[this.dados.length - 1].latitude
-          ],
-          'EPSG:4326',
-          new OSM().getProjection()
+        this.flyTo(this.transformarCoordenadas(
+          this.dados[this.dados.length - 1].longitude,
+          this.dados[this.dados.length - 1].latitude)
         );
-        this.flyTo(location);
       }
     }, 500);
   }
 
   private createPin(lat: number, long: number): VectorLayer<any> {
     const iconFeature = new Feature({
-      geometry: new Point(transform([long, lat], 'EPSG:4326', new OSM().getProjection())),
+      geometry: new Point(this.transformarCoordenadas(lat, long)),
       name: 'Null Island',
       population: 4000,
       rainfall: 500,
@@ -100,7 +85,7 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
 
   private flyTo(location, done?) {
     const duration = 2000;
-    const zoom = this.map.getView().getZoom();
+    const oldZoom = this.map.getView().getZoom();
     let parts = 2;
     let called = false;
     const callback = (complete) => {
@@ -122,14 +107,18 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
     );
     this.map.getView().animate(
       {
-        zoom: zoom - 1,
+        zoom: oldZoom - 1,
         duration: duration / 2,
       },
       {
-        zoom,
+        zoom: oldZoom,
         duration: duration / 2,
       },
       callback
     );
+  }
+
+  private transformarCoordenadas(latitude, longitude): Array<number> {
+    return transform([longitude, latitude], 'EPSG:4326', new OSM().getProjection());
   }
 }
