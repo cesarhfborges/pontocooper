@@ -36,6 +36,9 @@ export class LoginPage implements OnInit {
     private menu: MenuController,
     private themeDetection: ThemeDetection,
   ) {
+    // if (this.platform.is('cordova')) {
+    //
+    // };
     this.platform.ready().then(() => {
       this.statusBar.overlaysWebView(true);
       this.statusBar.styleLightContent();

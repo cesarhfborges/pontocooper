@@ -50,7 +50,7 @@ export class AppComponent {
 
   async changeTheme(): Promise<void> {
     const isAvailable = await this.themeDetection.isAvailable();
-    if (isAvailable.value) {
+    if (isAvailable && isAvailable.value) {
       const isDarkModeEnabled = await this.themeDetection.isDarkModeEnabled();
       if (isDarkModeEnabled.value) {
         document.body.setAttribute('data-theme', 'dark');
