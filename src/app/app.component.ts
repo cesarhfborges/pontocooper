@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
-import {ToastController} from '@ionic/angular';
+import {Platform, ToastController} from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -35,8 +35,13 @@ export class AppComponent {
   constructor(
     private themeDetection: ThemeDetection,
     private toastController: ToastController,
+    private platform: Platform,
   ) {
-    this.changeTheme().then();
+    if (this.platform.is('cordova')) {
+      this.platform.ready().then(() => {
+        this.changeTheme().then();
+      });
+    }
   }
 
   async presentToast(mensagem: string): Promise<void> {

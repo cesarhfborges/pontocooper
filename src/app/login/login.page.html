@@ -11,18 +11,22 @@
               <ion-item lines="none">
                 <ion-label position="stacked">Usuário:</ion-label>
                 <ion-input
+                  #inputUsername
                   type="text"
                   enterkeyhint="next"
                   inputmode="text"
                   spellcheck="false"
                   name='username'
                   formControlName="username"
+                  (keyup.enter)="inputPass.setFocus()"
+                  autofocus
                   clearInput
                 ></ion-input>
               </ion-item>
               <ion-item lines="none">
                 <ion-label position="stacked">Senha:</ion-label>
                 <ion-input
+                  #inputPass
                   type="password"
                   enterkeyhint="send"
                   inputmode="text"

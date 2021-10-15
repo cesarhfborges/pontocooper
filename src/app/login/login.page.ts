@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {MenuController, Platform} from '@ionic/angular';
+import {IonInput, MenuController, Platform} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {ThemeDetectionResponse} from '@ionic-native/theme-detection';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
@@ -13,6 +13,8 @@ import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+
+  @ViewChild('inputUsername') inputUser;
 
   darkMode = false;
 
@@ -36,13 +38,12 @@ export class LoginPage implements OnInit {
     private menu: MenuController,
     private themeDetection: ThemeDetection,
   ) {
-    // if (this.platform.is('cordova')) {
-    //
-    // };
-    this.platform.ready().then(() => {
-      this.statusBar.overlaysWebView(true);
-      this.statusBar.styleLightContent();
-    });
+    if (this.platform.is('cordova')) {
+      this.platform.ready().then(() => {
+        this.statusBar.overlaysWebView(true);
+        this.statusBar.styleLightContent();
+      });
+    }
     this.form = this.fb.group({
       username: this.fb.control(null, [Validators.required]),
       password: this.fb.control(null, [Validators.required]),
@@ -56,9 +57,11 @@ export class LoginPage implements OnInit {
       if (res.value) {
         this.themeDetection.isDarkModeEnabled().then((r: ThemeDetectionResponse) => {
           this.darkMode = r.value;
-        }).catch(e => {});
+        }).catch(e => {
+        });
       }
-    }).catch(e => {});
+    }).catch(e => {
+    });
   }
 
   onSubmit(): void {
@@ -79,6 +82,8 @@ export class LoginPage implements OnInit {
         error => {
           console.log(error);
           this.form.enable();
+          this.form.get('password').reset();
+          this.inputUser.setFocus();
           this.loading = false;
         }
       );
