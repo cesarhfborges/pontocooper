@@ -7,4 +7,31 @@
 
 <ion-content>
 
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Opções</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="form">
+        <ion-list>
+
+          <ion-item>
+            <ion-label>Modo escuro</ion-label>
+            <ion-select formControlName="darkMode" okText="Selecionar" cancelText="Cancelar">
+              <ion-select-option *ngFor="let opt of opcoes.darkMode" [value]="opt.value">{{opt.label}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Lembrar login</ion-label>
+            <ion-select formControlName="loginRemember" okText="Selecionar" cancelText="Cancelar">
+              <ion-select-option *ngFor="let opt of opcoes.loginRemember" [value]="opt.value">{{opt.label}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        </ion-list>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

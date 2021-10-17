@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
-import {Platform, ToastController} from '@ionic/angular';
+import {Platform} from '@ionic/angular';
+import {ToastsService} from './shared/service/toasts.service';
 
 @Component({
   selector: 'app-root',
@@ -34,23 +35,25 @@ export class AppComponent {
 
   constructor(
     private themeDetection: ThemeDetection,
-    private toastController: ToastController,
+    private toastsService: ToastsService,
     private platform: Platform,
   ) {
-    if (this.platform.is('cordova')) {
-      this.platform.ready().then(() => {
-        this.changeTheme().then();
-      });
+    const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
+    switch (darkMode) {
+      case 'escuro':
+        document.body.setAttribute('data-theme', 'dark');
+        break;
+      case 'claro':
+        document.body.removeAttribute('data-theme');
+        break;
+      default:
+        if (this.platform.is('cordova')) {
+          this.platform.ready().then(() => {
+            this.changeTheme().then();
+          });
+        }
+        break;
     }
-  }
-
-  async presentToast(mensagem: string): Promise<void> {
-    const toast = await this.toastController.create({
-      message: mensagem,
-      duration: 2000
-    });
-    await toast.present();
-    return await Promise.resolve();
   }
 
   async changeTheme(): Promise<void> {
@@ -59,7 +62,7 @@ export class AppComponent {
       const isDarkModeEnabled = await this.themeDetection.isDarkModeEnabled();
       if (isDarkModeEnabled.value) {
         document.body.setAttribute('data-theme', 'dark');
-        this.presentToast(isDarkModeEnabled.value ? 'Modo escuro ativo.' : 'Modo escuro inativo.').then();
+        this.toastsService.showToast(isDarkModeEnabled.value ? 'Modo escuro ativo.' : 'Modo escuro inativo.');
       }
     }
   }

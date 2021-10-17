@@ -10,7 +10,7 @@ import {DadosService} from '../../../core/services/dados.service';
 @Component({
   selector: 'app-modal-rasura',
   templateUrl: './modal-rasura.component.html',
-  styleUrls: ['./modal-rasura.component.scss']
+  styleUrls: ['./modal-rasura.component.scss'],
 })
 export class ModalRasuraComponent implements OnInit, OnDestroy {
 

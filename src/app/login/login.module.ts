@@ -5,6 +5,7 @@ import {IonicModule} from '@ionic/angular';
 import {LoginPageRoutingModule} from './login-routing.module';
 import {LoginPage} from './login.page';
 import {RouterModule} from '@angular/router';
+import {InvalidMessageComponent} from '../shared/components/invalid-message/invalid-message.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,10 @@ import {RouterModule} from '@angular/router';
     ReactiveFormsModule,
     RouterModule
   ],
-  declarations: [LoginPage]
+  declarations: [
+    LoginPage,
+    InvalidMessageComponent
+  ]
 })
 export class LoginPageModule {
 }

@@ -7,6 +7,7 @@ import {ProducaoPage} from './producao.page';
 import {RouterModule} from '@angular/router';
 import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
 import {ModalHoraExtraComponent} from '../shared/components/modal-hora-extra/modal-hora-extra.component';
+import {InvalidMessageComponent} from '../shared/components/invalid-message/invalid-message.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import {ModalHoraExtraComponent} from '../shared/components/modal-hora-extra/mod
   declarations: [
     ProducaoPage,
     ModalRasuraComponent,
-    ModalHoraExtraComponent
+    ModalHoraExtraComponent,
+    InvalidMessageComponent
   ],
   exports: []
 })

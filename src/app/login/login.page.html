@@ -1,4 +1,5 @@
 <ion-content>
+<!--  <video autoplay loop src="assets/videoplayback.mp4"></video>-->
   <ion-grid style="height: 100%;">
     <ion-row style="height: 100%;">
       <ion-col size="12" class="ion-align-self-center">
@@ -22,6 +23,7 @@
                   autofocus
                   clearInput
                 ></ion-input>
+                <app-invalid-message [control]="form.get('username')"></app-invalid-message>
               </ion-item>
               <ion-item lines="none">
                 <ion-label position="stacked">Senha:</ion-label>
@@ -34,7 +36,9 @@
                   (keyup.enter)="onSubmit()"
                   name="password"
                   formControlName="password"
-                  clearInput></ion-input>
+                  clearInput
+                ></ion-input>
+                <app-invalid-message [control]="form.get('password')"></app-invalid-message>
               </ion-item>
               <ion-item lines="none">
                 <ion-label>Lembrar</ion-label>
@@ -47,4 +51,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  {{form.value | json}}
 </ion-content>

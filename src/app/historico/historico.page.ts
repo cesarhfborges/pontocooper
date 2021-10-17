@@ -1,8 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
 import {getMonth, getYear} from 'date-fns';
 import {filter, map, mergeMap, toArray} from 'rxjs/operators';
 import {MenuController} from '@ionic/angular';
+import {OpenLayersComponent} from '../shared/components/open-layers/open-layers.component';
 
 @Component({
   selector: 'app-historico',
@@ -11,9 +12,9 @@ import {MenuController} from '@ionic/angular';
 })
 export class HistoricoPage implements OnInit, OnDestroy {
 
-  hoje: Date;
+  @ViewChild(OpenLayersComponent, { static: false }) openLayers: OpenLayersComponent;
 
-  producao: any;
+  hoje: Date;
 
   loading: {
     producao: boolean;
@@ -28,11 +29,11 @@ export class HistoricoPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.menu.swipeGesture(true, 'principal').then();
+    this.menu.enable(true, 'principal').then();
   }
 
   ngOnInit() {
-    this.menu.swipeGesture(false, 'principal').then();
+    this.menu.enable(false, 'principal').then();
     this.hoje = new Date();
     this.getDados();
   }
@@ -48,7 +49,7 @@ export class HistoricoPage implements OnInit, OnDestroy {
       toArray()
     ).subscribe(
       response => {
-        this.producao = response;
+        this.openLayers.addLocations(response);
         this.loading.producao = false;
       }
     );

@@ -5,6 +5,7 @@ import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
 import {addMinutes} from 'date-fns';
 import {Usuario} from '../models/usuario';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
+    private router: Router,
   ) {
   }
 
@@ -22,7 +24,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('contents');
-    localStorage.removeItem('contents_backup');
+    this.router.navigate(['/login']).then();
     window.location.reload();
   }
 

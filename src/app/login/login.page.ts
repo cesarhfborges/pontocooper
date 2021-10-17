@@ -1,11 +1,12 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {IonInput, MenuController, Platform} from '@ionic/angular';
+import {MenuController, Platform} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {ThemeDetectionResponse} from '@ionic-native/theme-detection';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
+import {ToastsService} from '../shared/service/toasts.service';
 
 @Component({
   selector: 'app-login',
@@ -29,6 +30,8 @@ export class LoginPage implements OnInit {
   form: FormGroup;
   loading = false;
 
+  opcoes: any = JSON.parse(localStorage.getItem('opcoes'));
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -37,6 +40,7 @@ export class LoginPage implements OnInit {
     private platform: Platform,
     private menu: MenuController,
     private themeDetection: ThemeDetection,
+    private toastsService: ToastsService
   ) {
     if (this.platform.is('cordova')) {
       this.platform.ready().then(() => {
@@ -49,6 +53,9 @@ export class LoginPage implements OnInit {
       password: this.fb.control(null, [Validators.required]),
       remember: this.fb.control(false, [Validators.required]),
     });
+    if (this.opcoes !== null) {
+      this.form.get('remember').patchValue(this.opcoes.loginRemember);
+    }
   }
 
   ngOnInit() {
@@ -82,6 +89,7 @@ export class LoginPage implements OnInit {
         error => {
           console.log(error);
           this.form.enable();
+          this.toastsService.showToastDanger('Usuário e/ou senha inválido(s), tente novamente');
           this.form.get('password').reset();
           this.inputUser.setFocus();
           this.loading = false;

@@ -6,7 +6,8 @@ import {AuthService} from '../core/services/auth.service';
 import {Dia} from '../core/models/dia';
 import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
 import {ModalHoraExtraComponent} from '../shared/components/modal-hora-extra/modal-hora-extra.component';
-import {getMonth, getYear, parseISO, isSameDay} from 'date-fns';
+import {getMonth, getYear, isSameDay, parseISO} from 'date-fns';
+import {ToastsService} from '../shared/service/toasts.service';
 
 @Component({
   selector: 'app-producao',
@@ -31,6 +32,7 @@ export class ProducaoPage implements OnInit {
     private authService: AuthService,
     private platform: Platform,
     private statusBar: StatusBar,
+    private toastsService: ToastsService,
     private modalController: ModalController
   ) {
   }
@@ -70,6 +72,7 @@ export class ProducaoPage implements OnInit {
     await modal.present();
     const {data} = await modal.onWillDismiss();
     if (data.success) {
+      this.toastsService.showToastSuccess('Rasura(s), inserida(s) com sucesso.');
       this.getProducao();
     }
   }
@@ -89,6 +92,10 @@ export class ProducaoPage implements OnInit {
     await modal.present();
     const {data} = await modal.onWillDismiss();
     console.log(data);
+    if (data.success) {
+      this.toastsService.showToastSuccess('Hora(s) extra(s), solicitada(s) com sucesso.');
+      this.getProducao();
+    }
   }
 
   formatDate(data: string): Date {

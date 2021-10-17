@@ -14,17 +14,6 @@ export class JwtInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
-    // if (this.authService.isAuthenticated() && request.url !== 'https://api.portal.coopersystem.com.br/api/v1/auth/refresh/') {
-    //   this.authService.refresh().subscribe(
-    //     response => {
-    //       const r = response;
-    //     },
-    //     error => {
-    //       console.log(error);
-    //     }
-    //   );
-    // }
     const headers: any = {
       // eslint-disable-next-line
       'Content-Type': 'application/json',

@@ -38,6 +38,7 @@
             <ion-button *ngIf="(i + 1)> dados.timeline.length" fill="clear" size="large" slot="end" (click)="deleteRetificacao(i)">
               <ion-icon color="danger" name="trash"></ion-icon>
             </ion-button>
+            <app-invalid-message [control]="item.get('worktimeClock')"></app-invalid-message>
           </ion-item>
           <ion-item lines="none">
             <ion-label>Carga: {{(diferenca() | async) | date : 'HH:mm:ss' }}</ion-label>
