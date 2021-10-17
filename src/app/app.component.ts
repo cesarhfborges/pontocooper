@@ -24,6 +24,10 @@ export class AppComponent {
       link: '/historico'
     },
     {
+      label: 'Férias e Abonos',
+      link: '/ferias-abonos'
+    },
+    {
       label: 'Opções',
       link: '/opcoes'
     },
