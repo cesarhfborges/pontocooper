@@ -37,6 +37,14 @@ export class DadosService {
     return this.http.get(`${environment.apiUrl}/work_month_summary/${year}/${month}/`);
   }
 
+  getPeriodosFeriasAbonos(): Observable<Array<any>> {
+    return this.http.get<Array<any>>(`${environment.apiUrl}/paid_leave/reference_periods`);
+  }
+
+  getPeriodosDados(): Observable<Array<any>> {
+    return this.http.get<Array<any>>(`${environment.apiUrl}/paid_leave/`);
+  }
+
   getProducao(year: number, month: number): Observable<Array<any>> {
     return this.http.get<Array<any>>(`${environment.apiUrl}/my_production_history/?year=${year.toString()}&month=${month.toString()}`);
   }

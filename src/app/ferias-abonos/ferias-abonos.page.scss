@@ -1,0 +1,61 @@
+.grid {
+  .linha-ferias {
+    background: seagreen;
+  }
+
+  .linha-abono {
+    background: steelblue;
+  }
+
+  .total-ferias {
+    background: rgba(40, 120, 75, 1);
+  }
+
+  .total-abono {
+    background: rgba(63, 117, 162, 1);
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+ul.container-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-auto-rows: 50px;
+  text-align: center;
+  padding: 0;
+  overflow: hidden;
+
+  position: relative;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+
+  li.periodo {
+    border: 1px solid;
+    margin: 0 -1px -1px 0;
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+//.container-grid {
+//  display: grid;
+//  grid-template-columns: calc(100%/3) calc(100%/3) calc(100%/3);
+//  grid-gap: 5px;
+//  .periodo {
+//    border: 1px solid rgba(255,0,0,.15);
+//    min-height: 64px;
+//    width: 100%;
+//    p {
+//      margin: 0;
+//      padding: 0;
+//    }
+//  }
+//}
