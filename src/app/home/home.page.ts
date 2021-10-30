@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {AlertController, Platform} from '@ionic/angular';
+import {AlertController, MenuController, Platform, ViewDidEnter} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Ponto} from '../core/models/ponto';
@@ -12,7 +12,7 @@ import {format, getHours, parseISO, set} from 'date-fns';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit, AfterViewInit {
+export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
 
   ponto: Ponto;
 
@@ -51,7 +51,8 @@ export class HomePage implements OnInit, AfterViewInit {
     private authService: AuthService,
     private platform: Platform,
     private statusBar: StatusBar,
-    private geolocation: Geolocation
+    private geolocation: Geolocation,
+    private menu: MenuController,
   ) {
     //#1da57a
     this.dataAtual = new Date();
@@ -60,12 +61,12 @@ export class HomePage implements OnInit, AfterViewInit {
     setInterval(() => {
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
 
-      const start = set(new Date(), {
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-        milliseconds: 0
-      });
+      // const start = set(new Date(), {
+      //   hours: 0,
+      //   minutes: 0,
+      //   seconds: 0,
+      //   milliseconds: 0
+      // });
     }, 1000);
   }
 
@@ -184,5 +185,9 @@ export class HomePage implements OnInit, AfterViewInit {
         }
       );
     }
+  }
+
+  ionViewDidEnter(): void {
+    this.menu.enable(true, 'principal').then().catch();
   }
 }

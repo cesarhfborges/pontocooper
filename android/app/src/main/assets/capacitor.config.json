@@ -5,6 +5,7 @@
 	"npmClient": "npm",
 	"bundledWebRuntime": false,
 	"windowsAndroidStudioPath": "C:\\Users\\cesar\\AppData\\Local\\JetBrains\\Toolbox\\apps\\AndroidStudio\\ch-0\\203.7678000\\bin\\studio64.exe",
+	"linuxAndroidStudioPath": "/home/cesar/.local/share/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7784292/bin/studio.sh",
 	"loggingBehavior": "debug",
 	"cordova": {
 		"preferences": {}

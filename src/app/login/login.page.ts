@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {MenuController, Platform} from '@ionic/angular';
+import {MenuController, Platform, ViewDidEnter} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {ThemeDetectionResponse} from '@ionic-native/theme-detection';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
@@ -13,7 +13,7 @@ import {ToastsService} from '../shared/services/toasts.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements OnInit, ViewDidEnter {
 
   @ViewChild('inputUsername') inputUser;
 
@@ -59,7 +59,6 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
-    this.menu.enable(false, 'principal');
     this.themeDetection.isAvailable().then((res: ThemeDetectionResponse) => {
       if (res.value) {
         this.themeDetection.isDarkModeEnabled().then((r: ThemeDetectionResponse) => {
@@ -96,5 +95,9 @@ export class LoginPage implements OnInit {
         }
       );
     }
+  }
+
+  ionViewDidEnter(): void {
+    this.menu.enable(false, 'principal').then().catch();
   }
 }

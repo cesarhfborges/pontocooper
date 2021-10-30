@@ -2,9 +2,11 @@
   <ion-toolbar color="primary">
     <ion-menu-button [autoHide]="true" slot="start" menu="principal"></ion-menu-button>
     <ion-img style="height: 45px;" src="assets/logo-horizontal-white.png"></ion-img>
-    <ion-button [routerLink]="['/perfil']" slot="end" fill="clear" color="light">
-      <ion-icon name="person-circle-outline" style="font-size: 1.8rem;"></ion-icon>
-    </ion-button>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="['/perfil']">
+        <ion-icon slot="icon-only" name="person-circle-outline" style="font-size: 1.8rem;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
