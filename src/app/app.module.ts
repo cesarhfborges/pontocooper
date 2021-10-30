@@ -15,6 +15,7 @@ import {AuthService} from './core/services/auth.service';
 import {appInitializer} from './core/functions/app-initializer';
 import {registerLocaleData} from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
+import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 
 registerLocaleData(ptBr);
 
@@ -34,6 +35,7 @@ registerLocaleData(ptBr);
     ThemeDetection,
     StatusBar,
     Geolocation,
+    ScreenOrientation,
     {provide: LOCALE_ID, useValue: 'pt-BR'},
     {
       provide: APP_INITIALIZER,

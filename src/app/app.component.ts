@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {Platform} from '@ionic/angular';
 import {ToastsService} from './shared/services/toasts.service';
+import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 
 interface Menu {
   label: string;
@@ -46,7 +47,9 @@ export class AppComponent {
     private themeDetection: ThemeDetection,
     private toastsService: ToastsService,
     private platform: Platform,
+    private screenOrientation: ScreenOrientation
   ) {
+    this.lockScreen().then();
     const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
     switch (darkMode) {
       case 'escuro':
@@ -73,6 +76,13 @@ export class AppComponent {
         document.body.setAttribute('data-theme', 'dark');
         this.toastsService.showToast(isDarkModeEnabled.value ? 'Modo escuro ativo.' : 'Modo escuro inativo.');
       }
+    }
+  }
+
+  async lockScreen(): Promise<void> {
+    await this.platform.ready();
+    if (this.platform.is('cordova')) {
+      await this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     }
   }
 }
