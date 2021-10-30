@@ -24,8 +24,8 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('contents');
-    this.router.navigate(['/login']).then();
     window.location.reload();
+    this.router.navigate(['/login']).then();
   }
 
   getToken(): string {
@@ -44,7 +44,7 @@ export class AuthService {
       }));
   }
 
-  refreshToken(refreshToken: string): Observable<any> {
+  refreshToken(refreshToken: string): Observable<boolean> {
     return this.http.post<any>(`${environment.apiUrl}/auth/refresh/`, {refresh: refreshToken}).pipe(map(response => {
       if (response.access) {
         const l = JSON.parse(atob(localStorage.getItem('contents')));

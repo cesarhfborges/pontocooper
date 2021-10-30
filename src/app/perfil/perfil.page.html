@@ -15,7 +15,8 @@
 
     <ion-card-content>
       <ion-avatar *ngIf="perfil">
-        <img [name]="perfil?.first_name" [src]="perfil?.avatar">
+        <img alt="avatar" [name]="perfil?.first_name" [src]="avatar">
+<!--        (checkImage(perfil?.avatar) | async) ? perfil?.avatar :-->
       </ion-avatar>
       <ion-item>
         <ion-label position="stacked">Nome:</ion-label>

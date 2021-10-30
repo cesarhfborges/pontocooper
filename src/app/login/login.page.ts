@@ -6,7 +6,7 @@ import {MenuController, Platform} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {ThemeDetectionResponse} from '@ionic-native/theme-detection';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
-import {ToastsService} from '../shared/service/toasts.service';
+import {ToastsService} from '../shared/services/toasts.service';
 
 @Component({
   selector: 'app-login',
@@ -64,10 +64,10 @@ export class LoginPage implements OnInit {
       if (res.value) {
         this.themeDetection.isDarkModeEnabled().then((r: ThemeDetectionResponse) => {
           this.darkMode = r.value;
-        }).catch(e => {
+        }).catch(() => {
         });
       }
-    }).catch(e => {
+    }).catch(() => {
     });
   }
 
@@ -76,14 +76,14 @@ export class LoginPage implements OnInit {
       this.form.disable();
       this.loading = true;
       this.authService.login(this.form.value).subscribe(
-        response => {
-          if (this.form.get('remember').value === true) {
-            localStorage.setItem('$jsghf478==', btoa(JSON.stringify(this.form.value)));
-          }
+        () => {
+          // if (this.form.get('remember').value === true) {
+          //   localStorage.setItem('$jsghf478==', btoa(JSON.stringify(this.form.value)));
+          // }
           this.form.enable();
-          this.menu.enable(true, 'principal').then(r => {
+          this.menu.enable(true, 'principal').then(() => {
             this.loading = false;
-            this.router.navigate(['/home']);
+            this.router.navigate(['/home']).then();
           });
         },
         error => {

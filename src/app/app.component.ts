@@ -1,7 +1,12 @@
 import {Component} from '@angular/core';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {Platform} from '@ionic/angular';
-import {ToastsService} from './shared/service/toasts.service';
+import {ToastsService} from './shared/services/toasts.service';
+
+interface Menu {
+  label: string;
+  link: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -10,7 +15,7 @@ import {ToastsService} from './shared/service/toasts.service';
 })
 export class AppComponent {
 
-  menus: Array<{ label: string; link: string; }> = [
+  menus: Array<Menu> = [
     {
       label: 'Home',
       link: '/home'

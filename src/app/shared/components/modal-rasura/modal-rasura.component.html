@@ -44,6 +44,11 @@
             <ion-label>Carga: {{(diferenca() | async) | date : 'HH:mm:ss' }}</ion-label>
             <ion-icon name="timer-outline" slot="end"></ion-icon>
           </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Motivo (opcional):</ion-label>
+            <ion-textarea formControlName="reason">
+            </ion-textarea>
+          </ion-item>
         </ion-list>
       </ion-card-content>
     </ion-card>

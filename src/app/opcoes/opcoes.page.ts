@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
-import {ToastsService} from '../shared/service/toasts.service';
+import {ToastsService} from '../shared/services/toasts.service';
 import {Platform} from '@ionic/angular';
 
 @Component({

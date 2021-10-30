@@ -7,7 +7,7 @@ import {Dia} from '../core/models/dia';
 import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
 import {ModalHoraExtraComponent} from '../shared/components/modal-hora-extra/modal-hora-extra.component';
 import {getMonth, getYear, isSameDay, parseISO} from 'date-fns';
-import {ToastsService} from '../shared/service/toasts.service';
+import {ToastsService} from '../shared/services/toasts.service';
 
 @Component({
   selector: 'app-producao',

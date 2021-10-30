@@ -1,7 +1,7 @@
 import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouteReuseStrategy, RouterModule} from '@angular/router';
-import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
+import {IonicModule, IonicRouteStrategy, LoadingController} from '@ionic/angular';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
@@ -35,7 +35,12 @@ registerLocaleData(ptBr);
     StatusBar,
     Geolocation,
     {provide: LOCALE_ID, useValue: 'pt-BR'},
-    {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService]},
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializer,
+      multi: true,
+      deps: [AuthService, LoadingController]
+    },
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
