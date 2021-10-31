@@ -6,7 +6,7 @@
         <form [formGroup]="form" (submit)="onSubmit()">
           <ion-card>
             <ion-card-header>
-              <ion-img [src]="darkMode ? logotipo.dark : logotipo.normal"></ion-img>
+              <ion-img (click)="ionViewDidEnter()" [src]="darkMode ? logotipo.dark : logotipo.normal"></ion-img>
             </ion-card-header>
             <ion-card-content>
               <ion-item lines="none">
@@ -51,5 +51,4 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  {{form.value | json}}
 </ion-content>

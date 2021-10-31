@@ -7,6 +7,7 @@ import {AuthService} from '../core/services/auth.service';
 import {ThemeDetectionResponse} from '@ionic-native/theme-detection';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {ToastsService} from '../shared/services/toasts.service';
+import {FingerprintAIO, FingerprintOptions} from '@ionic-native/fingerprint-aio/ngx';
 
 @Component({
   selector: 'app-login',
@@ -40,7 +41,8 @@ export class LoginPage implements OnInit, ViewDidEnter {
     private platform: Platform,
     private menu: MenuController,
     private themeDetection: ThemeDetection,
-    private toastsService: ToastsService
+    private toastsService: ToastsService,
+    private faio: FingerprintAIO
   ) {
     if (this.platform.is('cordova')) {
       this.platform.ready().then(() => {
@@ -98,6 +100,23 @@ export class LoginPage implements OnInit, ViewDidEnter {
   }
 
   ionViewDidEnter(): void {
+    console.info('ionViewDidEnter');
     this.menu.enable(false, 'principal').then().catch();
+    const options: FingerprintOptions = {
+      title: 'Cooper System',
+      description: 'Desbloqueie seu app',
+      cancelButtonTitle: 'Usar credenciais'
+    };
+    this.faio.show(options).then((result: any) => {
+        console.info('FAIO:');
+        console.info(JSON.stringify(result));
+      })
+      .catch((error: any) => console.log(error));
   }
+  // clientId: 'Fingerprint-Demo',
+  // title: '',
+  // clientSecret: 'password', //Only necessary for Android
+  // disableBackup:true,  //Only for Android(optional)
+  // localizedFallbackTitle: 'Use Pin', //Only for iOS
+  // localizedReason: 'Please authenticate' //Only for iOS
 }
