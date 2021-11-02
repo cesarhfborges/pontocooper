@@ -87,11 +87,11 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
       this.map.addLayer(OpenLayersComponent.createPin(latitude, longitude));
     }
     if (locations.length > 0) {
-      this.flyTo(OpenLayersComponent.transformarCoordenadas(
-          locations[locations.length - 1].latitude,
-          locations[locations.length - 1].longitude
-        )
+      const coords = OpenLayersComponent.transformarCoordenadas(
+        locations[locations.length - 1].latitude,
+        locations[locations.length - 1].longitude
       );
+      this.flyTo(coords);
     }
   }
 

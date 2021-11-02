@@ -22,7 +22,6 @@ import {InvalidMessageComponent} from '../shared/components/invalid-message/inva
     ProducaoPage,
     ModalRasuraComponent,
     ModalHoraExtraComponent,
-    InvalidMessageComponent
   ],
   exports: []
 })
