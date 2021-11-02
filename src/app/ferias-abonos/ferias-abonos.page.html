@@ -8,82 +8,96 @@
 </ion-header>
 
 <ion-content>
+  <form [formGroup]="form">
+    <ion-card>
+      <ion-card-header>
+        <ion-item>
+          <ion-label position="stacked">Período:</ion-label>
+          <ion-select formControlName="periodo">
+            <ion-select-option *ngFor="let p of periodos; let i = index" [value]="p">
+              {{p.de | date : 'dd/MM/yy'}} - {{p.ate | date : 'dd/MM/yy'}}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-header>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-item>
-        <ion-label position="stacked">Período:</ion-label>
-        <ion-select>
-          <ion-select-option *ngFor="let p of periodos; let i = index" [value]="p">
-            {{p[0] | date : 'dd/MM/yy'}} - {{p[1] | date : 'dd/MM/yy'}}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-    </ion-card-header>
+      <ion-card-content>
+        <ul class="container-grid">
+          <li *ngFor="let t of getPeriodo()?.timeline" class="ion-text-center periodo">
+            <p>{{(getMonth(t.date) | date : 'MMMM') | titlecase}}</p>
+            <ion-badge [color]="t.days > 0 ? 'success' : 'medium'" *ngIf="t.days !== null">{{t.days}} dia(s)</ion-badge>
+          </li>
+        </ul>
+        <ion-button
+          type="button"
+          expand="block"
+          color="primary"
+          style="margin-top: 10px;"
+          [disabled]="loading.feriasAbonos || loading.periodos"
+          (click)="modalSolicitarDescanso()"
+        >
+          Solicitar Férias / Abono
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
 
-    <ion-card-content>
-      <ul class="container-grid">
-        <li *ngFor="let t of paidLeave?.timeline" class="ion-text-center periodo">
-          <p>{{(getMonth(t.date) | date : 'MMMM') | titlecase}}</p>
-          <ion-badge [color]="t.days > 0 ? 'success' : 'medium'" *ngIf="t.days !== null">{{t.days}} dia(s)</ion-badge>
-        </li>
-      </ul>
-      <ion-button
-        type="button"
-        expand="full"
-        color="success"
-        style="margin-top: 10px;"
-      >
-        Solicitar Férias / Abono
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Histórico de solicitações</ion-card-title>
+      </ion-card-header>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Histórico de solicitações</ion-card-title>
-    </ion-card-header>
+      <ion-card-content>
+        <ion-grid class="grid">
+          <ion-row>
+            <ion-col [size]="4" class="ion-text-center"></ion-col>
+            <ion-col [size]="4" class="ion-text-center">
+              <p>Férias</p>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-center">
+              <p>Abonos</p>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-right">
+              <p>Adquirido:</p>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-center linha-ferias" style="border-top-left-radius: 8px; border-bottom: 1px solid rgba(0,0,0,.15)">
+              <p *ngIf="!loading.periodos">{{getPeriodo()?.balance.annual_leaves.obtained}} dia(s)</p>
+              <ion-skeleton-text *ngIf="loading.periodos" animated style="height: 16px;"></ion-skeleton-text>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-center linha-abono" style="border-top-right-radius: 8px; border-bottom: 1px solid rgba(0,0,0,.15)">
+              <p *ngIf="!loading.periodos">{{getPeriodo()?.balance.days_off.obtained}} dia(s)</p>
+              <ion-skeleton-text *ngIf="loading.periodos" animated style="height: 16px;"></ion-skeleton-text>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-right">
+              <p>Utilizado:</p>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-center linha-ferias" style="border-bottom: 1px solid rgba(0,0,0,.15);">
+              <p *ngIf="!loading.periodos">{{getPeriodo()?.balance.annual_leaves.approved}} dia(s)</p>
+              <ion-skeleton-text *ngIf="loading.periodos" animated style="height: 16px;"></ion-skeleton-text>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-center linha-abono" style="border-bottom: 1px solid rgba(0,0,0,.15);">
+              <p *ngIf="!loading.periodos">{{getPeriodo()?.balance.days_off.approved}} dia(s)</p>
+              <ion-skeleton-text *ngIf="loading.periodos" animated style="height: 16px;"></ion-skeleton-text>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-right">
+              <p><b>Restante:</b></p>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-center total-ferias" style="border-bottom-left-radius: 8px;">
+              <p *ngIf="!loading.periodos"><b>{{getPeriodo()?.balance.annual_leaves.remaining}} dia(s)</b></p>
+              <ion-skeleton-text *ngIf="loading.periodos" animated style="height: 16px;"></ion-skeleton-text>
+            </ion-col>
+            <ion-col [size]="4" class="ion-text-center total-abono" style="border-bottom-right-radius: 8px;">
+              <p *ngIf="!loading.periodos"><b>{{getPeriodo()?.balance.days_off.remaining}} dia(s)</b></p>
+              <ion-skeleton-text *ngIf="loading.periodos" animated style="height: 16px;"></ion-skeleton-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </form>
 
-    <ion-card-content>
-      <ion-grid class="grid">
-        <ion-row>
-          <ion-col [size]="4" class="ion-text-center"></ion-col>
-          <ion-col [size]="4" class="ion-text-center">
-            <p>Férias</p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-center">
-            <p>Abonos</p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-right">
-            <p>Adquirido:</p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-center linha-ferias" style="border-top-left-radius: 8px; border-bottom: 1px solid rgba(0,0,0,.15)">
-            <p>{{paidLeave?.balance.annual_leaves.obtained}} dia(s)</p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-center linha-abono" style="border-top-right-radius: 8px; border-bottom: 1px solid rgba(0,0,0,.15)">
-            <p>{{paidLeave?.balance.days_off.obtained}} dia(s)</p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-right">
-            <p>Utilizado:</p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-center linha-ferias" style="border-bottom: 1px solid rgba(0,0,0,.15);">
-            <p>{{paidLeave?.balance.annual_leaves.approved}} dia(s)</p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-center linha-abono" style="border-bottom: 1px solid rgba(0,0,0,.15);">
-            <p>{{paidLeave?.balance.days_off.approved}} dia(s)</p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-right">
-            <p><b>Restante:</b></p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-center total-ferias" style="border-bottom-left-radius: 8px;">
-            <p><b>{{paidLeave?.balance.annual_leaves.remaining}} dia(s)</b></p>
-          </ion-col>
-          <ion-col [size]="4" class="ion-text-center total-abono" style="border-bottom-right-radius: 8px;">
-            <p><b>{{paidLeave?.balance.days_off.remaining}} dia(s)</b></p>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
-
+  <pre>
+    <code>
+      {{getPeriodo()|json}}
+    </code>
+  </pre>
 </ion-content>

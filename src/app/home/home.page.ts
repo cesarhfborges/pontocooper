@@ -45,6 +45,12 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     remainingHours: 0,
   };
 
+  loading = {
+    summary: false,
+    timeline: false,
+    bancoDeHoras: false
+  };
+
   constructor(
     private dadosService: DadosService,
     private alertController: AlertController,
@@ -94,6 +100,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
 
   getDados($event?): void {
     const dateNow: Date = new Date(Date.now());
+    this.loading.summary = true;
     this.dadosService.getSummary(format(dateNow, 'yyyy'), format(dateNow, 'MM')).subscribe(
       response => {
         this.summary = {
@@ -102,12 +109,15 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
           hoursToWork: response.hours_to_work,
           remainingHours: response.remaining_hours
         };
+        this.loading.summary = false;
       },
       error => {
         console.log(error);
+        this.loading.summary = false;
       }
     );
 
+    this.loading.timeline = true;
     this.dadosService.getTimeline().subscribe(
       response => {
         this.ponto.limparPontos();
@@ -119,18 +129,23 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
             $event.target.complete();
           }
         }, 2000);
+        this.loading.timeline = false;
       },
       error => {
         console.log(error);
+        this.loading.timeline = false;
       }
     );
 
+    this.loading.bancoDeHoras = true;
     this.dadosService.getBancoDeHoras().subscribe(
       response => {
         this.bancoDeHoras = response;
+        this.loading.bancoDeHoras = false;
       },
       error => {
         console.log(error);
+        this.loading.bancoDeHoras = false;
       }
     );
   }
@@ -170,7 +185,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     const {data} = await alert.onDidDismiss();
     if (data !== undefined) {
       this.dadosService.baterPonto({
-        check_in: !this.ponto.trabalhando,
+        check_in: data,
         latitude: this.coords.lat,
         longitude: this.coords.lon
       }).subscribe(

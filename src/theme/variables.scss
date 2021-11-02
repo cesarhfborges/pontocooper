@@ -138,6 +138,8 @@ body[data-theme="dark"] {
   h1, h2, h3, h4, h5, p, i {
     color: #FFFFFF;
   }
+  --ion-background-color: #121212;
+  --ion-background-color-rgb: 0, 0, 0;
 }
 
 .ios body[data-theme="dark"] {

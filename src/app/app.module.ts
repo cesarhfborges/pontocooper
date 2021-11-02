@@ -12,11 +12,10 @@ import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {AuthService} from './core/services/auth.service';
+import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 import {appInitializer} from './core/functions/app-initializer';
 import {registerLocaleData} from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
-import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
-import {FingerprintAIO} from '@ionic-native/fingerprint-aio/ngx';
 
 registerLocaleData(ptBr);
 
@@ -37,7 +36,6 @@ registerLocaleData(ptBr);
     StatusBar,
     Geolocation,
     ScreenOrientation,
-    FingerprintAIO,
     {provide: LOCALE_ID, useValue: 'pt-BR'},
     {
       provide: APP_INITIALIZER,
