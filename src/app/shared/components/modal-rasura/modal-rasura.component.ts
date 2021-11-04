@@ -4,7 +4,7 @@ import {Dia} from '../../../core/models/dia';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {interval, Observable, of} from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
-import {addSeconds, differenceInSeconds, parseISO, set} from 'date-fns';
+import {addSeconds, differenceInSeconds, format, parseISO, set} from 'date-fns';
 import {DadosService} from '../../../core/services/dados.service';
 
 @Component({
@@ -130,11 +130,10 @@ export class ModalRasuraComponent implements OnInit, OnDestroy {
           (i: any) => ({
             check_in: i.checkIn,
             position: i.position,
-            worktime_clock: i.worktimeClock.substr(0, 16)
+            worktime_clock: f.date + 'T' + format(parseISO(i.worktimeClock), 'HH:mm')
           })
         )
       };
-      console.log(dados);
       this.dadosService.solicitarRetificacao([dados]).subscribe(
         response => {
           this.modalController.dismiss({

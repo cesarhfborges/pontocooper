@@ -3,6 +3,7 @@ import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {Platform} from '@ionic/angular';
 import {ToastsService} from './shared/services/toasts.service';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
+import { version } from '../../package.json';
 
 interface Menu {
   label: string;
@@ -15,6 +16,8 @@ interface Menu {
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+
+  versao = '1.0.1';
 
   menus: Array<Menu> = [
     {
