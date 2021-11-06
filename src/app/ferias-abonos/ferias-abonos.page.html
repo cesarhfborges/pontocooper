@@ -2,7 +2,10 @@
   <ion-toolbar color="primary">
     <ion-back-button [defaultHref]="'/home'" slot="start"></ion-back-button>
     <ion-img src="assets/logo-horizontal-white.png" style="height: 45px;"></ion-img>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" style="opacity: 0;">
+      <ion-button fill="clear" size="large">
+        <ion-icon name="calendar"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -42,9 +45,14 @@
     </ion-card>
 
     <ion-card>
-      <ion-card-header>
-        <ion-card-title>Histórico de solicitações</ion-card-title>
-      </ion-card-header>
+<!--      <ion-card-header>-->
+<!--        <ion-card-title>Histórico de solicitações</ion-card-title>-->
+<!--      </ion-card-header>-->
+
+      <ion-item>
+        <ion-icon color="tertiary" name="list-outline" slot="start"></ion-icon>
+        <ion-label>Histórico de solicitações</ion-label>
+      </ion-item>
 
       <ion-card-content>
         <ion-grid class="grid">
@@ -95,9 +103,9 @@
     </ion-card>
   </form>
 
-  <pre>
-    <code>
-      {{getPeriodo()|json}}
-    </code>
-  </pre>
+<!--  <pre>-->
+<!--    <code>-->
+<!--      {{getPeriodo()|json}}-->
+<!--    </code>-->
+<!--  </pre>-->
 </ion-content>

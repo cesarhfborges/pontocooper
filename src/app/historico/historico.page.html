@@ -3,11 +3,14 @@
     <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
     <ion-img src="assets/logo-horizontal-white.png" style="height: 45px;"></ion-img>
     <ion-buttons slot="end">
+      <ion-button (click)="mapa.posicaoAtual(posicaoAtual())" fill="clear" size="large">
+        <ion-icon name="locate-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <app-open-layers></app-open-layers>
+  <app-open-layers #mapa></app-open-layers>
 </ion-content>
 

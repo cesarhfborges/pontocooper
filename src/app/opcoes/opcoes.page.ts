@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {ToastsService} from '../shared/services/toasts.service';
-import {Platform} from '@ionic/angular';
+import {LoadingController, Platform} from '@ionic/angular';
 
 @Component({
   selector: 'app-opcoes',
@@ -48,6 +48,7 @@ export class OpcoesPage implements OnInit {
     private themeDetection: ThemeDetection,
     private toastsService: ToastsService,
     private platform: Platform,
+    private loadingController: LoadingController
   ) {
     this.form = this.fb.group({
       darkMode: this.fb.control(null, [Validators.required]),
@@ -61,12 +62,29 @@ export class OpcoesPage implements OnInit {
     this.form.valueChanges.subscribe(
       response => {
         localStorage.setItem('opcoes', JSON.stringify(response));
-        switch (response.darkMode) {
+      }
+    );
+    this.form.get('darkMode').valueChanges.subscribe(
+      response => {
+        this.loadingController.create({
+          cssClass: 'my-custom-class',
+          message: 'Alterando esquema de cores...',
+          backdropDismiss: false,
+          keyboardClose: false,
+          spinner: 'bubbles',
+          duration: 900,
+        }).then((l: any) => {
+          l.present();
+        });
+        console.log(response);
+        switch (response) {
           case 'escuro':
             document.body.setAttribute('data-theme', 'dark');
+            this.toastsService.showToast('Modo escuro ativado.');
             break;
           case 'claro':
             document.body.removeAttribute('data-theme');
+            this.toastsService.showToast('Modo escuro desativado.');
             break;
           default:
             if (this.platform.is('cordova')) {
@@ -86,7 +104,7 @@ export class OpcoesPage implements OnInit {
       const isDarkModeEnabled = await this.themeDetection.isDarkModeEnabled();
       if (isDarkModeEnabled.value) {
         document.body.setAttribute('data-theme', 'dark');
-        this.toastsService.showToast(isDarkModeEnabled.value ? 'Modo escuro ativo.' : 'Modo escuro inativo.');
+        this.toastsService.showToast('Modo escuro automatico.');
       }
     }
   }

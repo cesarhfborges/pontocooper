@@ -1,5 +1,6 @@
 import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouteReuseStrategy, RouterModule} from '@angular/router';
 import {IonicModule, IonicRouteStrategy, LoadingController} from '@ionic/angular';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -13,6 +14,7 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {AuthService} from './core/services/auth.service';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
+import {SharedModule} from './shared/shared.module';
 import {appInitializer} from './core/functions/app-initializer';
 import {registerLocaleData} from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
@@ -24,12 +26,14 @@ registerLocaleData(ptBr);
   entryComponents: [],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
     RouterModule,
+    SharedModule
   ],
   providers: [
     ThemeDetection,

@@ -8,11 +8,27 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <a #hoje href="/producao#hoje" style="visibility: hidden;"></a>
 </ion-header>
 
 <ion-content>
-  <a #hoje href="/producao#hoje" style="visibility: hidden;"></a>
-  <div *ngIf="!loading.producao">
+  <ion-item lines="none" class="ion-margin">
+    <ion-icon name="calendar-number-sharp" color="primary" slot="end" style="font-size: 2.4rem;"></ion-icon>
+    <ion-label position="stacked">Mês/Ano:</ion-label>
+    <ion-datetime
+      displayFormat="MMMM / YYYY"
+      pickerFormat="MMMM / YYYY"
+      doneText="Ok"
+      cancelText="Cancelar"
+      name="hora"
+      (ionChange)="getProducao()"
+      [max]="dtConfig.max"
+      [monthShortNames]="dtConfig.monthShortNames"
+      [monthNames]="dtConfig.monthNames"
+      [(ngModel)]="data"
+    ></ion-datetime>
+  </ion-item>
+  <div *ngIf="!loading.producao" [@slideOutAnimation]="producao?.length">
     <ion-card *ngFor="let dia of producao" [attr.id]="isNow(dia.date) ? 'hoje' : ''">
       <ion-item>
         <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
@@ -21,7 +37,8 @@
           <ion-badge
             *ngIf="isNow(dia.date)"
             color="success"
-          >Hoje</ion-badge>
+          >Hoje
+          </ion-badge>
           <ion-badge
             style="margin-left: 8px;"
             *ngIf="dia.day_type" [color]="dia.day_type.day_type === 'feriado' ? 'warning' : 'tertiary'"
@@ -31,6 +48,12 @@
 
       <ion-card-content>
         <ion-row class="header-row">
+
+          <ion-col size="12" *ngIf="dia?.day_type?.day_type === 'feriado'">
+            <h1>
+              Feriado: {{dia?.day_type?.status_display}}
+            </h1>
+          </ion-col>
 
           <ion-col *ngIf="dia?.timeline?.length === 0" size="12">
             <h2>Nenhum ponto registrado para este dia.</h2>
@@ -89,10 +112,4 @@
       </ion-card-content>
     </ion-card>
   </div>
-
-<!--  <pre>-->
-<!--    <code>-->
-<!--      {{producao|json}}-->
-<!--    </code>-->
-<!--  </pre>-->
 </ion-content>

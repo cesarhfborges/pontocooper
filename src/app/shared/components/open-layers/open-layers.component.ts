@@ -95,6 +95,13 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
     }
   }
 
+  posicaoAtual(coordenadas: Promise<{ latitude: number; longitude: number }>): void {
+    coordenadas.then(r => {
+      const coords = OpenLayersComponent.transformarCoordenadas(r.latitude, r.longitude);
+      this.flyTo(coords);
+    });
+  }
+
   private flyTo(location) {
     const duration = 2000;
     const oldZoom = this.map.getView().getZoom();
@@ -122,7 +129,7 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
         duration: duration / 2,
       },
       {
-        zoom: oldZoom,
+        zoom: 14,
         duration: duration / 2,
       },
       callback

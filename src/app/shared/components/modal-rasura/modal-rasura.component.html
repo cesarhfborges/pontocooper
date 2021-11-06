@@ -23,7 +23,7 @@
       </ion-item>
 
       <ion-card-content>
-        <ion-list formArrayName="rectifications">
+        <ion-list formArrayName="rectifications" [@slideOutAnimation]="retificacoes?.controls?.length">
           <ion-item *ngFor="let item of retificacoes.controls; let i = index" [formGroupName]="i">
             <ion-label position="stacked">{{item.get('position').value}}&deg; {{item.get('checkIn').value ? 'Entrada' : 'Saída'}}</ion-label>
             <ion-datetime
@@ -38,7 +38,7 @@
             <ion-button *ngIf="(i + 1)> dados.timeline.length" fill="clear" size="large" slot="end" (click)="deleteRetificacao(i)">
               <ion-icon color="danger" name="trash"></ion-icon>
             </ion-button>
-<!--            <app-invalid-message [control]="item.get('worktimeClock')"></app-invalid-message>-->
+            <app-invalid-message [control]="item.get('worktimeClock')"></app-invalid-message>
           </ion-item>
           <ion-item lines="none">
             <ion-label>Carga: {{(diferenca() | async) | date : 'HH:mm:ss' }}</ion-label>
@@ -48,8 +48,8 @@
         <ion-list>
           <ion-item>
             <ion-label position="stacked">Motivo (opcional):</ion-label>
-            <ion-textarea formControlName="reason">
-            </ion-textarea>
+            <ion-textarea formControlName="reason"></ion-textarea>
+            <app-invalid-message [control]="form.get('reason')"></app-invalid-message>
           </ion-item>
         </ion-list>
       </ion-card-content>
@@ -66,7 +66,7 @@
 <!--      {{dados | json}}-->
 <!--    </code>-->
 <!--  </pre>-->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab *ngIf="retificacoes.controls.length < 10" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="addRetificacao()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

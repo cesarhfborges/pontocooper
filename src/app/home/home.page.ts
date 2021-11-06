@@ -6,11 +6,35 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Ponto} from '../core/models/ponto';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {format, getHours, parseISO, set} from 'date-fns';
+import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+  animations: [
+    trigger('slideOutAnimation', [
+      transition('* => *', [
+        query(':enter',
+          style({ opacity: 0, transform: 'translateX(-30px)' }),
+          { optional: true }
+        ),
+        query(':enter', stagger(150, [
+          style({ opacity: 0 ,transform: 'translateX(-30px)' }),
+          animate('250ms ease-in-out', style({ opacity:1, transform: 'translateX(0)' }) )
+        ]), { optional: true }),
+        query(':leave',
+          style({ opacity: 1 }),
+          { optional: true }
+        ),
+        query(':leave', [
+            style({ opacity: 1 }),
+            animate('600ms ease-in-out', style({ opacity: 0 }))],
+          { optional: true }
+        )
+      ])
+    ])
+  ]
 })
 export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
 

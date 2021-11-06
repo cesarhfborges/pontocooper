@@ -7,7 +7,7 @@ import {ProducaoPage} from './producao.page';
 import {RouterModule} from '@angular/router';
 import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
 import {ModalHoraExtraComponent} from '../shared/components/modal-hora-extra/modal-hora-extra.component';
-import {InvalidMessageComponent} from '../shared/components/invalid-message/invalid-message.component';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -16,7 +16,8 @@ import {InvalidMessageComponent} from '../shared/components/invalid-message/inva
     IonicModule,
     ProducaoPageRoutingModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    SharedModule
   ],
   declarations: [
     ProducaoPage,

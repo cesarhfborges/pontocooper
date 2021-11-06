@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {getMonth, getYear} from 'date-fns';
-import {filter, map, mergeMap, toArray} from 'rxjs/operators';
 import {MenuController} from '@ionic/angular';
 import {OpenLayersComponent} from '../shared/components/open-layers/open-layers.component';
+import {Geolocation} from '@ionic-native/geolocation/ngx';
+import {filter, map, mergeMap, toArray} from 'rxjs/operators';
+import {getMonth, getYear} from 'date-fns';
 
 @Component({
   selector: 'app-historico',
@@ -12,9 +13,14 @@ import {OpenLayersComponent} from '../shared/components/open-layers/open-layers.
 })
 export class HistoricoPage implements OnInit, OnDestroy {
 
-  @ViewChild(OpenLayersComponent, { static: false }) openLayers: OpenLayersComponent;
+  @ViewChild(OpenLayersComponent, {static: false}) openLayers: OpenLayersComponent;
 
   hoje: Date;
+
+  coords = {
+    lat: -15.7962774,
+    lon: -47.9481004
+  };
 
   loading: {
     producao: boolean;
@@ -24,7 +30,8 @@ export class HistoricoPage implements OnInit, OnDestroy {
 
   constructor(
     private dadosService: DadosService,
-    private menu: MenuController
+    private menu: MenuController,
+    private geolocation: Geolocation,
   ) {
   }
 
@@ -53,5 +60,15 @@ export class HistoricoPage implements OnInit, OnDestroy {
         this.loading.producao = false;
       }
     );
+  }
+
+  async posicaoAtual(): Promise<{ latitude: number; longitude: number }> {
+    return await new Promise<{latitude: number; longitude: number}>((resolve) => {
+      this.geolocation.getCurrentPosition().then((resp) => {
+        resolve({ latitude: resp.coords.latitude, longitude: resp.coords.longitude });
+      }).catch(e => {
+        resolve({latitude: -15.7962774, longitude: -47.9481004});
+      });
+    });
   }
 }

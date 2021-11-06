@@ -3,28 +3,58 @@ import {DadosService} from '../core/services/dados.service';
 import {AlertController, ModalController, Platform} from '@ionic/angular';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AuthService} from '../core/services/auth.service';
-import {Dia} from '../core/models/dia';
 import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
 import {ModalHoraExtraComponent} from '../shared/components/modal-hora-extra/modal-hora-extra.component';
-import {getMonth, getYear, isSameDay, parseISO} from 'date-fns';
 import {ToastsService} from '../shared/services/toasts.service';
+import {Dia} from '../core/models/dia';
+import {endOfMonth, formatISO, getMonth, getYear, isSameDay, parseISO, set, startOfMonth, subYears} from 'date-fns';
+import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-producao',
   templateUrl: './producao.page.html',
   styleUrls: ['./producao.page.scss'],
+  animations: [
+    trigger('slideOutAnimation', [
+      transition('* => *', [
+        query(':enter',
+          style({opacity: 0, transform: 'translateX(30px)'}),
+          {optional: true}
+        ),
+        query(':enter', stagger(100, [
+          style({opacity: 0, transform: 'translateX(30px)'}),
+          animate('700ms ease-in-out', style({opacity: 1, transform: 'translateX(0)'}))
+        ]), {optional: true}),
+      ])
+    ])
+  ]
 })
 export class ProducaoPage implements OnInit {
 
   producao: Array<Dia>;
 
-  dataAtual: Date = new Date();
-
+  dtConfig: {
+    max: string;
+    min: string;
+    monthNames: Array<string>;
+    monthShortNames: Array<string>;
+  } = {
+    max: formatISO(endOfMonth(new Date())),
+    min: formatISO(subYears(startOfMonth(new Date()), 5)),
+    monthNames: [
+      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ],
+    monthShortNames: [
+      'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'
+    ],
+  };
   loading: {
     producao: boolean;
   } = {
     producao: false,
   };
+
+  private dataAtual: Date = set(new Date(), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
 
   constructor(
     private dadosService: DadosService,
@@ -35,6 +65,14 @@ export class ProducaoPage implements OnInit {
     private toastsService: ToastsService,
     private modalController: ModalController
   ) {
+  }
+
+  get data(): string {
+    return formatISO(this.dataAtual);
+  }
+
+  set data(data) {
+    this.dataAtual = parseISO(data);
   }
 
   ngOnInit() {

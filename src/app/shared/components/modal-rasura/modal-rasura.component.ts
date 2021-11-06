@@ -1,18 +1,43 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import {ModalController, ViewDidEnter} from '@ionic/angular';
 import {Dia} from '../../../core/models/dia';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DadosService} from '../../../core/services/dados.service';
+import { Animation, AnimationController } from '@ionic/angular';
 import {interval, Observable, of} from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
 import {addSeconds, differenceInSeconds, format, parseISO, set} from 'date-fns';
-import {DadosService} from '../../../core/services/dados.service';
+import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-modal-rasura',
   templateUrl: './modal-rasura.component.html',
   styleUrls: ['./modal-rasura.component.scss'],
+  animations: [
+    trigger('slideOutAnimation', [
+      transition('* => *', [
+        query(':enter',
+          style({ opacity: 0, transform: 'translateX(30px)' }),
+          { optional: true }
+        ),
+        query(':enter', stagger(150, [
+          style({ opacity: 0 ,transform: 'translateX(30px)' }),
+          animate('250ms ease-in-out', style({ opacity:1, transform: 'translateX(0)' }) )
+        ]), { optional: true }),
+        query(':leave',
+          style({ opacity: 1 }),
+          { optional: true }
+        ),
+        query(':leave', [
+            style({ opacity: 1 }),
+            animate('250ms ease-in-out', style({ opacity: 0, transform: 'translateX(30px)' }))],
+          { optional: true }
+        )
+      ])
+    ])
+  ]
 })
-export class ModalRasuraComponent implements OnInit, OnDestroy {
+export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
 
   @Input() dados: Dia;
 
@@ -24,10 +49,11 @@ export class ModalRasuraComponent implements OnInit, OnDestroy {
   constructor(
     private dadosService: DadosService,
     private modalController: ModalController,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private animationCtrl: AnimationController
   ) {
     this.form = this.fb.group({
-      date: ['', Validators.required],
+      date: ['', [Validators.required]],
       reason: [''],
       rectifications: this.fb.array([]),
     });
@@ -122,6 +148,7 @@ export class ModalRasuraComponent implements OnInit, OnDestroy {
   }
 
   salvar(): void {
+    this.form.markAllAsTouched();
     if (this.form.valid) {
       const f: any = this.form.value;
       const dados: any = {
@@ -148,5 +175,8 @@ export class ModalRasuraComponent implements OnInit, OnDestroy {
     } else {
       console.log('Form Invalido');
     }
+  }
+
+  ionViewDidEnter(): void {
   }
 }

@@ -2,16 +2,24 @@
   <ion-toolbar color="primary">
     <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
     <ion-img src="assets/logo-horizontal-white.png" style="height: 45px;"></ion-img>
+    <ion-buttons slot="end" style="opacity: 0;">
+      <ion-button fill="clear" size="large">
+        <ion-icon name="calendar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
   <ion-card>
-    <ion-card-header>
-      <ion-card-title>Opções</ion-card-title>
-    </ion-card-header>
-
+<!--    <ion-card-header>-->
+<!--      <ion-card-title>Opções</ion-card-title>-->
+<!--    </ion-card-header>-->
+    <ion-item>
+      <ion-icon color="tertiary" name="options-outline" slot="start"></ion-icon>
+      <ion-label>Opções</ion-label>
+    </ion-item>
     <ion-card-content>
       <form [formGroup]="form">
         <ion-list>

@@ -2,6 +2,11 @@
   <ion-toolbar color="primary">
     <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
     <ion-img style="height: 45px;" src="assets/logo-horizontal-white.png"></ion-img>
+    <ion-buttons slot="end" style="opacity: 0;">
+      <ion-button fill="clear" size="large">
+        <ion-icon name="calendar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -14,10 +19,6 @@
     </ion-item>
 
     <ion-card-content>
-      <ion-avatar *ngIf="perfil">
-        <img alt="avatar" [name]="perfil?.first_name" [src]="avatar">
-<!--        (checkImage(perfil?.avatar) | async) ? perfil?.avatar :-->
-      </ion-avatar>
       <ion-item>
         <ion-label position="stacked">Nome:</ion-label>
         <ion-input [value]="perfil?.name_display" [readonly]="true"></ion-input>

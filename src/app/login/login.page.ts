@@ -50,7 +50,7 @@ export class LoginPage implements OnInit, ViewDidEnter {
     }
     this.form = this.fb.group({
       username: this.fb.control(null, [Validators.required]),
-      password: this.fb.control(null, [Validators.required]),
+      password: this.fb.control(null, [Validators.required, Validators.minLength(4)]),
       remember: this.fb.control(false, [Validators.required]),
     });
     if (this.opcoes !== null) {

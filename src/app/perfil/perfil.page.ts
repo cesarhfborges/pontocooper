@@ -13,8 +13,6 @@ export class PerfilPage implements OnInit {
   perfil: Usuario;
 
   showAmount = false;
-  // eslint-disable-next-line max-len
-  avatar = 'https://icons-for-free.com/iconfiles/png/512/avatar+human+male+man+men+people+person+profile+user+users-1320196163635839021.png';
 
   constructor(
     private authService: AuthService,
@@ -30,7 +28,6 @@ export class PerfilPage implements OnInit {
     this.authService.perfil().subscribe(
       response => {
         this.perfil = response;
-        this.getImage(response.avatar);
       },
       error => {
         console.log(error);
@@ -61,17 +58,5 @@ export class PerfilPage implements OnInit {
     }).then((alert: any) => {
       alert.present();
     });
-  }
-
-  getImage(url): void {
-    const request = new XMLHttpRequest();
-    request.responseType = 'blob';
-    request.onload = () => {
-      if (request.status === 200) {
-        this.avatar = url;
-      }
-    };
-    request.open('GET', url, true);
-    request.send();
   }
 }
