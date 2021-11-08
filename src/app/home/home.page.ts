@@ -5,8 +5,8 @@ import {AuthService} from '../core/services/auth.service';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Ponto} from '../core/models/ponto';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
-import {format, getHours, parseISO, set} from 'date-fns';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
+import {format, getHours, parseISO, set} from 'date-fns';
 
 @Component({
   selector: 'app-home',
@@ -16,21 +16,21 @@ import {animate, query, stagger, style, transition, trigger} from '@angular/anim
     trigger('slideOutAnimation', [
       transition('* => *', [
         query(':enter',
-          style({ opacity: 0, transform: 'translateX(-30px)' }),
-          { optional: true }
+          style({opacity: 0, transform: 'translateX(-30px)'}),
+          {optional: true}
         ),
         query(':enter', stagger(150, [
-          style({ opacity: 0 ,transform: 'translateX(-30px)' }),
-          animate('250ms ease-in-out', style({ opacity:1, transform: 'translateX(0)' }) )
-        ]), { optional: true }),
+          style({opacity: 0, transform: 'translateX(-30px)'}),
+          animate('250ms ease-in-out', style({opacity: 1, transform: 'translateX(0)'}))
+        ]), {optional: true}),
         query(':leave',
-          style({ opacity: 1 }),
-          { optional: true }
+          style({opacity: 1}),
+          {optional: true}
         ),
         query(':leave', [
-            style({ opacity: 1 }),
-            animate('600ms ease-in-out', style({ opacity: 0 }))],
-          { optional: true }
+            style({opacity: 1}),
+            animate('600ms ease-in-out', style({opacity: 0}))],
+          {optional: true}
         )
       ])
     ])
@@ -43,6 +43,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   dataAtual: Date;
 
   horasTrabalhadas: Date = set(new Date(), {hours: 0, minutes: 0, seconds: 0});
+  valorAcumulado: number = 0;
 
   coords = {
     lat: -15.7962774,
@@ -90,7 +91,10 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     this.ponto = new Ponto(batidas);
     setInterval(() => {
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
-
+      const valorHora = 82;
+      const valorMinuto = valorHora / 60;
+      const valorSegundo = valorMinuto / 60;
+      this.valorAcumulado = (this.horasTrabalhadas.getHours() * valorHora) + (this.horasTrabalhadas.getMinutes() * valorMinuto) + (this.horasTrabalhadas.getSeconds() * valorSegundo);
       // const start = set(new Date(), {
       //   hours: 0,
       //   minutes: 0,
