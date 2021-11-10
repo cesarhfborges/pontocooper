@@ -56,7 +56,12 @@ registerLocaleData(ptBr);
 export class AppModule {
   constructor() {
     if (localStorage.getItem('opcoes') === null) {
-      localStorage.setItem('opcoes', JSON.stringify({darkMode: 'automatico', loginRemember: false}));
+      const opts: any = {
+        darkMode: 'automatico',
+        loginRemember: false,
+        valorAcumulado: false
+      };
+      localStorage.setItem('opcoes', JSON.stringify(opts));
     }
   }
 }

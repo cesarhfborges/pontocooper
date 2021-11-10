@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {AlertController, MenuController, Platform, ViewDidEnter} from '@ionic/angular';
+import {AlertController, AlertInput, MenuController, Platform, ViewDidEnter} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Ponto} from '../core/models/ponto';
@@ -33,7 +33,7 @@ import {format, getHours, parseISO, set} from 'date-fns';
           {optional: true}
         )
       ])
-    ])
+    ]),
   ]
 })
 export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
@@ -43,11 +43,18 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   dataAtual: Date;
 
   horasTrabalhadas: Date = set(new Date(), {hours: 0, minutes: 0, seconds: 0});
-  valorAcumulado: number = 0;
+  valorAcumulado = 0;
+  valorHora = 0;
 
   coords = {
     lat: -15.7962774,
     lon: -47.9481004
+  };
+
+  opcoes: {
+    darkMode: 'automatico' | 'dark' | 'light';
+    loginRemember: boolean;
+    valorAcumulado: boolean;
   };
 
   bancoDeHoras: {
@@ -91,16 +98,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     this.ponto = new Ponto(batidas);
     setInterval(() => {
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
-      const valorHora = 82;
-      const valorMinuto = valorHora / 60;
-      const valorSegundo = valorMinuto / 60;
-      this.valorAcumulado = (this.horasTrabalhadas.getHours() * valorHora) + (this.horasTrabalhadas.getMinutes() * valorMinuto) + (this.horasTrabalhadas.getSeconds() * valorSegundo);
-      // const start = set(new Date(), {
-      //   hours: 0,
-      //   minutes: 0,
-      //   seconds: 0,
-      //   milliseconds: 0
-      // });
+      this.calculaValor(82);
     }, 1000);
   }
 
@@ -124,6 +122,14 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       });
     }).catch(e => {
     });
+  }
+
+  calculaValor(valorHora: number): void {
+    const valorMinuto = valorHora / 60;
+    const valorSegundo = valorMinuto / 60;
+    this.valorAcumulado = (this.horasTrabalhadas.getHours() * valorHora) +
+      (this.horasTrabalhadas.getMinutes() * valorMinuto) +
+      (this.horasTrabalhadas.getSeconds() * valorSegundo);
   }
 
   getDados($event?): void {
@@ -179,9 +185,16 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   async registrarPonto() {
+    const input: AlertInput = {
+      name: 'pausa',
+      type: 'checkbox',
+      label: 'Essa é minha pausa de no mínimo 30 minutos.',
+      value: true,
+      checked: false
+    };
     const alert = await this.alertController.create({
       cssClass: 'alerta',
-      header: 'Deseja confirmar Saída?',
+      header: `Deseja confirmar ${this.ponto.trabalhando ? 'Saída' : 'Entrada'}?`,
       buttons: [
         {
           text: 'Cancelar',
@@ -193,27 +206,19 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         {
           text: 'Registrar',
           handler: (teste: Array<boolean>) => {
-            const r: boolean = teste.length > 0 ? teste[0] : false;
+            const r: boolean = teste?.length > 0 ? teste[0] : false;
             alert.dismiss(r);
             return false;
           }
         }
       ],
-      inputs: [
-        {
-          name: 'pausa',
-          type: 'checkbox',
-          label: 'Essa é minha pausa de no mínimo 30 minutos.',
-          value: true,
-          checked: false
-        }
-      ]
+      inputs: this.ponto.trabalhando ? [input] : []
     });
     await alert.present();
     const {data} = await alert.onDidDismiss();
     if (data !== undefined) {
       this.dadosService.baterPonto({
-        check_in: data,
+        check_in: !this.ponto.trabalhando,
         latitude: this.coords.lat,
         longitude: this.coords.lon
       }).subscribe(
@@ -231,6 +236,10 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   ionViewDidEnter(): void {
+    const lc: any = localStorage.getItem('opcoes');
+    if (lc) {
+      this.opcoes = JSON.parse(lc);
+    }
     this.menu.enable(true, 'principal').then().catch();
   }
 }

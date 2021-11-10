@@ -51,8 +51,9 @@ export class OpcoesPage implements OnInit {
     private loadingController: LoadingController
   ) {
     this.form = this.fb.group({
-      darkMode: this.fb.control(null, [Validators.required]),
-      loginRemember: this.fb.control(null, [Validators.required]),
+      darkMode: this.fb.control('automatico', [Validators.required]),
+      loginRemember: this.fb.control(false, [Validators.required]),
+      valorAcumulado: this.fb.control(false, [Validators.required]),
     });
     const opcoes: any = localStorage.getItem('opcoes');
     this.form.patchValue(JSON.parse(opcoes));

@@ -34,11 +34,15 @@
         <ion-col size="12">
           <p>Banco de Horas:</p>
         </ion-col>
-        <ion-col size="6">
+        <ion-col size="4">
           <h2>Aprovadas:</h2>
           <h1>{{bancoDeHoras.balance}}h</h1>
         </ion-col>
-        <ion-col size="6">
+        <ion-col size="4">
+          <h2>Em análise:</h2>
+          <h1>{{bancoDeHoras.pending}}h</h1>
+        </ion-col>
+        <ion-col size="4">
           <h2>Em análise:</h2>
           <h1>{{bancoDeHoras.pending}}h</h1>
         </ion-col>
@@ -66,8 +70,8 @@
           <h1>{{batida | date : 'HH:mm:ss'}}</h1>
         </ion-item>
       </ion-list>
-      <h1 style="margin-top: 30px; text-align: center;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>
-      <h2 style="margin-top: 0; text-align: center;">{{valorAcumulado | currency : 'BRL' : 'R$ ' : '1.2-2'}}</h2>
+      <h1 style="margin-top: 30px; text-align: center; font-size: 2rem;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>
+      <h2 *ngIf="opcoes?.valorAcumulado" style="margin-top: 0; text-align: center;font-size: 1.4rem;">{{valorAcumulado | currency : 'BRL' : 'R$ ' : '1.2-2'}}</h2>
       <ion-progress-bar
         [color]="jornadaDiaria > 99 ? 'success' : 'warning'"
         [value]="jornadaDiaria / 100"

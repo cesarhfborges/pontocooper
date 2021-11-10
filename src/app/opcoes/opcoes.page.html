@@ -13,9 +13,6 @@
 <ion-content>
 
   <ion-card>
-<!--    <ion-card-header>-->
-<!--      <ion-card-title>Opções</ion-card-title>-->
-<!--    </ion-card-header>-->
     <ion-item>
       <ion-icon color="tertiary" name="options-outline" slot="start"></ion-icon>
       <ion-label>Opções</ion-label>
@@ -34,6 +31,13 @@
           <ion-item>
             <ion-label>Lembrar login</ion-label>
             <ion-select formControlName="loginRemember" okText="Selecionar" cancelText="Cancelar">
+              <ion-select-option *ngFor="let opt of opcoes.loginRemember" [value]="opt.value">{{opt.label}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Valor acumulado:</ion-label>
+            <ion-select formControlName="valorAcumulado" okText="Selecionar" cancelText="Cancelar">
               <ion-select-option *ngFor="let opt of opcoes.loginRemember" [value]="opt.value">{{opt.label}}</ion-select-option>
             </ion-select>
           </ion-item>
