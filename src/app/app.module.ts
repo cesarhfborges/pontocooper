@@ -58,7 +58,7 @@ export class AppModule {
     if (localStorage.getItem('opcoes') === null) {
       const opts: any = {
         darkMode: 'automatico',
-        loginRemember: false,
+        loginRemember: true,
         valorAcumulado: false
       };
       localStorage.setItem('opcoes', JSON.stringify(opts));
