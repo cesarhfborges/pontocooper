@@ -76,14 +76,9 @@ export class LoginPage implements OnInit, ViewDidEnter {
       this.loading = true;
       this.authService.login(this.form.value).subscribe(
         () => {
-          // if (this.form.get('remember').value === true) {
-          //   localStorage.setItem('$jsghf478==', btoa(JSON.stringify(this.form.value)));
-          // }
           this.form.enable();
-          this.menu.enable(true, 'principal').then(() => {
-            this.loading = false;
-            this.router.navigate(['/home']).then();
-          });
+          this.loading = false;
+          this.router.navigate(['/home']).then();
         },
         error => {
           console.log(error);
@@ -98,5 +93,13 @@ export class LoginPage implements OnInit, ViewDidEnter {
   }
 
   ionViewDidEnter(): void {
+    this.menuControl(false).catch(e => console.log(e));
+  }
+
+  async menuControl(status: boolean) {
+    if (await this.menu.isOpen()) {
+      await this.menu.close();
+    }
+    await this.menu.enable(status, 'principal');
   }
 }

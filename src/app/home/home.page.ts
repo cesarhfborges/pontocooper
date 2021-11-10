@@ -240,6 +240,13 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     if (lc) {
       this.opcoes = JSON.parse(lc);
     }
-    this.menu.enable(true, 'principal').then().catch();
+    this.menuControl(true).catch(e => console.log(e));
+  }
+
+  async menuControl(status: boolean) {
+    if (await this.menu.isOpen()) {
+      await this.menu.close();
+    }
+    await this.menu.enable(status, 'principal');
   }
 }

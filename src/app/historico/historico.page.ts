@@ -1,6 +1,6 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {MenuController} from '@ionic/angular';
+import {MenuController, ViewDidEnter, ViewDidLeave} from '@ionic/angular';
 import {OpenLayersComponent} from '../shared/components/open-layers/open-layers.component';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {filter, map, mergeMap, toArray} from 'rxjs/operators';
@@ -11,7 +11,7 @@ import {getMonth, getYear} from 'date-fns';
   templateUrl: './historico.page.html',
   styleUrls: ['./historico.page.scss'],
 })
-export class HistoricoPage implements OnInit, OnDestroy {
+export class HistoricoPage implements OnInit, ViewDidEnter, ViewDidLeave {
 
   @ViewChild(OpenLayersComponent, {static: false}) openLayers: OpenLayersComponent;
 
@@ -35,12 +35,7 @@ export class HistoricoPage implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnDestroy(): void {
-    this.menu.enable(true, 'principal').then();
-  }
-
   ngOnInit() {
-    this.menu.enable(false, 'principal').then();
     this.hoje = new Date();
     this.getDados();
   }
@@ -63,12 +58,27 @@ export class HistoricoPage implements OnInit, OnDestroy {
   }
 
   async posicaoAtual(): Promise<{ latitude: number; longitude: number }> {
-    return await new Promise<{latitude: number; longitude: number}>((resolve) => {
+    return await new Promise<{ latitude: number; longitude: number }>((resolve) => {
       this.geolocation.getCurrentPosition().then((resp) => {
-        resolve({ latitude: resp.coords.latitude, longitude: resp.coords.longitude });
+        resolve({latitude: resp.coords.latitude, longitude: resp.coords.longitude});
       }).catch(e => {
         resolve({latitude: -15.7962774, longitude: -47.9481004});
       });
     });
+  }
+
+  async menuControl(status: boolean) {
+    if (await this.menu.isOpen()) {
+      await this.menu.close();
+    }
+    await this.menu.enable(status, 'principal');
+  }
+
+  ionViewDidLeave(): void {
+    this.menuControl(true).catch(e => console.log(e));
+  }
+
+  ionViewDidEnter(): void {
+    this.menuControl(false).catch(e => console.log(e));
   }
 }
