@@ -71,6 +71,7 @@ export class LoginPage implements OnInit, ViewDidEnter {
   }
 
   onSubmit(): void {
+    this.form.markAllAsTouched();
     if (this.form.valid) {
       this.form.disable();
       this.loading = true;
