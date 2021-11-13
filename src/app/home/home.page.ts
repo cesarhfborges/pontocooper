@@ -155,6 +155,10 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       this.loading.bancoDeHoras = false;
     } catch (e) {
       console.log(e);
+      this.bancoDeHoras = {
+        balance: '0',
+        pending: '0'
+      };
       const toast = await this.toastController.create({
         message: 'Erro ao obter o banco de horas, verifique a rede.',
         duration: 2000,
@@ -196,6 +200,12 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       };
       this.loading.summary = false;
     } catch (e) {
+      this.summary = {
+        workingHours: 0,
+        businessDays: 0,
+        hoursToWork: 0,
+        remainingHours: 0
+      };
       const toast = await this.toastController.create({
         message: 'Erro ao obter sumário, verifique a rede.',
         duration: 2000,
