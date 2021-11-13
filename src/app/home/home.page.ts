@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {AlertController, AlertInput, MenuController, Platform, ViewDidEnter} from '@ionic/angular';
+import {AlertController, AlertInput, MenuController, Platform, ToastController, ViewDidEnter} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Ponto} from '../core/models/ponto';
@@ -91,6 +91,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     private statusBar: StatusBar,
     private geolocation: Geolocation,
     private menu: MenuController,
+    private toastController: ToastController
   ) {
     //#1da57a
     this.dataAtual = new Date();
@@ -100,6 +101,11 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
       this.calculaValor(82);
     }, 1000);
+    this.authService.getAuth().subscribe(
+      usuario => {
+        console.log(usuario);
+      }
+    );
   }
 
   get jornadaDiaria(): number {
@@ -107,8 +113,11 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     return val > 99 ? 100 : val;
   }
 
-  ngOnInit(): void {
-    this.getDados();
+  async ngOnInit(): Promise<void> {
+    // this.getDados();
+    await this.getSumario();
+    await this.getBancoDeHoras();
+    await this.getTimeLine();
   }
 
   ngAfterViewInit(): void {
@@ -132,57 +141,68 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       (this.horasTrabalhadas.getSeconds() * valorSegundo);
   }
 
-  getDados($event?): void {
-    const dateNow: Date = new Date(Date.now());
-    this.loading.summary = true;
-    this.dadosService.getSummary(format(dateNow, 'yyyy'), format(dateNow, 'MM')).subscribe(
-      response => {
-        this.summary = {
-          workingHours: response.working_hours,
-          businessDays: response.business_days,
-          hoursToWork: response.hours_to_work,
-          remainingHours: response.remaining_hours
-        };
-        this.loading.summary = false;
-      },
-      error => {
-        console.log(error);
-        this.loading.summary = false;
-      }
-    );
+  async getDados($event?): Promise<void> {
+    await this.getSumario();
+    await this.getBancoDeHoras();
+    await this.getTimeLine();
+    $event.target.complete();
+  }
 
-    this.loading.timeline = true;
-    this.dadosService.getTimeline().subscribe(
-      response => {
-        this.ponto.limparPontos();
-        for (const batida of response.timeline) {
-          this.ponto.addPonto(parseISO(batida.worktime_clock));
-        }
-        setTimeout(() => {
-          if ($event) {
-            $event.target.complete();
-          }
-        }, 2000);
-        this.loading.timeline = false;
-      },
-      error => {
-        console.log(error);
-        this.loading.timeline = false;
-        $event.target.cancel();
-      }
-    );
+  async getBancoDeHoras(): Promise<void> {
+    try {
+      this.loading.bancoDeHoras = true;
+      this.bancoDeHoras = await this.dadosService.getBancoDeHoras().toPromise();
+      this.loading.bancoDeHoras = false;
+    } catch (e) {
+      console.log(e);
+      const toast = await this.toastController.create({
+        message: 'Erro ao obter o banco de horas, verifique a rede.',
+        duration: 2000,
+        color: 'danger'
+      });
+      await toast.present();
+    }
+  }
 
-    this.loading.bancoDeHoras = true;
-    this.dadosService.getBancoDeHoras().subscribe(
-      response => {
-        this.bancoDeHoras = response;
-        this.loading.bancoDeHoras = false;
-      },
-      error => {
-        console.log(error);
-        this.loading.bancoDeHoras = false;
+  async getTimeLine(): Promise<void> {
+    try {
+      this.loading.timeline = true;
+      const timeline = await this.dadosService.getTimeline().toPromise();
+      this.ponto.limparPontos();
+      for (const batida of timeline.timeline) {
+        this.ponto.addPonto(parseISO(batida.worktime_clock));
       }
-    );
+      this.loading.timeline = false;
+    } catch (e) {
+      const toast = await this.toastController.create({
+        message: 'Erro ao obter linha do tempo, verifique a rede.',
+        duration: 2000,
+        color: 'danger'
+      });
+      await toast.present();
+    }
+  }
+
+  async getSumario(): Promise<void> {
+    try {
+      this.loading.summary = true;
+      const dateNow: Date = new Date(Date.now());
+      const sumario = await this.dadosService.getSummary(format(dateNow, 'yyyy'), format(dateNow, 'MM')).toPromise();
+      this.summary = {
+        workingHours: sumario.working_hours,
+        businessDays: sumario.business_days,
+        hoursToWork: sumario.hours_to_work,
+        remainingHours: sumario.remaining_hours
+      };
+      this.loading.summary = false;
+    } catch (e) {
+      const toast = await this.toastController.create({
+        message: 'Erro ao obter sumário, verifique a rede.',
+        duration: 2000,
+        color: 'danger'
+      });
+      await toast.present();
+    }
   }
 
   async registrarPonto() {

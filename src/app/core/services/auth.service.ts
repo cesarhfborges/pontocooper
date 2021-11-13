@@ -1,21 +1,33 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
 import {addMinutes, formatISO, parseISO} from 'date-fns';
 import {Usuario} from '../models/usuario';
 import {Router} from '@angular/router';
 
+interface IAuth {
+  access: string;
+  expire: string;
+  refresh: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  private auth = new BehaviorSubject<IAuth>(undefined);
+
   constructor(
     private http: HttpClient,
     private router: Router,
   ) {
+    const l: any = localStorage.getItem('contents');
+    if (l) {
+      this.auth.next(JSON.parse(atob(l)));
+    }
   }
 
   isAuthenticated(): boolean {
@@ -36,9 +48,7 @@ export class AuthService {
     return this.http.post<any>(`${environment.apiUrl}/auth`, data)
       .pipe(map(response => {
         if (response.access) {
-          const l = {...response, expire: formatISO(addMinutes(new Date(), 2))};
-          localStorage.setItem('contents', btoa(JSON.stringify(l)));
-          localStorage.setItem('content_DEV', JSON.stringify(l));
+          this.setAuth(response);
           return true;
         }
         return false;
@@ -48,11 +58,7 @@ export class AuthService {
   refreshToken(refreshToken: string): Observable<boolean> {
     return this.http.post<any>(`${environment.apiUrl}/auth/refresh/`, {refresh: refreshToken}).pipe(map(response => {
       if (response.access) {
-        const l = JSON.parse(atob(localStorage.getItem('contents')));
-        l.access = response.access;
-        l.expire = formatISO(addMinutes(new Date(), 2));
-        localStorage.setItem('contents', btoa(JSON.stringify(l)));
-        localStorage.setItem('content_DEV', JSON.stringify(l));
+        this.updateTokenAuth(response.access);
         return true;
       }
       return false;
@@ -83,7 +89,25 @@ export class AuthService {
     return this.http.get<Usuario>(`${environment.apiUrl}/person/current`);
   }
 
-  solicitarRetificacao(data: any): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrl}/rectification_request/`, data);
+  setAuth(auth: any): void {
+    const l: IAuth = {
+      ...auth,
+      expire: formatISO(addMinutes(new Date(), 2))
+    };
+    localStorage.setItem('contents', btoa(JSON.stringify(l)));
+    localStorage.setItem('content_DEV', JSON.stringify(l));
+    this.auth.next(l);
+  }
+
+  getAuth(): Observable<IAuth> {
+    return this.auth.asObservable();
+  }
+
+  updateTokenAuth(newToken: string): void {
+    const l = JSON.parse(atob(localStorage.getItem('contents')));
+    l.access = newToken;
+    l.expire = formatISO(addMinutes(new Date(), 2));
+    localStorage.setItem('contents', btoa(JSON.stringify(l)));
+    localStorage.setItem('content_DEV', JSON.stringify(l));
   }
 }
