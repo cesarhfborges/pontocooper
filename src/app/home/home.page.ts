@@ -168,6 +168,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       error => {
         console.log(error);
         this.loading.timeline = false;
+        $event.target.cancel();
       }
     );
 

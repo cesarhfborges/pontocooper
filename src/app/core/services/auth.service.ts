@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
-import {addMinutes} from 'date-fns';
+import {addMinutes, formatISO, parseISO} from 'date-fns';
 import {Usuario} from '../models/usuario';
 import {Router} from '@angular/router';
 
@@ -36,8 +36,9 @@ export class AuthService {
     return this.http.post<any>(`${environment.apiUrl}/auth`, data)
       .pipe(map(response => {
         if (response.access) {
-          const l = {...response, expire: addMinutes(new Date(), 2)};
+          const l = {...response, expire: formatISO(addMinutes(new Date(), 2))};
           localStorage.setItem('contents', btoa(JSON.stringify(l)));
+          localStorage.setItem('content_DEV', JSON.stringify(l));
           return true;
         }
         return false;
@@ -49,7 +50,9 @@ export class AuthService {
       if (response.access) {
         const l = JSON.parse(atob(localStorage.getItem('contents')));
         l.access = response.access;
+        l.expire = formatISO(addMinutes(new Date(), 2));
         localStorage.setItem('contents', btoa(JSON.stringify(l)));
+        localStorage.setItem('content_DEV', JSON.stringify(l));
         return true;
       }
       return false;
@@ -62,6 +65,18 @@ export class AuthService {
       return JSON.parse(atob(r)).refresh;
     }
     return null;
+  }
+
+  tokenExpired(): boolean {
+    const l: any = localStorage.getItem('contents');
+    if (l) {
+      const expireDate: Date = parseISO(JSON.parse(atob(l)).expire);
+      console.log('agora: ', new Date());
+      console.log('expire: ', expireDate);
+      console.log('expired: ', new Date() > expireDate);
+      return new Date() > expireDate;
+    }
+    return false;
   }
 
   perfil(): Observable<Usuario> {
