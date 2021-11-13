@@ -261,6 +261,13 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         },
         error => {
           console.log(error);
+          this.toastController.create({
+            message: 'Ops... Não foi possível registrar o ponto, verifique a rede e tente novamente.',
+            duration: 2000,
+            color: 'danger'
+          }).then(toast => {
+            toast.present();
+          });
         }
       );
     }
