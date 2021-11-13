@@ -113,11 +113,10 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     return val > 99 ? 100 : val;
   }
 
-  async ngOnInit(): Promise<void> {
-    // this.getDados();
-    await this.getSumario();
-    await this.getBancoDeHoras();
-    await this.getTimeLine();
+  ngOnInit(): void {
+    this.getSumario().then();
+    this.getBancoDeHoras().then();
+    this.getTimeLine().then();
   }
 
   ngAfterViewInit(): void {
@@ -249,6 +248,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     const {data} = await alert.onDidDismiss();
     if (data !== undefined) {
       this.dadosService.baterPonto({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         check_in: !this.ponto.trabalhando,
         latitude: this.coords.lat,
         longitude: this.coords.lon
