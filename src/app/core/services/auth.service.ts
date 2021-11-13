@@ -95,7 +95,9 @@ export class AuthService {
       expire: formatISO(addMinutes(new Date(), 2))
     };
     localStorage.setItem('contents', btoa(JSON.stringify(l)));
-    localStorage.setItem('content_DEV', JSON.stringify(l));
+    if (!environment.production) {
+      localStorage.setItem('content_DEV', JSON.stringify(l));
+    }
     this.auth.next(l);
   }
 
@@ -108,6 +110,8 @@ export class AuthService {
     l.access = newToken;
     l.expire = formatISO(addMinutes(new Date(), 2));
     localStorage.setItem('contents', btoa(JSON.stringify(l)));
-    localStorage.setItem('content_DEV', JSON.stringify(l));
+    if (!environment.production) {
+      localStorage.setItem('content_DEV', JSON.stringify(l));
+    }
   }
 }
