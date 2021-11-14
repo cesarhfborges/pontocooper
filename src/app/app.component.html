@@ -13,7 +13,8 @@
           (click)="menuPrincipal.close()"
           [routerLink]="[menu.link]"
         >
-          {{menu.label}}
+          <ion-icon *ngIf="menu.icon" slot="start" [name]="menu.icon"></ion-icon>
+          <ion-label>{{menu.label}}</ion-label>
         </ion-item>
       </ion-list>
     </ion-content>

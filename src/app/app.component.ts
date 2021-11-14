@@ -3,11 +3,15 @@ import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {Platform} from '@ionic/angular';
 import {ToastsService} from './shared/services/toasts.service';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
+import { AndroidShortcuts } from 'capacitor-android-shortcuts';
 import npm from '../../package.json';
+import {AuthService} from './core/services/auth.service';
+import {Router} from '@angular/router';
 
 interface Menu {
   label: string;
   link: string;
+  icon?: string;
 }
 
 @Component({
@@ -22,27 +26,33 @@ export class AppComponent {
   menus: Array<Menu> = [
     {
       label: 'Home',
-      link: '/home'
+      link: '/home',
+      icon: 'planet'
     },
     {
       label: 'Produção',
-      link: '/producao'
+      link: '/producao',
+      icon: 'calendar-outline'
     },
     {
       label: 'Histórico (GPS)',
-      link: '/historico'
+      link: '/historico',
+      icon: 'navigate-outline'
     },
     {
       label: 'Férias e Abonos',
-      link: '/ferias-abonos'
+      link: '/ferias-abonos',
+      icon: 'planet-outline'
     },
     {
       label: 'Opções',
-      link: '/opcoes'
+      link: '/opcoes',
+      icon: 'settings-outline'
     },
     {
       label: 'Perfil',
-      link: '/perfil'
+      link: '/perfil',
+      icon: 'person-outline'
     }
   ];
 
@@ -50,9 +60,14 @@ export class AppComponent {
     private themeDetection: ThemeDetection,
     private toastsService: ToastsService,
     private platform: Platform,
-    private screenOrientation: ScreenOrientation
+    private screenOrientation: ScreenOrientation,
+    private authService: AuthService,
+    private router: Router
   ) {
-    this.lockScreen().then();
+    if (this.platform.is('cordova')) {
+      this.addShortCut().then();
+      this.lockScreen().then();
+    }
     const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
     switch (darkMode) {
       case 'escuro':
@@ -86,6 +101,71 @@ export class AppComponent {
     await this.platform.ready();
     if (this.platform.is('cordova')) {
       await this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+    }
+  }
+
+  async addShortCut(): Promise<void> {
+    const {result} = await AndroidShortcuts.isDynamicSupported();
+    if (result) {
+      await AndroidShortcuts.addDynamic({
+        items: [
+          {
+            id: 'producao',
+            shortLabel: 'Minha produção',
+            longLabel: 'Minha produção',
+            icon: {
+              type: 'Bitmap',
+              name: 'aaa'
+            },
+            data: 'producao',
+          },
+          {
+            id: 'historico',
+            shortLabel: 'Histórico(GPS)',
+            longLabel: 'Histórico(GPS)',
+            icon: {
+              type: 'Bitmap',
+              name: 'aaa'
+            },
+            data: 'historico',
+          },
+          {
+            id: 'ferias-abonos',
+            shortLabel: 'Férias e abonos',
+            longLabel: 'Férias e abonos',
+            icon: {
+              type: 'Bitmap',
+              name: 'aaa'
+            },
+            data: 'ferias-abonos',
+          },
+          {
+            id: 'opcoes',
+            shortLabel: 'Opções',
+            longLabel: 'Opções',
+            icon: {
+              type: 'Bitmap',
+              name: 'aaa'
+            },
+            data: 'opcoes',
+          },
+          {
+            id: 'perfil',
+            shortLabel: 'Perfil',
+            longLabel: 'Perfil',
+            icon: {
+              type: 'Bitmap',
+              name: 'aaa'
+            },
+            data: 'perfil',
+          },
+        ],
+      });
+      await AndroidShortcuts.addListener('shortcut', listen => {
+        if (listen.data) {
+          this.router.navigate([`${listen.data}`]);
+        }
+      });
     }
   }
 }
