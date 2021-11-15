@@ -3,7 +3,6 @@ import {ModalController, ViewDidEnter} from '@ionic/angular';
 import {Dia} from '../../../core/models/dia';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DadosService} from '../../../core/services/dados.service';
-import { Animation, AnimationController } from '@ionic/angular';
 import {interval, Observable, of} from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
 import {addSeconds, differenceInSeconds, format, parseISO, set} from 'date-fns';
@@ -17,21 +16,21 @@ import {animate, query, stagger, style, transition, trigger} from '@angular/anim
     trigger('slideOutAnimation', [
       transition('* => *', [
         query(':enter',
-          style({ opacity: 0, transform: 'translateX(30px)' }),
-          { optional: true }
+          style({opacity: 0, transform: 'translateX(30px)'}),
+          {optional: true}
         ),
         query(':enter', stagger(150, [
-          style({ opacity: 0 ,transform: 'translateX(30px)' }),
-          animate('250ms ease-in-out', style({ opacity:1, transform: 'translateX(0)' }) )
-        ]), { optional: true }),
+          style({opacity: 0, transform: 'translateX(30px)'}),
+          animate('250ms ease-in-out', style({opacity: 1, transform: 'translateX(0)'}))
+        ]), {optional: true}),
         query(':leave',
-          style({ opacity: 1 }),
-          { optional: true }
+          style({opacity: 1}),
+          {optional: true}
         ),
         query(':leave', [
-            style({ opacity: 1 }),
-            animate('250ms ease-in-out', style({ opacity: 0, transform: 'translateX(30px)' }))],
-          { optional: true }
+            style({opacity: 1}),
+            animate('250ms ease-in-out', style({opacity: 0, transform: 'translateX(30px)'}))],
+          {optional: true}
         )
       ])
     ])
@@ -50,7 +49,6 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
     private dadosService: DadosService,
     private modalController: ModalController,
     private fb: FormBuilder,
-    private animationCtrl: AnimationController
   ) {
     this.form = this.fb.group({
       date: ['', [Validators.required]],
@@ -144,7 +142,7 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
   cancelar(): void {
     this.modalController.dismiss({
       success: false
-    });
+    }).catch(e => console.log(e));
   }
 
   salvar(): void {
@@ -166,14 +164,14 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
           this.modalController.dismiss({
             success: true,
             data: dados.rectifications
-          });
+          }).catch(e => console.log(e));
         },
         error => {
           console.log(error);
         }
       );
     } else {
-      console.log('Form Invalido');
+      console.log('Form Inválido');
     }
   }
 

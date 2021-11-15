@@ -30,7 +30,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
       const rotaAtual = state.url.split('/').filter(i => i !== '')[0];
       if (this.authService.isAuthenticated()) {
         if (routes.includes(rotaAtual)) {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/home']).catch(e => console.log(e));
           return false;
         }
         return true;
@@ -38,7 +38,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
         if (routes.includes(rotaAtual)) {
           return true;
         } else {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/login']).catch(e => console.log(e));
           return false;
         }
       }

@@ -3,7 +3,7 @@ import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DadosService} from '../../../core/services/dados.service';
 import {Dia} from '../../../core/models/dia';
-import {format, getHours, getMinutes, parseISO} from 'date-fns';
+import {getHours, getMinutes, parseISO} from 'date-fns';
 
 @Component({
   selector: 'app-modal-hora-extra',
@@ -35,8 +35,6 @@ export class ModalHoraExtraComponent implements OnInit {
     const producao: Date = parseISO(this.dados.production);
     const horas: number = getHours(producao);
     const minutos: number = getMinutes(producao);
-    console.log(horas);
-    console.log(minutos);
     if (horas > 0 || minutos > 0) {
       return 'hora_extra';
     }
@@ -50,7 +48,7 @@ export class ModalHoraExtraComponent implements OnInit {
   cancelar(): void {
     this.modalController.dismiss({
       success: false
-    });
+    }).catch(e => console.log(e));
   }
 
   salvar(): void {
@@ -70,7 +68,7 @@ export class ModalHoraExtraComponent implements OnInit {
       this.modalController.dismiss({
         success: true,
         data: {teste: true}
-      });
+      }).catch(e => console.log(e));
     }
   }
 }

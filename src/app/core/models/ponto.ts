@@ -1,13 +1,4 @@
-import {
-  addMinutes,
-  addSeconds,
-  differenceInMinutes,
-  differenceInSeconds,
-  formatDuration,
-  formatISODuration,
-  intervalToDuration,
-  set
-} from 'date-fns';
+import {addMinutes, addSeconds, differenceInMinutes, set} from 'date-fns';
 
 export class Ponto {
 
@@ -57,7 +48,12 @@ export class Ponto {
   }
 
   public isInterval(): boolean {
-    if (this.listaBatidas !== null && this.listaBatidas !== undefined && this.listaBatidas.length > 1 && this.listaBatidas.length % 2 === 0) {
+    if (
+      this.listaBatidas !== null &&
+      this.listaBatidas !== undefined &&
+      this.listaBatidas.length > 1 &&
+      this.listaBatidas.length % 2 === 0
+    ) {
       const ultimaBatida: Date = this.listaBatidas[this.listaBatidas.length - 1];
       if (ultimaBatida) {
         return differenceInMinutes(new Date(), ultimaBatida) < 2;
