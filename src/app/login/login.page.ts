@@ -97,10 +97,11 @@ export class LoginPage implements OnInit, ViewDidEnter {
     this.menuControl(false).catch(e => console.log(e));
   }
 
-  async menuControl(status: boolean) {
+  async menuControl(status: boolean): Promise<void> {
     if (await this.menu.isOpen()) {
       await this.menu.close();
     }
     await this.menu.enable(status, 'principal');
+    return Promise.resolve();
   }
 }

@@ -15,7 +15,8 @@ import {RouterModule} from '@angular/router';
     HomePageRoutingModule,
     RouterModule
   ],
-  declarations: [HomePage]
+  declarations: [HomePage],
+  providers: []
 })
 export class HomePageModule {
 }

@@ -7,6 +7,8 @@ import {Ponto} from '../core/models/ponto';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {format, getHours, parseISO, set} from 'date-fns';
+import {Observable, timer} from 'rxjs';
+import {App} from '@capacitor/app';
 
 @Component({
   selector: 'app-home',
@@ -83,6 +85,8 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     bancoDeHoras: false
   };
 
+  timer: Observable<number>;
+
   constructor(
     private dadosService: DadosService,
     private alertController: AlertController,
@@ -91,21 +95,25 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     private statusBar: StatusBar,
     private geolocation: Geolocation,
     private menu: MenuController,
-    private toastController: ToastController
+    private toastController: ToastController,
   ) {
-    //#1da57a
+    this.timer = timer(1000, 1000);
     this.dataAtual = new Date();
     const batidas: Array<Date> = [];
     this.ponto = new Ponto(batidas);
-    setInterval(() => {
+    // setInterval(() => {
+    //   this.horasTrabalhadas = this.ponto.horasTrabalhadas;
+    //   this.calculaValor(82);
+    // }, 1000);
+    this.timer.subscribe(() => {
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
       this.calculaValor(82);
-    }, 1000);
-    this.authService.getAuth().subscribe(
-      usuario => {
-        console.log(usuario);
-      }
-    );
+    });
+    // this.authService.getAuth().subscribe(
+    //   usuario => {
+    //     console.log(usuario);
+    //   }
+    // );
   }
 
   get jornadaDiaria(): number {
@@ -117,6 +125,9 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     this.getSumario().then();
     this.getBancoDeHoras().then();
     this.getTimeLine().then();
+    this.platform.backButton.subscribeWithPriority(-1, () => {
+      App.exitApp();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -248,7 +259,6 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     const {data} = await alert.onDidDismiss();
     if (data !== undefined) {
       this.dadosService.baterPonto({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         check_in: !this.ponto.trabalhando,
         latitude: this.coords.lat,
         longitude: this.coords.lon

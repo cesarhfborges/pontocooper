@@ -5,9 +5,9 @@
   "homepage": "https://portal.coopersystem.com.br/",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --open",
+    "start": "npm run test && ng serve --open",
     "build": "ng build",
-    "test": "ng test",
+    "test": "ng test  --code-coverage --watch=true --sourceMap=true",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "android-build": "ionic capacitor build android",
@@ -18,7 +18,8 @@
     "android-run-live": "ionic cap run android -l --external",
     "generate-icon-ios": "cordova-res ios --skip-config --copy",
     "generate-icon-android": "cordova-res android --skip-config --copy",
-    "icons-capacitor": "capacitor-resources"
+    "icons-capacitor": "capacitor-resources",
+    "pre-push": "npm run lint && npm run test"
   },
   "private": true,
   "dependencies": {
