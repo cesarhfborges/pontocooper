@@ -1,12 +1,11 @@
 <ion-content>
-<!--  <video autoplay loop src="assets/videoplayback.mp4"></video>-->
+  <!--  <video autoplay loop src="assets/videoplayback.mp4"></video>-->
   <ion-grid style="height: 100%;">
     <ion-row style="height: 100%;">
       <ion-col size="12" class="ion-align-self-center">
         <form [formGroup]="form" (submit)="onSubmit()">
           <ion-card>
             <ion-card-header>
-<!--              <ion-img (click)="ionViewDidEnter()" [src]="darkMode ? logotipo.dark : logotipo.normal"></ion-img>-->
               <div class="logotipo"></div>
             </ion-card-header>
             <ion-card-content>
@@ -45,7 +44,10 @@
                 <ion-label>Lembrar</ion-label>
                 <ion-checkbox slot="start" formControlName="remember"></ion-checkbox>
               </ion-item>
-              <ion-button style="margin-top: 30px;" type="submit" expand="full">Entrar</ion-button>
+              <ion-button style="margin: 16px 16px 0 16px;" type="submit" expand="block">Entrar</ion-button>
+              <ion-button style="margin: 32px 16px 16px 16px;" type="submit" expand="block" color="tertiary">Esqueci a
+                senha
+              </ion-button>
             </ion-card-content>
           </ion-card>
         </form>
