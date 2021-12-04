@@ -2,11 +2,12 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {MenuController, Platform, ViewDidEnter} from '@ionic/angular';
+import {IonRouterOutlet, MenuController, Platform, ViewDidEnter} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {ThemeDetectionResponse} from '@ionic-native/theme-detection';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {ToastsService} from '../shared/services/toasts.service';
+import {App} from '@capacitor/app';
 
 @Component({
   selector: 'app-login',
@@ -41,6 +42,7 @@ export class LoginPage implements OnInit, ViewDidEnter {
     private menu: MenuController,
     private themeDetection: ThemeDetection,
     private toastsService: ToastsService,
+    private routerOutlet: IonRouterOutlet
   ) {
     if (this.platform.is('cordova')) {
       this.platform.ready().then(() => {
@@ -67,6 +69,11 @@ export class LoginPage implements OnInit, ViewDidEnter {
         });
       }
     }).catch(() => {
+    });
+    this.platform.backButton.subscribeWithPriority(-1, () => {
+      if (!this.routerOutlet.canGoBack()) {
+        App.exitApp();
+      }
     });
   }
 

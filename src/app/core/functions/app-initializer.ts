@@ -8,6 +8,8 @@ const appInitializer = (authService: AuthService, loadingController: LoadingCont
       cssClass: 'my-custom-class',
       message: 'Aguarde...',
       backdropDismiss: false,
+      showBackdrop: true,
+      animated: true,
       keyboardClose: false,
       spinner: 'bubbles',
     }).then((l: any) => {
@@ -15,13 +17,13 @@ const appInitializer = (authService: AuthService, loadingController: LoadingCont
       authService.refreshToken(authService.getRefreshToken())
         .pipe(delay(900))
         .subscribe(
-        () => {
-          l.dismiss();
-        },
-        () => {
-          l.dismiss();
-        }
-      ).add(resolve);
+          () => {
+            l.dismiss();
+          },
+          () => {
+            l.dismiss();
+          }
+        ).add(resolve);
     });
   } else {
     resolve();

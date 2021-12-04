@@ -1,12 +1,14 @@
 import {Component} from '@angular/core';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
-import {Platform} from '@ionic/angular';
+import {LoadingController, Platform} from '@ionic/angular';
 import {ToastsService} from './shared/services/toasts.service';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
-import { AndroidShortcuts } from 'capacitor-android-shortcuts';
+import {AndroidShortcuts} from 'capacitor-android-shortcuts';
 import npm from '../../package.json';
 import {AuthService} from './core/services/auth.service';
 import {Router} from '@angular/router';
+import {App} from '@capacitor/app';
+import {delay} from 'rxjs/operators';
 
 interface Menu {
   label: string;
@@ -62,7 +64,8 @@ export class AppComponent {
     private platform: Platform,
     private screenOrientation: ScreenOrientation,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private loadingController: LoadingController
   ) {
     if (this.platform.is('cordova')) {
       this.addShortCut().then();
@@ -84,6 +87,7 @@ export class AppComponent {
         }
         break;
     }
+    this.appFocusChange();
   }
 
   async changeTheme(): Promise<void> {
@@ -167,5 +171,33 @@ export class AppComponent {
         }
       });
     }
+  }
+
+  private appFocusChange() {
+    App.addListener('appStateChange', ({isActive}) => {
+      if (this.authService.isAuthenticated() && isActive) {
+        this.loadingController.create({
+          cssClass: 'my-custom-class',
+          message: 'Aguarde...',
+          backdropDismiss: false,
+          keyboardClose: false,
+          showBackdrop: true,
+          animated: true,
+          spinner: 'bubbles',
+        }).then((l: any) => {
+          l.present();
+          this.authService.refreshToken(this.authService.getRefreshToken())
+            .pipe(delay(900))
+            .subscribe(
+              () => {
+                l.dismiss();
+              },
+              () => {
+                l.dismiss();
+              }
+            );
+        });
+      }
+    });
   }
 }

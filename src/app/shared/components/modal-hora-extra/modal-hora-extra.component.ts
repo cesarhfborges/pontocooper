@@ -48,7 +48,7 @@ export class ModalHoraExtraComponent implements OnInit {
   cancelar(): void {
     this.modalController.dismiss({
       success: false
-    }).catch(e => console.log(e));
+    }).catch();
   }
 
   salvar(): void {
@@ -68,7 +68,7 @@ export class ModalHoraExtraComponent implements OnInit {
       this.modalController.dismiss({
         success: true,
         data: {teste: true}
-      }).catch(e => console.log(e));
+      }).catch();
     }
   }
 }

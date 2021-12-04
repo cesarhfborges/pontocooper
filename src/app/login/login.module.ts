@@ -19,7 +19,8 @@ import {SharedModule} from '../shared/shared.module';
   ],
   declarations: [
     LoginPage
-  ]
+  ],
+  providers: []
 })
 export class LoginPageModule {
 }

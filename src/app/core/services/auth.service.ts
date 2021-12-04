@@ -77,9 +77,6 @@ export class AuthService {
     const l: any = localStorage.getItem('contents');
     if (l) {
       const expireDate: Date = parseISO(JSON.parse(atob(l)).expire);
-      console.log('agora: ', new Date());
-      console.log('expire: ', expireDate);
-      console.log('expired: ', new Date() > expireDate);
       return new Date() > expireDate;
     }
     return false;

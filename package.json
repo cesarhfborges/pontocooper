@@ -5,7 +5,7 @@
   "homepage": "https://portal.coopersystem.com.br/",
   "scripts": {
     "ng": "ng",
-    "start": "npm run test && ng serve --open",
+    "start": "npm run lint && ng serve --open",
     "build": "ng build",
     "test": "ng test  --code-coverage --watch=true --sourceMap=true",
     "lint": "ng lint",

@@ -72,6 +72,8 @@ export class OpcoesPage implements OnInit {
           message: 'Alterando esquema de cores...',
           backdropDismiss: false,
           keyboardClose: false,
+          showBackdrop: true,
+          animated: true,
           spinner: 'bubbles',
           duration: 900,
         }).then((l: any) => {

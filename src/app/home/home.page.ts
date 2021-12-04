@@ -1,6 +1,14 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {AlertController, AlertInput, MenuController, Platform, ToastController, ViewDidEnter} from '@ionic/angular';
+import {
+  AlertController,
+  AlertInput,
+  IonRouterOutlet,
+  MenuController,
+  Platform,
+  ToastController,
+  ViewDidEnter
+} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Ponto} from '../core/models/ponto';
@@ -9,6 +17,7 @@ import {animate, query, stagger, style, transition, trigger} from '@angular/anim
 import {format, getHours, parseISO, set} from 'date-fns';
 import {Observable, timer} from 'rxjs';
 import {App} from '@capacitor/app';
+import {AppState} from '@capacitor/app/dist/esm/definitions';
 
 @Component({
   selector: 'app-home',
@@ -96,24 +105,16 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     private geolocation: Geolocation,
     private menu: MenuController,
     private toastController: ToastController,
+    private routerOutlet: IonRouterOutlet
   ) {
     this.timer = timer(1000, 1000);
     this.dataAtual = new Date();
     const batidas: Array<Date> = [];
     this.ponto = new Ponto(batidas);
-    // setInterval(() => {
-    //   this.horasTrabalhadas = this.ponto.horasTrabalhadas;
-    //   this.calculaValor(82);
-    // }, 1000);
     this.timer.subscribe(() => {
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
       this.calculaValor(82);
     });
-    // this.authService.getAuth().subscribe(
-    //   usuario => {
-    //     console.log(usuario);
-    //   }
-    // );
   }
 
   get jornadaDiaria(): number {
@@ -126,7 +127,9 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     this.getBancoDeHoras().then();
     this.getTimeLine().then();
     this.platform.backButton.subscribeWithPriority(-1, () => {
-      App.exitApp();
+      if (!this.routerOutlet.canGoBack()) {
+        App.exitApp();
+      }
     });
   }
 
