@@ -3,13 +3,13 @@ import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {LoadingController, Platform} from '@ionic/angular';
 import {ToastsService} from './shared/services/toasts.service';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
-import {AndroidShortcuts} from 'capacitor-android-shortcuts';
-import npm from '../../package.json';
 import {AuthService} from './core/services/auth.service';
 import {Router} from '@angular/router';
+import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import {AndroidShortcuts} from 'capacitor-android-shortcuts';
 import {App} from '@capacitor/app';
 import {delay} from 'rxjs/operators';
-import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import npm from '../../package.json';
 
 interface Menu {
   label: string;
