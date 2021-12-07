@@ -9,6 +9,7 @@ import {AuthService} from './core/services/auth.service';
 import {Router} from '@angular/router';
 import {App} from '@capacitor/app';
 import {delay} from 'rxjs/operators';
+import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 
 interface Menu {
   label: string;
@@ -65,11 +66,13 @@ export class AppComponent {
     private screenOrientation: ScreenOrientation,
     private authService: AuthService,
     private router: Router,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private localNotifications: LocalNotifications
   ) {
     if (this.platform.is('cordova')) {
       this.addShortCut().then();
       this.lockScreen().then();
+      this.permissaoNotif().then();
     }
     const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
     switch (darkMode) {
@@ -101,11 +104,19 @@ export class AppComponent {
     }
   }
 
+  async permissaoNotif(): Promise<void> {
+    if (!await this.localNotifications.hasPermission()) {
+      await this.localNotifications.requestPermission();
+    }
+    return Promise.resolve();
+  }
+
   async lockScreen(): Promise<void> {
     await this.platform.ready();
     if (this.platform.is('cordova')) {
       await this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     }
+    return Promise.resolve();
   }
 
   async addShortCut(): Promise<void> {
@@ -170,6 +181,7 @@ export class AppComponent {
           this.router.navigate([`${listen.data}`]);
         }
       });
+      return Promise.resolve();
     }
   }
 

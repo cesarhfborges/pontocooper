@@ -13,11 +13,11 @@ import {AuthService} from '../core/services/auth.service';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Ponto} from '../core/models/ponto';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
+import {ILocalNotification, LocalNotifications} from '@ionic-native/local-notifications/ngx';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
-import {format, getHours, parseISO, set} from 'date-fns';
+import {addMinutes, format, getHours, parseISO, set, subMinutes} from 'date-fns';
 import {Observable, timer} from 'rxjs';
 import {App} from '@capacitor/app';
-import {AppState} from '@capacitor/app/dist/esm/definitions';
 
 @Component({
   selector: 'app-home',
@@ -66,6 +66,10 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     darkMode: 'automatico' | 'dark' | 'light';
     loginRemember: boolean;
     valorAcumulado: boolean;
+    intervalo: {
+      label: string;
+      value: number;
+    };
   };
 
   bancoDeHoras: {
@@ -105,7 +109,8 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     private geolocation: Geolocation,
     private menu: MenuController,
     private toastController: ToastController,
-    private routerOutlet: IonRouterOutlet
+    private routerOutlet: IonRouterOutlet,
+    private localNotifications: LocalNotifications
   ) {
     this.timer = timer(1000, 1000);
     this.dataAtual = new Date();
@@ -229,60 +234,71 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   async registrarPonto() {
-    const input: AlertInput = {
-      name: 'pausa',
-      type: 'checkbox',
-      label: 'Essa é minha pausa de no mínimo 30 minutos.',
-      value: true,
-      checked: false
-    };
-    const alert = await this.alertController.create({
-      cssClass: 'alerta',
-      header: `Deseja confirmar ${this.ponto.trabalhando ? 'Saída' : 'Entrada'}?`,
-      buttons: [
-        {
-          text: 'Cancelar',
-          handler: () => {
-            alert.dismiss();
-            return false;
+    try {
+      await this.cancelarNotificacoes();
+      const input: AlertInput = {
+        name: 'pausa',
+        type: 'checkbox',
+        label: `Essa é minha pausa de ${this.opcoes.intervalo.label}.`,
+        value: true,
+        checked: false
+      };
+      const alert = await this.alertController.create({
+        cssClass: 'alerta',
+        header: `Deseja confirmar ${this.ponto.trabalhando ? 'Saída' : 'Entrada'}?`,
+        buttons: [
+          {
+            text: 'Cancelar',
+            handler: () => {
+              alert.dismiss();
+              return false;
+            }
+          },
+          {
+            text: 'Registrar',
+            handler: (teste: Array<boolean>) => {
+              const r: boolean = teste?.length > 0 ? teste[0] : false;
+              alert.dismiss(r);
+              return false;
+            }
           }
-        },
-        {
-          text: 'Registrar',
-          handler: (teste: Array<boolean>) => {
-            const r: boolean = teste?.length > 0 ? teste[0] : false;
-            alert.dismiss(r);
-            return false;
-          }
-        }
-      ],
-      inputs: this.ponto.trabalhando ? [input] : []
-    });
-    await alert.present();
-    const {data} = await alert.onDidDismiss();
-    if (data !== undefined) {
-      this.dadosService.baterPonto({
-        check_in: !this.ponto.trabalhando,
-        latitude: this.coords.lat,
-        longitude: this.coords.lon
-      }).subscribe(
-        response => {
+        ],
+        inputs: this.ponto.trabalhando ? [input] : []
+      });
+      await alert.present();
+      const {data} = await alert.onDidDismiss();
+      if (data !== undefined) {
+        const response: any = await this.dadosService.baterPonto({
+          check_in: !this.ponto.trabalhando,
+          latitude: this.coords.lat,
+          longitude: this.coords.lon
+        }).toPromise();
+        if (response !== undefined) {
           this.ponto.baterPonto();
+          if (data === true) {
+            const dataHora: Date = addMinutes(new Date(), this.opcoes.intervalo.value);
+            await this.agendarNotificacao(dataHora);
+            const toast: any = await this.toastController.create({
+              message: `Você será notificado em ${this.opcoes.intervalo.label} para não esquecer o ponto. ;)`,
+              duration: 3000,
+              color: 'success',
+            });
+            toast.present();
+          }
           if (this.ponto.isInterval()) {
             // nada
           }
-        },
-        error => {
-          console.log(error);
-          this.toastController.create({
-            message: 'Ops... Não foi possível registrar o ponto, verifique a rede e tente novamente.',
-            duration: 2000,
-            color: 'danger'
-          }).then(toast => {
-            toast.present();
-          });
         }
-      );
+      }
+    } catch (e) {
+      console.log(e);
+      this.toastController.create({
+        message: 'Ops... Não foi possível registrar o ponto, verifique a rede e tente novamente.',
+        duration: 2000,
+        color: 'danger'
+      }).then(toast => {
+        toast.present();
+      });
     }
   }
 
@@ -299,5 +315,34 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       await this.menu.close();
     }
     await this.menu.enable(status, 'principal');
+  }
+
+  async cancelarNotificacoes(): Promise<void> {
+    if (this.platform.is('cordova')) {
+      await this.localNotifications.cancelAll();
+    }
+    return Promise.resolve();
+  }
+
+  async agendarNotificacao(data: Date): Promise<void> {
+    if (this.platform.is('cordova')) {
+      const notificacao: ILocalNotification = {
+        id: 1,
+        vibrate: true,
+        priority: 2,
+        wakeup: true,
+        lockscreen: true,
+        trigger: {at: subMinutes(data, 1)},
+        launch: true,
+        // data: {secret: '123456'},
+        led: 'FF0000',
+        sound: null,
+        // channel: 'teste',
+        // title: 'CooperSystem',
+        text: 'Seu intervalo de almoço encerra no proximo minuto.',
+      };
+      await this.localNotifications.schedule(notificacao);
+    }
+    return Promise.resolve();
   }
 }

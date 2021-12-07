@@ -14,6 +14,9 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {AuthService} from './core/services/auth.service';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
+import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import {Device} from '@ionic-native/device/ngx';
+import {Badge} from '@ionic-native/badge/ngx';
 import {SharedModule} from './shared/shared.module';
 import {appInitializer} from './core/functions/app-initializer';
 import {registerLocaleData} from '@angular/common';
@@ -40,6 +43,9 @@ registerLocaleData(ptBr);
     StatusBar,
     Geolocation,
     ScreenOrientation,
+    LocalNotifications,
+    Badge,
+    Device,
     {provide: LOCALE_ID, useValue: 'pt-BR'},
     {
       provide: APP_INITIALIZER,
@@ -55,11 +61,12 @@ registerLocaleData(ptBr);
 })
 export class AppModule {
   constructor() {
-    if (localStorage.getItem('opcoes') === null) {
+    if (localStorage.getItem('opcoes') === null || localStorage.getItem('opcoes') === undefined) {
       const opts: any = {
         darkMode: 'automatico',
         loginRemember: true,
-        valorAcumulado: false
+        valorAcumulado: false,
+        intervalo: {value: 30, label: '00:30'}
       };
       localStorage.setItem('opcoes', JSON.stringify(opts));
     }

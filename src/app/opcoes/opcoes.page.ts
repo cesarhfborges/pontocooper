@@ -14,6 +14,7 @@ export class OpcoesPage implements OnInit {
   opcoes: {
     darkMode: Array<{ label: string; value: 'automatico' | 'escuro' | 'claro' }>;
     loginRemember: Array<{ label: string; value: boolean }>;
+    intervalo: Array<{ label: string; value: number }>;
   } = {
     darkMode: [
       {
@@ -38,6 +39,13 @@ export class OpcoesPage implements OnInit {
         label: 'Não',
         value: false
       },
+    ],
+    intervalo: [
+      {value: 30, label: '00:30'},
+      {value: 45, label: '00:45'},
+      {value: 60, label: '01:00'},
+      {value: 90, label: '01:30'},
+      {value: 120, label: '02:00'},
     ]
   };
 
@@ -54,6 +62,7 @@ export class OpcoesPage implements OnInit {
       darkMode: this.fb.control('automatico', [Validators.required]),
       loginRemember: this.fb.control(false, [Validators.required]),
       valorAcumulado: this.fb.control(false, [Validators.required]),
+      intervalo: this.fb.control(30, [Validators.required, Validators.min(30)]),
     });
     const opcoes: any = localStorage.getItem('opcoes');
     this.form.patchValue(JSON.parse(opcoes));
