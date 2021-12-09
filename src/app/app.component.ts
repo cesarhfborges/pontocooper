@@ -187,7 +187,7 @@ export class AppComponent {
 
   private appFocusChange() {
     App.addListener('appStateChange', ({isActive}) => {
-      if (this.authService.isAuthenticated() && isActive) {
+      if (this.authService.isAuthenticated() && this.authService.tokenExpired() && isActive) {
         this.loadingController.create({
           cssClass: 'my-custom-class',
           message: 'Aguarde...',

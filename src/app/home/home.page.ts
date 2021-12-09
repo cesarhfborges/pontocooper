@@ -66,10 +66,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     darkMode: 'automatico' | 'dark' | 'light';
     loginRemember: boolean;
     valorAcumulado: boolean;
-    intervalo: {
-      label: string;
-      value: number;
-    };
+    intervalo: number;
   };
 
   bancoDeHoras: {
@@ -128,9 +125,6 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   ngOnInit(): void {
-    this.getSumario().then();
-    this.getBancoDeHoras().then();
-    this.getTimeLine().then();
     this.platform.backButton.subscribeWithPriority(-1, () => {
       if (!this.routerOutlet.canGoBack()) {
         App.exitApp();
@@ -239,7 +233,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       const input: AlertInput = {
         name: 'pausa',
         type: 'checkbox',
-        label: `Essa é minha pausa de ${this.opcoes.intervalo.label}.`,
+        label: `Essa é minha pausa de ${Ponto.intervalo(this.opcoes.intervalo).label}.`,
         value: true,
         checked: false
       };
@@ -276,10 +270,10 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         if (response !== undefined) {
           this.ponto.baterPonto();
           if (data === true) {
-            const dataHora: Date = addMinutes(new Date(), this.opcoes.intervalo.value);
+            const dataHora: Date = addMinutes(new Date(), this.opcoes.intervalo);
             await this.agendarNotificacao(dataHora);
             const toast: any = await this.toastController.create({
-              message: `Você será notificado em ${this.opcoes.intervalo.label} para não esquecer o ponto. ;)`,
+              message: `Você será notificado em ${Ponto.intervalo(this.opcoes.intervalo).label} para não esquecer o ponto. ;)`,
               duration: 3000,
               color: 'success',
             });
@@ -302,12 +296,16 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     }
   }
 
-  ionViewDidEnter(): void {
+  async ionViewDidEnter(): Promise<void> {
+    await this.getSumario();
+    await this.getBancoDeHoras();
+    await this.getTimeLine();
     const lc: any = localStorage.getItem('opcoes');
     if (lc) {
       this.opcoes = JSON.parse(lc);
     }
-    this.menuControl(true).catch(e => console.log(e));
+    await this.menuControl(true);
+    return Promise.resolve();
   }
 
   async menuControl(status: boolean) {

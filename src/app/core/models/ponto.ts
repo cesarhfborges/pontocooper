@@ -2,6 +2,16 @@ import {addMinutes, addSeconds, differenceInMinutes, set} from 'date-fns';
 
 export class Ponto {
 
+  static intervalos: Array<{
+    label: string;
+    value: number;
+  }> = [
+    {value: 30, label: '00:30'},
+    {value: 45, label: '00:45'},
+    {value: 60, label: '01:00'},
+    {value: 90, label: '01:30'},
+    {value: 120, label: '02:00'},
+  ];
   private listaBatidas: Array<Date>;
 
   constructor(batidas: Array<Date>) {
@@ -33,6 +43,13 @@ export class Ponto {
       return addSeconds(start, res);
     }
     return start;
+  }
+
+  static intervalo(val: number): { label: string; value: number } {
+    if (val) {
+      return Ponto.intervalos.find(i => i.value === val);
+    }
+    return {value: 30, label: '00:30'};
   }
 
   public baterPonto(): void {

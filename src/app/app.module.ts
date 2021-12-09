@@ -66,7 +66,7 @@ export class AppModule {
         darkMode: 'automatico',
         loginRemember: true,
         valorAcumulado: false,
-        intervalo: {value: 30, label: '00:30'}
+        intervalo: 30
       };
       localStorage.setItem('opcoes', JSON.stringify(opts));
     }

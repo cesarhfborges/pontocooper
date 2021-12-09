@@ -79,7 +79,7 @@ export class AuthService {
       const expireDate: Date = parseISO(JSON.parse(atob(l)).expire);
       return new Date() > expireDate;
     }
-    return false;
+    return true;
   }
 
   perfil(): Observable<Usuario> {
@@ -89,7 +89,7 @@ export class AuthService {
   setAuth(auth: any): void {
     const l: IAuth = {
       ...auth,
-      expire: formatISO(addMinutes(new Date(), 2))
+      expire: formatISO(addMinutes(new Date(), 5))
     };
     localStorage.setItem('contents', btoa(JSON.stringify(l)));
     if (!environment.production) {
@@ -105,7 +105,7 @@ export class AuthService {
   updateTokenAuth(newToken: string): void {
     const l = JSON.parse(atob(localStorage.getItem('contents')));
     l.access = newToken;
-    l.expire = formatISO(addMinutes(new Date(), 2));
+    l.expire = formatISO(addMinutes(new Date(), 5));
     localStorage.setItem('contents', btoa(JSON.stringify(l)));
     if (!environment.production) {
       localStorage.setItem('content_DEV', JSON.stringify(l));
