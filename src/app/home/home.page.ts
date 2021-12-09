@@ -92,7 +92,8 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   loading = {
     summary: false,
     timeline: false,
-    bancoDeHoras: false
+    bancoDeHoras: false,
+    opcoes: false
   };
 
   timer: Observable<number>;
@@ -151,6 +152,10 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     this.valorAcumulado = (this.horasTrabalhadas.getHours() * valorHora) +
       (this.horasTrabalhadas.getMinutes() * valorMinuto) +
       (this.horasTrabalhadas.getSeconds() * valorSegundo);
+  }
+
+  isLoading(): boolean {
+    return this.loading.summary || this.loading.bancoDeHoras || this.loading.timeline;
   }
 
   async getDados($event?): Promise<void> {
@@ -297,14 +302,21 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   async ionViewDidEnter(): Promise<void> {
+    await this.loadOptions();
     await this.getSumario();
     await this.getBancoDeHoras();
     await this.getTimeLine();
+    await this.menuControl(true);
+    return Promise.resolve();
+  }
+
+  async loadOptions(): Promise<void> {
+    this.loading.opcoes = true;
     const lc: any = localStorage.getItem('opcoes');
     if (lc) {
       this.opcoes = JSON.parse(lc);
     }
-    await this.menuControl(true);
+    this.loading.opcoes = false;
     return Promise.resolve();
   }
 
