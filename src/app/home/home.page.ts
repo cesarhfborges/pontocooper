@@ -350,7 +350,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         sound: null,
         // channel: 'teste',
         // title: 'CooperSystem',
-        text: 'Seu intervalo de almoço encerra no proximo minuto.',
+        text: 'Seu intervalo se encerra no próximo minuto.',
       };
       await this.localNotifications.schedule(notificacao);
     }
