@@ -1,4 +1,5 @@
-import {addMinutes, addSeconds, differenceInMinutes, set} from 'date-fns';
+import {addMinutes, addSeconds, differenceInMinutes, differenceInSeconds, formatISO, parseISO, set} from 'date-fns';
+import {Observable, of} from 'rxjs';
 
 export class Ponto {
 
@@ -54,6 +55,30 @@ export class Ponto {
 
   public baterPonto(): void {
     this.listaBatidas.push(new Date());
+  }
+
+  setIntervalo(intervalo: boolean = false, tempo: number = 0): void {
+    if (intervalo) {
+      localStorage.setItem('intervalo', formatISO(addMinutes(new Date(), tempo)));
+    } else {
+      localStorage.removeItem('intervalo');
+    }
+  }
+
+  getIntervalo(): Observable<Date> {
+    const dataHora: Date = set(new Date(), {
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    });
+    const ls = localStorage.getItem('intervalo');
+    if (ls !== null && ls !== undefined) {
+      const intervalo: Date = parseISO(ls);
+      const diff: number = differenceInSeconds(intervalo, new Date());
+      return of(addSeconds(dataHora, diff));
+    }
+    return of(dataHora);
   }
 
   public addPonto(data: Date): void {

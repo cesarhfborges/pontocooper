@@ -36,33 +36,37 @@
         </ion-col>
         <ion-col size="6">
           <h2>Aprovadas:</h2>
-          <h1>{{bancoDeHoras.balance}}h</h1>
+          <h1>{{bancoDeHoras?.balance ?? '0'}}h</h1>
         </ion-col>
         <ion-col size="6">
           <h2>Em análise:</h2>
-          <h1>{{bancoDeHoras.pending}}h</h1>
+          <h1>{{bancoDeHoras?.pending ?? '0'}}h</h1>
         </ion-col>
         <ion-col size="6">
           <h2>Jornada:</h2>
-          <h1>{{summary.workingHours}}h</h1>
+          <h1>{{summary?.workingHours ?? '0'}}h</h1>
         </ion-col>
         <ion-col size="6">
           <h2>Carga Horária:</h2>
-          <h1>{{summary.hoursToWork}}h</h1>
+          <h1>{{summary?.hoursToWork ?? '0'}}h</h1>
         </ion-col>
         <ion-col size="6">
           <h2>Dias úteis:</h2>
-          <h1>{{summary.businessDays}}</h1>
+          <h1>{{summary?.businessDays ?? '0'}}</h1>
         </ion-col>
         <ion-col size="6">
           <h2>Restante:</h2>
-          <h1>{{summary.remainingHours}}h</h1>
+          <h1>{{summary?.remainingHours ?? '0'}}h</h1>
         </ion-col>
       </ion-row>
 
       <ion-list [@slideOutAnimation]="ponto?.batidas?.length">
         <ion-item *ngFor="let batida of ponto.batidas; let i = index">
-          <ion-icon [color]="i % 2 === 0 ? 'success' : 'danger'" name="pin" slot="start"></ion-icon>
+          <ion-icon
+            [color]="i % 2 === 0 ? 'success' : 'danger'"
+            [name]="i % 2 === 0 ? 'arrow-forward-outline' : 'arrow-back-outline'"
+            slot="start"
+          ></ion-icon>
           <h1>{{batida | date : 'HH:mm:ss'}}</h1>
         </ion-item>
       </ion-list>
@@ -79,11 +83,11 @@
         expand="block"
         [color]="ponto.trabalhando ? 'danger' : 'success'"
         (click)="registrarPonto()"
-        [disabled]="isLoading() || ponto.isInterval()"
+        [disabled]="isLoading()"
         style="margin-top: 10px;"
       >
         <ion-icon slot="start" [name]="ponto.trabalhando ? 'exit-outline' : 'enter-outline'"></ion-icon>
-        {{ponto.trabalhando ? 'Saida' : 'Entrada' + (ponto.isInterval() ? ponto.getTempoPonto() : '')}}
+        {{ponto.trabalhando ? ' Saida ' : ' Entrada ' + (ponto.isInterval() ? ((ponto.getIntervalo() | async) | date : 'HH:mm:ss') : '')}}
       </ion-button>
     </ion-card-content>
   </ion-card>

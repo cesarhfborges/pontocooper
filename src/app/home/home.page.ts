@@ -274,6 +274,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         }).toPromise();
         if (response !== undefined) {
           this.ponto.baterPonto();
+          this.ponto.setIntervalo(data, this.opcoes.intervalo);
           if (data === true) {
             const dataHora: Date = addMinutes(new Date(), this.opcoes.intervalo);
             await this.agendarNotificacao(dataHora);
