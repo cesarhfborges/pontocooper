@@ -78,7 +78,7 @@ export class Ponto {
       const diff: number = differenceInSeconds(intervalo, new Date());
       return of(addSeconds(dataHora, diff));
     }
-    return of(dataHora);
+    return of(undefined);
   }
 
   public addPonto(data: Date): void {
