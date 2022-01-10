@@ -15,9 +15,10 @@ import {Ponto} from '../core/models/ponto';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {ILocalNotification, LocalNotifications} from '@ionic-native/local-notifications/ngx';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
-import {addMinutes, format, getHours, parseISO, set, subMinutes} from 'date-fns';
+import {addMinutes, addSeconds, format, getHours, parseISO, set, subMinutes} from 'date-fns';
 import {Observable, timer} from 'rxjs';
 import {App} from '@capacitor/app';
+import {distinctUntilChanged, take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -110,6 +111,12 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     private routerOutlet: IonRouterOutlet,
     private localNotifications: LocalNotifications
   ) {
+    this.localNotifications.on('click').pipe(distinctUntilChanged()).toPromise().then(success => {
+      console.log(success);
+      // await this.cancelarNotificacoes();
+    }).catch(e => {
+      console.log(e);
+    });
     this.timer = timer(1000, 1000);
     this.dataAtual = new Date();
     const batidas: Array<Date> = [];
@@ -234,7 +241,6 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
 
   async registrarPonto() {
     try {
-      await this.cancelarNotificacoes();
       const input: AlertInput = {
         name: 'pausa',
         type: 'checkbox',
@@ -267,6 +273,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       await alert.present();
       const {data} = await alert.onDidDismiss();
       if (data !== undefined) {
+        await this.cancelarNotificacoes();
         const response: any = await this.dadosService.baterPonto({
           check_in: !this.ponto.trabalhando,
           latitude: this.coords.lat,
@@ -339,18 +346,21 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     if (this.platform.is('cordova')) {
       const notificacao: ILocalNotification = {
         id: 1,
-        vibrate: true,
         priority: 2,
+        vibrate: true,
         wakeup: true,
         lockscreen: true,
-        trigger: {at: subMinutes(data, 1)},
         launch: true,
-        // data: {secret: '123456'},
+        sticky: true,
+        clock: false,
+        silent: false,
+        autoClear: true,
+        badge: 0,
         led: 'FF0000',
-        sound: null,
-        // channel: 'teste',
-        // title: 'CooperSystem',
+        group: 'ponto',
         text: 'Seu intervalo se encerra no próximo minuto.',
+        title: 'Ponto',
+        trigger: {after: subMinutes(data, 1)},
       };
       await this.localNotifications.schedule(notificacao);
     }

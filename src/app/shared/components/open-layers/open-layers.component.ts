@@ -3,12 +3,13 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import {OSM} from 'ol/source';
-import {Icon, Style} from 'ol/style';
+import {Fill, Icon, Style} from 'ol/style';
 import {Feature} from 'ol';
-import {Point} from 'ol/geom';
+import {Circle, Point} from 'ol/geom';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import {transform} from 'ol/proj';
+import {Observable, timer} from 'rxjs';
 
 interface Position {
   latitude: number;
@@ -24,7 +25,10 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
 
   map: Map;
 
+  timer: Observable<number>;
+
   constructor() {
+    this.timer = timer(1000, 1000);
   }
 
   static transformarCoordenadas(latitude, longitude): Array<number> {
@@ -35,9 +39,6 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
   static createPin(latitude: number, longitude: number): VectorLayer<any> {
     const iconFeature = new Feature({
       geometry: new Point(OpenLayersComponent.transformarCoordenadas(latitude, longitude)),
-      name: 'Null Island',
-      population: 4000,
-      rainfall: 500,
     });
 
     const iconStyle = new Style({
@@ -50,6 +51,39 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
     });
 
     iconFeature.setStyle(iconStyle);
+
+    const vectorSource = new VectorSource({
+      features: [iconFeature],
+    });
+
+    return new VectorLayer({
+      source: vectorSource,
+    });
+  }
+
+  createPinMarker(latitude: number, longitude: number): VectorLayer<any> {
+    const iconFeature = new Feature({
+      geometry: new Circle(OpenLayersComponent.transformarCoordenadas(latitude, longitude), 50),
+      name: 'GPSATUAL'
+    });
+
+    iconFeature.setGeometryName('PinMarker');
+
+    iconFeature.setStyle(new Style({
+      renderer: (coordinates, state) => {
+        const ctx = state.context;
+        console.log('CTX: ', ctx);
+        ctx.beginPath();
+        // const gradient = ctx.strokeStyle;
+        // gradient.addColorStop(0, 'rgba(255,0,0,0)');
+        // gradient.addColorStop(0.6, 'rgba(255,0,0,0.2)');
+        // gradient.addColorStop(1, 'rgba(255,0,0,0.8)');
+        // ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
+        ctx.stroke();
+      },
+    }));
 
     const vectorSource = new VectorSource({
       features: [iconFeature],
@@ -77,9 +111,16 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.map.addLayer(this.createPinMarker(-15.8951013, -48.116222));
+    console.log('layers: ', this.map.getLayers().getArray()[1].getLayersArray());
+    this.timer.subscribe(() => {
       this.map.updateSize();
-    }, 500);
+      // this.horasTrabalhadas = this.ponto.horasTrabalhadas;
+      // this.calculaValor(82);
+      // console.log('layers: ', this.map.getLayers().getArray()[1]);
+      // this.map.getLayers().getArray();
+      // this.map.addLayer(this.createPinMarker(-15.8951013, -48.116222));
+    });
   }
 
   addLocations(locations: Array<Position>): void {

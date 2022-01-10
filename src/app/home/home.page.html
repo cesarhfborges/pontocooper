@@ -89,6 +89,7 @@
         <ion-icon slot="start" [name]="ponto.trabalhando ? 'exit-outline' : 'enter-outline'"></ion-icon>
         {{ponto.trabalhando ? ' Saida ' : ' Entrada ' + (ponto.isInterval() ? (((ponto.getIntervalo() | async) | date : 'HH:mm:ss') ?? '') : '')}}
       </ion-button>
+
     </ion-card-content>
   </ion-card>
 </ion-content>
