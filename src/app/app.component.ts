@@ -10,6 +10,7 @@ import {AndroidShortcuts} from 'capacitor-android-shortcuts';
 import {App} from '@capacitor/app';
 import {delay} from 'rxjs/operators';
 import npm from '../../package.json';
+import {DadosService} from './core/services/dados.service';
 
 interface Menu {
   label: string;
@@ -60,6 +61,7 @@ export class AppComponent {
   ];
 
   constructor(
+    private dadosService: DadosService,
     private themeDetection: ThemeDetection,
     private toastsService: ToastsService,
     private platform: Platform,
@@ -70,9 +72,11 @@ export class AppComponent {
     private localNotifications: LocalNotifications
   ) {
     if (this.platform.is('cordova')) {
-      this.addShortCut().then();
-      this.lockScreen().then();
-      this.permissaoNotif().then();
+      this.addDynamicShortCuts().catch();
+      this.addPinnedShortCuts().catch();
+      this.listenShortCuts().catch();
+      this.lockScreen().catch();
+      this.permissaoNotif().catch();
     }
     const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
     switch (darkMode) {
@@ -119,7 +123,15 @@ export class AppComponent {
     return Promise.resolve();
   }
 
-  async addShortCut(): Promise<void> {
+  private async addPinnedShortCuts() {
+    const {result} = await AndroidShortcuts.isPinnedSupported();
+    if (result) {
+
+    }
+    return Promise.resolve();
+  }
+
+  private async addDynamicShortCuts(): Promise<void> {
     const {result} = await AndroidShortcuts.isDynamicSupported();
     if (result) {
       await AndroidShortcuts.addDynamic({
@@ -176,13 +188,8 @@ export class AppComponent {
           },
         ],
       });
-      await AndroidShortcuts.addListener('shortcut', listen => {
-        if (listen.data) {
-          this.router.navigate([`${listen.data}`]);
-        }
-      });
-      return Promise.resolve();
     }
+    return Promise.resolve();
   }
 
   private appFocusChange() {
@@ -211,5 +218,25 @@ export class AppComponent {
         });
       }
     });
+  }
+
+  private async listenShortCuts() {
+    const dynamicSupported = await AndroidShortcuts.isDynamicSupported();
+    const pinnedSupported = await AndroidShortcuts.isPinnedSupported();
+    if (dynamicSupported.result || pinnedSupported.result) {
+      await AndroidShortcuts.addListener('shortcut', listen => {
+        console.log('LISTEN: ', listen);
+        if (listen.data === 'ponto') {
+          // const response: any = await this.dadosService.baterPonto({
+          //   check_in: !this.ponto.trabalhando,
+          //   latitude: this.coords.lat,
+          //   longitude: this.coords.lon
+          // }).toPromise();
+          // this.router.navigate([`/home`], {state: {registrar: true}, skipLocationChange: false});
+        } else if (listen.data) {
+          this.router.navigate([`${listen.data}`]);
+        }
+      });
+    }
   }
 }
