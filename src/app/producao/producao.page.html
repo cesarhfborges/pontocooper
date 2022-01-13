@@ -1,18 +1,16 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" id="header">
   <ion-toolbar color="primary">
     <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
     <ion-img src="assets/logo-horizontal-white.png" style="height: 45px;"></ion-img>
     <ion-buttons slot="end">
-      <ion-button (click)="hoje.click()" fill="clear" size="large">
+      <ion-button (click)="scrollTo()" fill="clear" size="large">
         <ion-icon name="calendar"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <!--suppress HtmlUnknownTarget -->
-  <a #hoje href="/producao#hoje" style="visibility: hidden;"></a>
 </ion-header>
 
-<ion-content>
+<ion-content [scrollEvents]="true">
   <ion-item lines="none" class="ion-margin">
     <ion-icon name="calendar-number-sharp" color="primary" slot="end" style="font-size: 2.4rem;"></ion-icon>
     <ion-label position="stacked">Mês/Ano:</ion-label>

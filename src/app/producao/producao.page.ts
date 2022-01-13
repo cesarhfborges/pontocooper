@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {AlertController, ModalController, Platform} from '@ionic/angular';
+import {AlertController, IonContent, ModalController, Platform} from '@ionic/angular';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AuthService} from '../core/services/auth.service';
 import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
@@ -9,6 +9,7 @@ import {ToastsService} from '../shared/services/toasts.service';
 import {Dia} from '../core/models/dia';
 import {endOfMonth, formatISO, getMonth, getYear, isSameDay, parseISO, set, startOfMonth, subYears} from 'date-fns';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-producao',
@@ -30,6 +31,8 @@ import {animate, query, stagger, style, transition, trigger} from '@angular/anim
   ]
 })
 export class ProducaoPage implements OnInit {
+
+  @ViewChild(IonContent, null) content: IonContent;
 
   producao: Array<Dia>;
 
@@ -63,7 +66,8 @@ export class ProducaoPage implements OnInit {
     private platform: Platform,
     private statusBar: StatusBar,
     private toastsService: ToastsService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private route: ActivatedRoute
   ) {
   }
 
@@ -143,5 +147,15 @@ export class ProducaoPage implements OnInit {
   isNow(data: string): boolean {
     const dt: Date = parseISO(data);
     return isSameDay(dt, new Date());
+  }
+
+  async scrollTo() {
+    const header = document.getElementById('header');
+    const anchor = document.getElementById('hoje');
+    const posicao = anchor.getBoundingClientRect().top - header.clientHeight - 9;
+    // anchor.scrollIntoView({behavior: 'smooth', block: 'start'});
+    // window.scrollTo({top: posicao, behavior: 'smooth'});
+    // const posicao = anchor.getBoundingClientRect().top - header.clientHeight - 9;
+    await this.content.scrollByPoint(0, posicao, 800);
   }
 }
