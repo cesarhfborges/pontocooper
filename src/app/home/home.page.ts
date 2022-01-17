@@ -96,7 +96,8 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     summary: false,
     timeline: false,
     bancoDeHoras: false,
-    opcoes: false
+    opcoes: false,
+    perfil: false
   };
 
   timer: Observable<number>;
@@ -123,7 +124,6 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     this.dataAtual = new Date();
     const batidas: Array<Date> = [];
     this.ponto = new Ponto(batidas);
-    this.perfil = this.authService.dadosPerfil();
     this.timer.subscribe(() => {
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
       // TODO: AJUSTAR AQUI
@@ -139,6 +139,14 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   ngOnInit(): void {
+    this.loading.perfil = true;
+    this.authService.perfil().subscribe(response => {
+        this.perfil = response;
+        this.loading.perfil = false;
+      },
+      error => {
+        this.loading.perfil = false;
+      });
     this.platform.backButton.subscribeWithPriority(-1, () => {
       if (!this.routerOutlet.canGoBack()) {
         App.exitApp();
@@ -168,7 +176,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   isLoading(): boolean {
-    return this.loading.summary || this.loading.bancoDeHoras || this.loading.timeline;
+    return this.loading.summary || this.loading.bancoDeHoras || this.loading.timeline || this.loading.perfil;
   }
 
   async getDados($event?): Promise<void> {

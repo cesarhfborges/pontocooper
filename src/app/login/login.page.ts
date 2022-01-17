@@ -86,10 +86,7 @@ export class LoginPage implements OnInit, ViewDidEnter {
         () => {
           this.form.enable();
           this.loading = false;
-          this.authService.perfil().subscribe(response => {
-            localStorage.setItem('perfil', JSON.stringify(response));
-            this.router.navigate(['/home']).then();
-          });
+          this.router.navigate(['/home']).then();
         },
         error => {
           console.log(error);

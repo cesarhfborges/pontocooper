@@ -82,14 +82,6 @@ export class AuthService {
     return true;
   }
 
-  dadosPerfil() {
-    const perfil: any = localStorage.getItem('perfil');
-    if (perfil) {
-      return JSON.parse(perfil);
-    }
-    return null;
-  }
-
   perfil(): Observable<Usuario> {
     return this.http.get<Usuario>(`${environment.apiUrl}/person/current`);
   }
