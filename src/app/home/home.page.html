@@ -71,7 +71,7 @@
         </ion-item>
       </ion-list>
       <h1 style="margin-top: 30px; text-align: center; font-size: 2rem;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>
-      <h2 *ngIf="opcoes?.valorAcumulado"
+      <h2 *ngIf="opcoes?.valorAcumulado && perfil"
           style="margin-top: 0; text-align: center;font-size: 1.4rem;">{{valorAcumulado | currency : 'BRL' : 'R$ ' : '1.2-2'}}</h2>
       <ion-progress-bar
         [color]="jornadaDiaria > 99 ? 'success' : 'warning'"

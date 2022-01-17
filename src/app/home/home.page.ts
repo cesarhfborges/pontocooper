@@ -119,15 +119,17 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     }).catch(e => {
       console.log(e);
     });
-    this.perfil = this.authService.dadosPerfil();
     this.timer = timer(1000, 1000);
     this.dataAtual = new Date();
     const batidas: Array<Date> = [];
     this.ponto = new Ponto(batidas);
+    this.perfil = this.authService.dadosPerfil();
     this.timer.subscribe(() => {
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
       // TODO: AJUSTAR AQUI
-      this.calculaValor(this.perfil.hourly_rate as number);
+      if (this.perfil) {
+        this.calculaValor(this.perfil.hourly_rate as number);
+      }
     });
   }
 
