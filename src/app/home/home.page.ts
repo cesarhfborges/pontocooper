@@ -63,6 +63,8 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     lon: -47.9481004
   };
 
+  perfil: any;
+
   opcoes: {
     darkMode: 'automatico' | 'dark' | 'light';
     loginRemember: boolean;
@@ -117,13 +119,15 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     }).catch(e => {
       console.log(e);
     });
+    this.perfil = this.authService.dadosPerfil();
     this.timer = timer(1000, 1000);
     this.dataAtual = new Date();
     const batidas: Array<Date> = [];
     this.ponto = new Ponto(batidas);
     this.timer.subscribe(() => {
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
-      this.calculaValor(82);
+      // TODO: AJUSTAR AQUI
+      this.calculaValor(this.perfil.hourly_rate as number);
     });
   }
 
