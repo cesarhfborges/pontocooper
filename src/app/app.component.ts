@@ -79,7 +79,9 @@ export class AppComponent {
       this.listenShortCuts().catch();
       this.lockScreen().catch();
       this.permissaoNotif().catch();
+      this.backgroundMode.setDefaults({silent: true});
       this.backgroundMode.enable();
+      this.backgroundMode.overrideBackButton();
     }
     const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
     switch (darkMode) {

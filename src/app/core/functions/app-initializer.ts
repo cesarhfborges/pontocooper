@@ -15,7 +15,7 @@ const appInitializer = (authService: AuthService, loadingController: LoadingCont
     }).then((l: any) => {
       l.present();
       authService.refreshToken(authService.getRefreshToken())
-        .pipe(delay(900))
+        .pipe(delay(700))
         .subscribe(
           () => {
             l.dismiss();
