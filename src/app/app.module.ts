@@ -18,6 +18,7 @@ import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 import {Device} from '@ionic-native/device/ngx';
 import {Badge} from '@ionic-native/badge/ngx';
 import {SharedModule} from './shared/shared.module';
+import {BackgroundMode} from '@awesome-cordova-plugins/background-mode/ngx';
 import {appInitializer} from './core/functions/app-initializer';
 import {registerLocaleData} from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
@@ -46,6 +47,7 @@ registerLocaleData(ptBr);
     LocalNotifications,
     Badge,
     Device,
+    BackgroundMode,
     {provide: LOCALE_ID, useValue: 'pt-BR'},
     {
       provide: APP_INITIALIZER,

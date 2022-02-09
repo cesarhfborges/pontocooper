@@ -6,11 +6,12 @@ import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 import {AuthService} from './core/services/auth.service';
 import {Router} from '@angular/router';
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import {BackgroundMode} from '@awesome-cordova-plugins/background-mode/ngx';
+import {DadosService} from './core/services/dados.service';
 import {AndroidShortcuts} from 'capacitor-android-shortcuts';
 import {App} from '@capacitor/app';
 import {delay} from 'rxjs/operators';
 import npm from '../../package.json';
-import {DadosService} from './core/services/dados.service';
 
 interface Menu {
   label: string;
@@ -69,7 +70,8 @@ export class AppComponent {
     private authService: AuthService,
     private router: Router,
     private loadingController: LoadingController,
-    private localNotifications: LocalNotifications
+    private localNotifications: LocalNotifications,
+    private backgroundMode: BackgroundMode
   ) {
     if (this.platform.is('cordova')) {
       this.addDynamicShortCuts().catch();
@@ -77,6 +79,7 @@ export class AppComponent {
       this.listenShortCuts().catch();
       this.lockScreen().catch();
       this.permissaoNotif().catch();
+      this.backgroundMode.enable();
     }
     const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
     switch (darkMode) {
