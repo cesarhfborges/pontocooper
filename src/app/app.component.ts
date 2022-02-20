@@ -79,9 +79,8 @@ export class AppComponent {
       this.listenShortCuts().catch();
       this.lockScreen().catch();
       this.permissaoNotif().catch();
-      this.backgroundMode.setDefaults({silent: true});
+      this.backgroundMode.setDefaults({silent: true, resume: true, hidden: false});
       this.backgroundMode.enable();
-      this.backgroundMode.overrideBackButton();
     }
     const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
     switch (darkMode) {
@@ -108,7 +107,6 @@ export class AppComponent {
       const isDarkModeEnabled = await this.themeDetection.isDarkModeEnabled();
       if (isDarkModeEnabled.value) {
         document.body.setAttribute('data-theme', 'dark');
-        this.toastsService.showToast(isDarkModeEnabled.value ? 'Modo escuro ativo.' : 'Modo escuro inativo.');
       }
     }
   }

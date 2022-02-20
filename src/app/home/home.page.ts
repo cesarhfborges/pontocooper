@@ -15,10 +15,10 @@ import {Ponto} from '../core/models/ponto';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {ILocalNotification, LocalNotifications} from '@ionic-native/local-notifications/ngx';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
-import {addMinutes, addSeconds, format, getHours, parseISO, set, subMinutes} from 'date-fns';
+import {addMinutes, format, getHours, parseISO, set, subMinutes} from 'date-fns';
 import {Observable, timer} from 'rxjs';
 import {App} from '@capacitor/app';
-import {distinctUntilChanged, take} from 'rxjs/operators';
+import {distinctUntilChanged} from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -27,14 +27,6 @@ import {distinctUntilChanged, take} from 'rxjs/operators';
   animations: [
     trigger('slideOutAnimation', [
       transition('* => *', [
-        query(':enter',
-          style({opacity: 0, transform: 'translateX(-30px)'}),
-          {optional: true}
-        ),
-        query(':enter', stagger(150, [
-          style({opacity: 0, transform: 'translateX(-30px)'}),
-          animate('250ms ease-in-out', style({opacity: 1, transform: 'translateX(0)'}))
-        ]), {optional: true}),
         query(':leave',
           style({opacity: 1}),
           {optional: true}
@@ -43,11 +35,20 @@ import {distinctUntilChanged, take} from 'rxjs/operators';
             style({opacity: 1}),
             animate('600ms ease-in-out', style({opacity: 0}))],
           {optional: true}
-        )
+        ),
+        query(':enter',
+          style({opacity: 0, transform: 'translateX(-30px)'}),
+          {optional: true}
+        ),
+        query(':enter', stagger(150, [
+          style({opacity: 0, transform: 'translateX(-30px)'}),
+          animate('250ms ease-in-out', style({opacity: 1, transform: 'translateX(0)'}))
+        ]), {optional: true}),
       ])
     ]),
   ]
 })
+
 export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
 
   ponto: Ponto;
@@ -93,11 +94,11 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   };
 
   loading = {
-    summary: false,
-    timeline: false,
-    bancoDeHoras: false,
-    opcoes: false,
-    perfil: false
+    summary: true,
+    timeline: true,
+    bancoDeHoras: true,
+    opcoes: true,
+    perfil: true
   };
 
   timer: Observable<number>;
@@ -125,6 +126,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     const batidas: Array<Date> = [];
     this.ponto = new Ponto(batidas);
     this.timer.subscribe(() => {
+      this.dataAtual = new Date();
       this.horasTrabalhadas = this.ponto.horasTrabalhadas;
       // TODO: AJUSTAR AQUI
       if (this.perfil) {
@@ -180,10 +182,14 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   async getDados($event?): Promise<void> {
-    await this.getSumario();
-    await this.getBancoDeHoras();
-    await this.getTimeLine();
-    $event.target.complete();
+    try {
+      await this.getSumario();
+      await this.getBancoDeHoras();
+      await this.getTimeLine();
+      $event.target.complete();
+    } catch (e) {
+      $event.target.cancel();
+    }
   }
 
   async getBancoDeHoras(): Promise<void> {
@@ -191,6 +197,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       this.loading.bancoDeHoras = true;
       this.bancoDeHoras = await this.dadosService.getBancoDeHoras().toPromise();
       this.loading.bancoDeHoras = false;
+      return Promise.resolve();
     } catch (e) {
       console.log(e);
       this.bancoDeHoras = {
@@ -203,6 +210,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         color: 'danger'
       });
       await toast.present();
+      return Promise.reject('error');
     }
   }
 
@@ -215,6 +223,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         this.ponto.addPonto(parseISO(batida.worktime_clock));
       }
       this.loading.timeline = false;
+      return Promise.resolve();
     } catch (e) {
       const toast = await this.toastController.create({
         message: 'Erro ao obter linha do tempo, verifique a rede.',
@@ -222,6 +231,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         color: 'danger'
       });
       await toast.present();
+      return Promise.reject('error');
     }
   }
 
@@ -237,6 +247,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         remainingHours: sumario.remaining_hours
       };
       this.loading.summary = false;
+      return Promise.resolve();
     } catch (e) {
       this.summary = {
         workingHours: 0,
@@ -250,6 +261,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         color: 'danger'
       });
       await toast.present();
+      return Promise.reject('error');
     }
   }
 
@@ -285,6 +297,9 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         inputs: this.ponto.trabalhando ? [input] : []
       });
       await alert.present();
+      setTimeout(() => {
+        this.alertController.dismiss();
+      }, 120000);
       const {data} = await alert.onDidDismiss();
       if (data !== undefined) {
         await this.cancelarNotificacoes();
@@ -311,6 +326,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
           }
         }
       }
+      return Promise.resolve();
     } catch (e) {
       console.log(e);
       this.toastController.create({
@@ -320,6 +336,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       }).then(toast => {
         toast.present();
       });
+      return Promise.reject('error');
     }
   }
 

@@ -24,7 +24,7 @@ export class Ponto {
   }
 
   get trabalhando(): boolean {
-    return this.listaBatidas && this.listaBatidas.length > 0 && this.listaBatidas.length % 2 === 1;
+    return this.listaBatidas?.length > 0 && this.listaBatidas.length % 2 === 1;
   }
 
   get horasTrabalhadas(): Date {

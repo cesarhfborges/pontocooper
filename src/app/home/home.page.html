@@ -25,7 +25,7 @@
       <ion-icon color="tertiary" name="planet" slot="start"></ion-icon>
       <ion-label>Produção de hoje</ion-label>
       <ion-button fill="outline" slot="end">
-        {{(dataAtual | date : 'dd') + ' de ' + (dataAtual | date : 'MMMM')}}
+        {{(dataAtual | date : 'ccc dd') + ' de ' + (dataAtual | date : 'MMMM')}}
       </ion-button>
     </ion-item>
 
@@ -60,36 +60,64 @@
         </ion-col>
       </ion-row>
 
+      <p>
+        Entradas/Saídas:
+      </p>
+
       <ion-list [@slideOutAnimation]="ponto?.batidas?.length">
-        <ion-item *ngFor="let batida of ponto.batidas; let i = index">
-          <ion-icon
-            [color]="i % 2 === 0 ? 'success' : 'danger'"
-            [name]="i % 2 === 0 ? 'arrow-forward-outline' : 'arrow-back-outline'"
-            slot="start"
-          ></ion-icon>
-          <h1>{{batida | date : 'HH:mm:ss'}}</h1>
-        </ion-item>
+        <ng-template [ngIf]="!loading.timeline && ponto?.batidas?.length > 0" [ngIfElse]="listaVazia">
+          <ion-item *ngFor="let batida of ponto?.batidas; let i = index">
+            <ion-icon
+              [color]="i % 2 === 0 ? 'success' : 'danger'"
+              [name]="i % 2 === 0 ? 'arrow-forward-outline' : 'arrow-back-outline'"
+              slot="start"
+            ></ion-icon>
+            <h1>{{batida | date : 'HH:mm:ss'}}</h1>
+          </ion-item>
+        </ng-template>
+        <ng-template #listaVazia>
+          <ion-item>
+            <ion-icon
+              [color]="loading.timeline ? 'tertiary': 'warning'"
+              [name]="loading.timeline ? 'hourglass-outline' : 'information-outline'"
+              slot="start"
+            ></ion-icon>
+            <ion-label [color]="loading.timeline ? 'tertiary': 'warning'">
+              {{loading.timeline ? 'Carregando...' : 'Nenhum ponto registrado hoje.'}}
+            </ion-label>
+          </ion-item>
+        </ng-template>
       </ion-list>
-      <h1 style="margin-top: 30px; text-align: center; font-size: 2rem;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>
-      <h2 *ngIf="opcoes?.valorAcumulado && perfil"
-          style="margin-top: 0; text-align: center;font-size: 1.4rem;">{{valorAcumulado | currency : 'BRL' : 'R$ ' : '1.2-2'}}</h2>
-      <ion-progress-bar
-        [color]="jornadaDiaria > 99 ? 'success' : 'warning'"
-        [value]="jornadaDiaria / 100"
-      ></ion-progress-bar>
-      <ion-button
-        size="large"
-        type="button"
-        expand="block"
-        [color]="ponto.trabalhando ? 'danger' : 'success'"
-        (click)="registrarPonto()"
-        [disabled]="isLoading()"
-        style="margin-top: 10px;"
-      >
-        <ion-icon slot="start" [name]="ponto.trabalhando ? 'exit-outline' : 'enter-outline'"></ion-icon>
-        {{ponto.trabalhando ? ' Saida ' : ' Entrada ' + (ponto.isInterval() ? (((ponto.getIntervalo() | async) | date : 'HH:mm:ss') ?? '') : '')}}
-      </ion-button>
 
     </ion-card-content>
   </ion-card>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar style="padding: 0 10px 10px 10px;">
+    <div style="margin-bottom: 0; margin-top: 0;">
+      <ion-progress-bar
+        [buffer]="ponto?.trabalhando && jornadaDiaria < 100 ? 0 : 1"
+        [color]="jornadaDiaria > 99 ? 'success' : 'warning'"
+        [value]="jornadaDiaria / 100"
+      ></ion-progress-bar>
+    </div>
+    <h1
+      style="margin-top: 9px; margin-bottom: 0; text-align: center; font-size: 2rem;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>
+    <h2 *ngIf="opcoes?.valorAcumulado && perfil"
+        style="margin-top: 0; margin-bottom: 0; text-align: center;font-size: 1.4rem;"
+    >{{valorAcumulado | currency : 'BRL' : 'R$ ' : '1.2-2'}}</h2>
+    <ion-button
+      size="large"
+      type="button"
+      expand="block"
+      [color]="ponto?.trabalhando ? 'danger' : 'success'"
+      (click)="registrarPonto()"
+      [disabled]="isLoading()"
+      style="margin-top: 4px;"
+    >
+      <ion-icon slot="start" [name]="ponto?.trabalhando ? 'exit-outline' : 'enter-outline'"></ion-icon>
+      {{ponto?.trabalhando ? ' Saida ' : ' Entrada ' + (ponto?.isInterval() ? (((ponto?.getIntervalo() | async) | date : 'HH:mm:ss') ?? '') : '')}}
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
