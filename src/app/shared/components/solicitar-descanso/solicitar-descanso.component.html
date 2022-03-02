@@ -31,14 +31,14 @@
       </ion-card-header>
       <ion-card-content>
 
-        <ion-item>
-          <ion-label position="stacked">Período:</ion-label>
-          <ion-select formControlName="periodo">
-            <ion-select-option *ngFor="let p of periodos; let i = index" [value]="p">
-              {{p.de | date : 'dd/MM/yy'}} - {{p.ate | date : 'dd/MM/yy'}}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
+<!--        <ion-item>-->
+<!--          <ion-label position="stacked">Período:</ion-label>-->
+<!--          <ion-select formControlName="periodo">-->
+<!--            <ion-select-option *ngFor="let p of periodos; let i = index" [value]="p">-->
+<!--              {{p.de | date : 'dd/MM/yy'}} - {{p.ate | date : 'dd/MM/yy'}}-->
+<!--            </ion-select-option>-->
+<!--          </ion-select>-->
+<!--        </ion-item>-->
 
         <ng-template [ngIf]="tipo === 'ferias'" [ngIfElse]="elAbono">
           Ferias
