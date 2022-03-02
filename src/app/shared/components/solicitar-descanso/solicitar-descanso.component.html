@@ -15,16 +15,16 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="form">
+  <form [formGroup]="form" (submit)="onSubmit()">
     <ion-card>
       <ion-card-header>
         <ion-item>
           <ion-buttons class="btn-toggle">
-            <ion-button (click)="tipo = 'ferias'" [class.active]="tipo === 'ferias'" color="primary" size="large">
-              Férias
-            </ion-button>
             <ion-button (click)="tipo = 'abono'" [class.active]="tipo === 'abono'" color="primary" size="large">
               Abono
+            </ion-button>
+            <ion-button (click)="tipo = 'ausencia'" [class.active]="tipo === 'ausencia'" color="primary" size="large">
+              Ausência
             </ion-button>
           </ion-buttons>
         </ion-item>
@@ -44,60 +44,78 @@
           Ferias
         </ng-template>
         <ng-template #elAbono>
-          <ion-item>
-            <div class="info">
-              saldo: {{abono}}
-            </div>
-          </ion-item>
+          <!--          <ion-item>-->
+          <!--            <div class="info">-->
+          <!--              saldo: {{abono}}-->
+          <!--            </div>-->
+          <!--          </ion-item>-->
           <ion-item>
             <ion-label position="stacked">Data de abono:</ion-label>
             <ion-datetime
-              displayFormat="DD MMMM YYYY"
-              placeholder="Select Date"
+              displayFormat="DD/MM/YYYY"
+              pickerFormat="DD MMMM YYYY"
+              placeholder="Selecione uma data"
               doneText="Selecionar"
               cancelText="Cancelar"
               [min]="dt.min"
               [max]="dt.max"
+              formControlName="periodo"
               monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
               monthNames="Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro"
             ></ion-datetime>
           </ion-item>
+
           <ion-item>
-            <ion-label position="stacked">Duração (dias úteis):</ion-label>
-            <ion-range *ngIf="abono > 0" min="1" [max]="abono" step="1" pin="true" snaps="true" ticks="true">
-              <ion-icon size="small" slot="start" name="calendar-outline"></ion-icon>
-              <ion-icon slot="end" name="calendar-outline"></ion-icon>
-            </ion-range>
-            <p *ngIf="abono < 1">Você não possui dias de abono.</p>
+            <ion-label position="stacked">Duração:</ion-label>
+            <ion-datetime formControlName="duracao" displayFormat="HH:mm"></ion-datetime>
           </ion-item>
-          <ion-item>
-            <div class="info">
-              Data de término do descanso: 04/11/2021
-            </div>
+
+          <ion-item class="ion-margin-bottom">
+            <ion-label position="stacked">Motivo:</ion-label>
+            <ion-textarea formControlName="justificativa"></ion-textarea>
           </ion-item>
-          <ion-item>
-            <div class="info">
-              Período selecionado 0 dia(s)
-            </div>
-          </ion-item>
-          <ion-item>
-            <div class="info">
-              Saldo restante após aprovação 0 dia(s)
-            </div>
-          </ion-item>
+          <!--          <ion-item>-->
+          <!--            <ion-label position="stacked">Duração (dias úteis):</ion-label>-->
+          <!--            <ion-range *ngIf="abono > 0" min="1" [max]="abono" step="1" pin="true" snaps="true" ticks="true">-->
+          <!--              <ion-icon size="small" slot="start" name="calendar-outline"></ion-icon>-->
+          <!--              <ion-icon slot="end" name="calendar-outline"></ion-icon>-->
+          <!--            </ion-range>-->
+          <!--            <p *ngIf="abono < 1">Você não possui dias de abono.</p>-->
+          <!--          </ion-item>-->
+          <!--          <ion-item>-->
+          <!--            <div class="info">-->
+          <!--              Data de término do descanso: 04/11/2021-->
+          <!--            </div>-->
+          <!--          </ion-item>-->
+          <!--          <ion-item>-->
+          <!--            <div class="info">-->
+          <!--              Período selecionado 0 dia(s)-->
+          <!--            </div>-->
+          <!--          </ion-item>-->
+          <!--          <ion-item>-->
+          <!--            <div class="info">-->
+          <!--              Saldo restante após aprovação 0 dia(s)-->
+          <!--            </div>-->
+          <!--          </ion-item>-->
         </ng-template>
+
+        <ion-button class="ion-margin-top" expand="block" fill="outline" size="large" type="submit">Solicitar
+        </ion-button>
       </ion-card-content>
     </ion-card>
   </form>
-  <pre>
-    <code>
-      {{abono|json}}
-    </code>
-    <code>
-      {{ferias|json}}
-    </code>
-    <code>
-      {{periodos|json}}
-    </code>
-  </pre>
+  <!--  <pre>-->
+  <!--    <code>-->
+  <!--      {{abono|json}}-->
+  <!--    </code>-->
+  <!--    <code>-->
+  <!--      {{ferias|json}}-->
+  <!--    </code>-->
+  <!--    <code>-->
+  <!--      {{periodos|json}}-->
+  <!--    </code>-->
+  <!--    <code>-->
+  <!--      {{form.value|json}}-->
+  <!--    </code>-->
+  <!--  </pre>-->
 </ion-content>

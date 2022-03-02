@@ -56,4 +56,8 @@ export class DadosService {
   solicitarHoraExtra(dia: string, dados: any): Observable<any> {
     return this.http.patch(`${environment.apiUrl}/request/past/${dia}/`, dados);
   }
+
+  solicitarAusencia(dados: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/request/`, dados);
+  }
 }

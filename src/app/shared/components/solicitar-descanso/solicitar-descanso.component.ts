@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {addDays, addYears, format} from 'date-fns';
+import {addYears, format, parseISO} from 'date-fns';
+import {DadosService} from '../../../core/services/dados.service';
 
 interface Detalhes {
   approved: number;
@@ -22,7 +23,7 @@ export class SolicitarDescansoComponent implements OnInit {
 
   hoje: string = format(new Date(), 'yyyy-MM-dd');
   dt = {
-    min: format(addDays(new Date(), 7), 'yyyy-MM-dd'),
+    min: format(new Date(), 'yyyy-MM-dd'),
     max: format(addYears(new Date(), 4), 'yyyy-MM-dd'),
   };
 
@@ -30,12 +31,14 @@ export class SolicitarDescansoComponent implements OnInit {
 
   constructor(
     private modalController: ModalController,
+    private dadosService: DadosService,
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
-      tipo: ['ferias', [Validators.required]],
+      tipo: ['abono', [Validators.required]],
       periodo: [null, [Validators.required]],
-      duracao: [null, [Validators.required]],
+      duracao: ['00:00', [Validators.required]],
+      justificativa: [null, [Validators.required]],
     });
   }
 
@@ -56,6 +59,31 @@ export class SolicitarDescansoComponent implements OnInit {
     });
   }
 
-  salvar(): void {
+  async salvar() {
+    await this.modalController.dismiss({
+      success: true
+    });
+  }
+
+  onSubmit(): void {
+    this.form.markAllAsTouched();
+    if (this.form.valid) {
+      const seila = {
+        date: format(parseISO(this.form.get('periodo').value), 'YYYY-MM-dd'),
+        hours: this.form.get('duracao').value + ':00',
+        reason: this.form.get('justificativa').value,
+        request_type: this.form.get('tipo').value,
+      };
+      this.dadosService.solicitarAusencia([seila]).subscribe(
+        response => {
+          this.salvar().catch();
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    } else {
+      console.log('invalid');
+    }
   }
 }
