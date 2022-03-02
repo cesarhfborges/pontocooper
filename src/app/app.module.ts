@@ -22,6 +22,7 @@ import {BackgroundMode} from '@awesome-cordova-plugins/background-mode/ngx';
 import {appInitializer} from './core/functions/app-initializer';
 import {registerLocaleData} from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
+import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 
 registerLocaleData(ptBr);
 
@@ -37,7 +38,8 @@ registerLocaleData(ptBr);
     HttpClientModule,
     ReactiveFormsModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    NgxDatatableModule
   ],
   providers: [
     ThemeDetection,

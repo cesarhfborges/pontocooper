@@ -1,0 +1,91 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-back-button [defaultHref]="'/home'" slot="start"></ion-back-button>
+    <ion-img src="assets/logo-horizontal-white.png" style="height: 45px;"></ion-img>
+    <ion-buttons slot="end" style="opacity: 0;">
+      <ion-button fill="clear" size="large">
+        <ion-icon name="calendar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Ausência e Hora extra</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item *ngFor="let ausencia of ausencias">
+        <ion-thumbnail slot="start"
+                       style="display: flex!important;align-content: center!important;align-items: center!important;justify-content: center !important;">
+          <ion-icon size="large" color="success" name="checkmark-circle-outline"></ion-icon>
+        </ion-thumbnail>
+        <ion-label class="ion-text-wrap">
+          {{formatDate(ausencia.date) | date : 'dd/MM/YYYY'}}
+          <!--          <ion-grid>-->
+          <!--            <ion-row>-->
+          <!--              <ion-col>-->
+          <!--                {{ausencia.id}}-->
+          <!--              </ion-col>-->
+          <!--              <ion-col class="ion-text-end">-->
+          <!--                {{ausencia.status_display}}-->
+          <!--              </ion-col>-->
+          <!--            </ion-row>-->
+          <!--            <ion-row>-->
+          <!--              <ion-col>-->
+          <!--                {{ausencia.date}}-->
+          <!--              </ion-col>-->
+          <!--              <ion-col class="ion-text-end">-->
+          <!--                {{ausencia.request_type_display}}-->
+          <!--              </ion-col>-->
+          <!--            </ion-row>-->
+          <!--            <ion-row>-->
+          <!--              <ion-col>-->
+          <!--                {{ausencia.hours}}-->
+          <!--              </ion-col>-->
+          <!--              <ion-col class="ion-text-end">-->
+          <!--                <ion-button expand="block">Outline + Block</ion-button>-->
+          <!--              </ion-col>-->
+          <!--            </ion-row>-->
+          <!--          </ion-grid>-->
+
+
+          <!--          <ion-text color="primary">-->
+          <!--            <h3>{{ausencia.id}}</h3>-->
+          <!--          </ion-text>-->
+          <!--          <p>Paragraph line 1</p>-->
+          <!--          <ion-text color="secondary">-->
+          <!--            <p>Paragraph line 2 secondary</p>-->
+          <!--          </ion-text>-->
+        </ion-label>
+        <ion-button fill="none" size="large" color="tertiary" slot="end">
+          <ion-icon name="copy-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <!--      <ngx-datatable [columnMode]="tableOptions.columnMode.flex" [rows]="ausencias">-->
+      <!--        <ngx-datatable-column name="id" [flexGrow]="2">-->
+      <!--          <ng-template let-column="column" ngx-datatable-header-template>ID:</ng-template>-->
+      <!--          <ng-template let-value="value" ngx-datatable-cell-template>{{ value }}</ng-template>-->
+      <!--        </ngx-datatable-column>-->
+      <!--        <ngx-datatable-column name="date" [flexGrow]="3">-->
+      <!--          <ng-template let-column="column" ngx-datatable-header-template>Data:</ng-template>-->
+      <!--          <ng-template let-value="value" ngx-datatable-cell-template>{{ value }}</ng-template>-->
+      <!--        </ngx-datatable-column>-->
+      <!--        <ngx-datatable-column name="request_type_display" [flexGrow]="3">-->
+      <!--          <ng-template let-column="column" ngx-datatable-header-template>Solicitação:</ng-template>-->
+      <!--          <ng-template let-value="value" ngx-datatable-cell-template>{{ value }}</ng-template>-->
+      <!--        </ngx-datatable-column>-->
+      <!--        <ngx-datatable-column name="hours" [flexGrow]="2">-->
+      <!--          <ng-template let-column="column" ngx-datatable-header-template>Duração:</ng-template>-->
+      <!--          <ng-template let-value="value" ngx-datatable-cell-template>{{ value }}</ng-template>-->
+      <!--        </ngx-datatable-column>-->
+      <!--        <ngx-datatable-column name="status_display" [flexGrow]="3">-->
+      <!--          <ng-template let-column="column" ngx-datatable-header-template>Status:</ng-template>-->
+      <!--          <ng-template let-value="value" ngx-datatable-cell-template>{{ value }}</ng-template>-->
+      <!--        </ngx-datatable-column>-->
+      <!--      </ngx-datatable>-->
+    </ion-card-content>
+  </ion-card>
+</ion-content>

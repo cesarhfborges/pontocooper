@@ -47,6 +47,7 @@
     "@ionic-native/status-bar": "^5.36.0",
     "@ionic-native/theme-detection": "^5.36.0",
     "@ionic/angular": "^5.5.2",
+    "@swimlane/ngx-datatable": "^20.0.0",
     "capacitor-android-shortcuts": "^1.0.3",
     "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-badge": "^0.8.8",

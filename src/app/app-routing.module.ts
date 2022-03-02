@@ -34,22 +34,29 @@ const routes: Routes = [
   },
   {
     path: 'opcoes',
-    loadChildren: () => import('./opcoes/opcoes.module').then( m => m.OpcoesPageModule),
+    loadChildren: () => import('./opcoes/opcoes.module').then(m => m.OpcoesPageModule),
     canActivate: [AuthGuardService],
     canActivateChild: [AuthGuardService]
   },
   {
     path: 'historico',
-    loadChildren: () => import('./historico/historico.module').then( m => m.HistoricoPageModule),
+    loadChildren: () => import('./historico/historico.module').then(m => m.HistoricoPageModule),
     canActivate: [AuthGuardService],
     canActivateChild: [AuthGuardService]
   },
   {
     path: 'ferias-abonos',
-    loadChildren: () => import('./ferias-abonos/ferias-abonos.module').then( m => m.FeriasAbonosPageModule),
+    loadChildren: () => import('./ferias-abonos/ferias-abonos.module').then(m => m.FeriasAbonosPageModule),
+    canActivate: [AuthGuardService],
+    canActivateChild: [AuthGuardService]
+  },
+  {
+    path: 'ausencias-horas-extras',
+    loadChildren: () => import('./ausencias-horas-extras/ausencias-horas-extras.module').then(m => m.AusenciasHorasExtrasPageModule),
     canActivate: [AuthGuardService],
     canActivateChild: [AuthGuardService]
   }
+
 ];
 
 @NgModule({

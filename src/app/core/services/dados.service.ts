@@ -60,4 +60,8 @@ export class DadosService {
   solicitarAusencia(dados: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}/request/`, dados);
   }
+
+  getAusenciasHorasExtras(page: number = 1, size: number = 10): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/request/?page=${page}&page_size=${size}`);
+  }
 }
