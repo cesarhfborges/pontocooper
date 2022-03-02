@@ -69,7 +69,7 @@ export class SolicitarDescansoComponent implements OnInit {
     this.form.markAllAsTouched();
     if (this.form.valid) {
       const seila = {
-        date: format(parseISO(this.form.get('periodo').value), 'YYYY-MM-dd'),
+        date: format(parseISO(this.form.get('periodo').value), 'yyyy-MM-dd'),
         hours: this.form.get('duracao').value + ':00',
         reason: this.form.get('justificativa').value,
         request_type: this.form.get('tipo').value,
