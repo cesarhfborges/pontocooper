@@ -10,7 +10,7 @@
     "test": "ng test  --code-coverage --watch=true --sourceMap=true",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "android-build": "ionic capacitor build android",
+    "android-build": "ionic build && ionic capacitor build android",
     "android-run": "ionic build && ionic cap run android",
     "android-open": "ionic build && ionic cap open android",
     "ios-run": "ionic build && ionic cap sync && ionic cap run ios",
