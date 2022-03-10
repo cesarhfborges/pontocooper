@@ -4,8 +4,8 @@ CooperSystem ponto
 
 ## download
 
-<a id="raw-url" href="https://raw.githubusercontent.com/x'github-username/project/master/filename" download>Download
-FILE</a>
+<a id="raw-url" href="https://github.com/cesarhfborges/pontocooper/blob/master/apk/portal-coopersystem.apk" download>
+Download FILE</a>
 
 ## Deploy da aplicação
 
