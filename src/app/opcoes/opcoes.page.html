@@ -62,4 +62,40 @@
       </form>
     </ion-card-content>
   </ion-card>
+
+  <ion-card>
+    <ion-item>
+      <ion-icon color="tertiary" name="information-circle-outline" slot="start"></ion-icon>
+      <ion-label>Atualiações</ion-label>
+    </ion-item>
+    <ion-card-content>
+      <ion-item lines="none" *ngIf="loading">
+        <ion-spinner color="tertiary" slot="start" name="crescent"></ion-spinner>
+        <ion-text>
+          <h2>Verificando atualizações</h2>
+        </ion-text>
+      </ion-item>
+      <ion-item lines="none" *ngIf="!loading">
+        <ng-template [ngIf]="atualizacaoDisponivel" [ngIfElse]="appAtualizado">
+          <ion-icon color="warning" slot="start" name="alert-circle-outline"></ion-icon>
+          <ion-text>
+            <h2>Nova versão disponível {{versaoApp}}</h2>
+          </ion-text>
+        </ng-template>
+        <ng-template #appAtualizado>
+          <ion-icon color="success" slot="start" name="checkmark-done-outline"></ion-icon>
+          <ion-text>
+            <h2>Aplicativo atualizado {{versaoApp}}</h2>
+          </ion-text>
+        </ng-template>
+      </ion-item>
+      <ion-button expand="block" class="ion-margin-bottom" fill="outline" (click)="checkUpdate()">
+        Verificar atualizações
+      </ion-button>
+      <ion-button *ngIf="!loading && atualizacaoDisponivel" color="tertiary" expand="block" class="ion-margin-top"
+                  fill="solid">
+        Baixar nova versão
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

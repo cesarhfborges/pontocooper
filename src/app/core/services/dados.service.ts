@@ -13,6 +13,12 @@ export class DadosService {
   ) {
   }
 
+  getAppVersion(): Observable<any> {
+    return this.http.get<any>(
+      'https://raw.githubusercontent.com/cesarhfborges/pontocooper/master/package.json'
+    );
+  }
+
   getPerson(): Observable<any> {
     return this.http.get(`${environment.apiUrl}/person/`);
   }

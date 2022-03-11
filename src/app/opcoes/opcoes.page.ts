@@ -1,15 +1,21 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {ToastsService} from '../shared/services/toasts.service';
 import {LoadingController, Platform} from '@ionic/angular';
+import {DadosService} from '../core/services/dados.service';
+import npm from '../../../package.json';
+import {delay} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-opcoes',
   templateUrl: './opcoes.page.html',
   styleUrls: ['./opcoes.page.scss'],
 })
-export class OpcoesPage implements OnInit {
+export class OpcoesPage implements OnInit, AfterViewInit {
+  atualizacaoDisponivel = false;
+  loading = true;
 
   opcoes: {
     darkMode: Array<{ label: string; value: 'automatico' | 'escuro' | 'claro' }>;
@@ -50,13 +56,15 @@ export class OpcoesPage implements OnInit {
   };
 
   form: FormGroup;
+  versaoApp = '';
 
   constructor(
     private fb: FormBuilder,
     private themeDetection: ThemeDetection,
     private toastsService: ToastsService,
     private platform: Platform,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private dadosService: DadosService
   ) {
     this.form = this.fb.group({
       darkMode: this.fb.control('automatico', [Validators.required]),
@@ -119,5 +127,28 @@ export class OpcoesPage implements OnInit {
         this.toastsService.showToast('Modo escuro automatico.');
       }
     }
+  }
+
+  async checkUpdate() {
+    try {
+      this.loading = true;
+      const versaoApp: Array<number> = npm.version.split('.').map(n => Number(n));
+      const data: any = await this.dadosService.getAppVersion().pipe(delay(2500)).toPromise();
+      const versaoAtual: Array<number> = data.version.split('.').map(n => Number(n));
+      for (let i = 0; i < versaoAtual.length; i++) {
+        if (versaoAtual[i] > versaoApp[i]) {
+          this.atualizacaoDisponivel = true;
+          break;
+        }
+      }
+      this.versaoApp = data.version;
+      this.loading = false;
+    } catch (e) {
+      this.loading = false;
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.checkUpdate().catch();
   }
 }
