@@ -19,10 +19,13 @@ import {Device} from '@ionic-native/device/ngx';
 import {Badge} from '@ionic-native/badge/ngx';
 import {SharedModule} from './shared/shared.module';
 import {BackgroundMode} from '@awesome-cordova-plugins/background-mode/ngx';
+import {NgxDatatableModule} from '@swimlane/ngx-datatable';
+import {FileTransfer, FileTransferObject} from '@awesome-cordova-plugins/file-transfer/ngx';
+import {File} from '@awesome-cordova-plugins/file/ngx';
+
 import {appInitializer} from './core/functions/app-initializer';
 import {registerLocaleData} from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
-import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 
 registerLocaleData(ptBr);
 
@@ -50,6 +53,9 @@ registerLocaleData(ptBr);
     Badge,
     Device,
     BackgroundMode,
+    FileTransfer,
+    FileTransferObject,
+    File,
     {provide: LOCALE_ID, useValue: 'pt-BR'},
     {
       provide: APP_INITIALIZER,

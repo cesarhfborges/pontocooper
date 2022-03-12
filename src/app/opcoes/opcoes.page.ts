@@ -3,10 +3,12 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {ToastsService} from '../shared/services/toasts.service';
 import {LoadingController, Platform} from '@ionic/angular';
-import {DadosService} from '../core/services/dados.service';
 import npm from '../../../package.json';
 import {delay} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {DownloadService} from '../core/services/download.service';
+import {FileTransfer} from '@awesome-cordova-plugins/file-transfer/ngx';
+import {File} from '@awesome-cordova-plugins/file/ngx';
+import {Update} from '../core/models/update';
 
 @Component({
   selector: 'app-opcoes',
@@ -14,7 +16,10 @@ import {Observable} from 'rxjs';
   styleUrls: ['./opcoes.page.scss'],
 })
 export class OpcoesPage implements OnInit, AfterViewInit {
+
+  atualizacao: Update;
   atualizacaoDisponivel = false;
+
   loading = true;
 
   opcoes: {
@@ -64,7 +69,9 @@ export class OpcoesPage implements OnInit, AfterViewInit {
     private toastsService: ToastsService,
     private platform: Platform,
     private loadingController: LoadingController,
-    private dadosService: DadosService
+    private downloadService: DownloadService,
+    private transfer: FileTransfer,
+    private file: File
   ) {
     this.form = this.fb.group({
       darkMode: this.fb.control('automatico', [Validators.required]),
@@ -133,7 +140,7 @@ export class OpcoesPage implements OnInit, AfterViewInit {
     try {
       this.loading = true;
       const versaoApp: Array<number> = npm.version.split('.').map(n => Number(n));
-      const data: any = await this.dadosService.getAppVersion().pipe(delay(2500)).toPromise();
+      const data: any = await this.downloadService.getAppVersion().pipe(delay(2500)).toPromise();
       const versaoAtual: Array<number> = data.version.split('.').map(n => Number(n));
       for (let i = 0; i < versaoAtual.length; i++) {
         if (versaoAtual[i] > versaoApp[i]) {
@@ -146,6 +153,11 @@ export class OpcoesPage implements OnInit, AfterViewInit {
     } catch (e) {
       this.loading = false;
     }
+  }
+
+  async download() {
+    this.atualizacao = new Update(this.transfer.create(), this.file.dataDirectory);
+    await this.atualizacao.download();
   }
 
   ngAfterViewInit(): void {
