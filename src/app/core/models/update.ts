@@ -36,7 +36,7 @@ export class Update {
         this.url,
         this.dataDirectory + '/portal-coopersystem.apk',
         true,
-        {withCredentials: true}
+        {withCredentials: true, cache: false}
       ).then(r => {
         this.baixando = false;
         this.status = 'concluido';
