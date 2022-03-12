@@ -41,8 +41,8 @@ export class DadosService {
     return this.http.get<Array<any>>(`${environment.apiUrl}/paid_leave/reference_periods`);
   }
 
-  getPeriodosDados(): Observable<Array<any>> {
-    return this.http.get<Array<any>>(`${environment.apiUrl}/paid_leave/`);
+  getPeriodosDados(periodo: string): Observable<Array<any>> {
+    return this.http.get<Array<any>>(`${environment.apiUrl}/paid_leave/?reference_period_start=${periodo}`);
   }
 
   getProducao(year: number, month: number): Observable<Array<any>> {

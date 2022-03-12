@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
 import {map, mergeMap, toArray} from 'rxjs/operators';
-import {parseISO} from 'date-fns';
+import {format, parseISO} from 'date-fns';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {SolicitarDescansoComponent} from '../shared/components/solicitar-descanso/solicitar-descanso.component';
@@ -58,46 +58,44 @@ export class FeriasAbonosPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.getPeriodosFeriasAbonos();
-    this.getPeriodosDados();
+  async ngOnInit() {
+    try {
+      await this.getPeriodosFeriasAbonos();
+      await this.getPeriodosDados(this.periodos[this.periodos.length - 1].de);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  getPeriodosDados(): void {
-    this.loading.periodos = true;
-    this.dadosService.getPeriodosDados().subscribe(
-      response => {
-        console.log('getPeriodosDados', response);
-        this.paidLeave = response;
-        this.loading.periodos = false;
-      },
-      error => {
-        console.log(error);
-        this.loading.periodos = false;
-      }
-    );
+  async getPeriodosDados(data: Date) {
+    try {
+      this.loading.periodos = true;
+      this.paidLeave = await this.dadosService.getPeriodosDados(format(data, 'yyyy-MM-dd')).toPromise();
+      this.loading.periodos = false;
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject();
+    }
   }
 
-  getPeriodosFeriasAbonos(): void {
-    this.loading.feriasAbonos = true;
-    this.dadosService.getPeriodosFeriasAbonos().pipe(
-      mergeMap((i: Array<any>) => i),
-      map((item: Array<string>) => item.map(i => parseISO(i))),
-      toArray()
-    ).subscribe(
-      response => {
-        console.log('getPeriodosFeriasAbonos: ', response);
-        this.periodos = response.map(i => ({de: i[0], ate: i[1]}));
-        this.form.patchValue({
-          periodo: this.periodos[0]
-        });
-        this.loading.feriasAbonos = false;
-      },
-      error => {
-        console.log(error);
-        this.loading.feriasAbonos = false;
-      }
-    );
+  async getPeriodosFeriasAbonos() {
+    try {
+      this.loading.feriasAbonos = true;
+      const response = await this.dadosService.getPeriodosFeriasAbonos().pipe(
+        mergeMap((i: Array<any>) => i),
+        map((item: Array<string>) => item.map(i => parseISO(i))),
+        toArray()
+      ).toPromise();
+      console.log('getPeriodosFeriasAbonos: ', response);
+      this.periodos = response.map(i => ({de: i[0], ate: i[1]}));
+      this.form.patchValue({
+        periodo: this.periodos[this.periodos.length - 1]
+      });
+      this.loading.feriasAbonos = false;
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject();
+    }
   }
 
   getPeriodo(i: number = 0): Periodo {
@@ -121,6 +119,7 @@ export class FeriasAbonosPage implements OnInit {
       animated: true,
       componentProps: {
         periodos: this.periodos,
+        selecionado: {de: this.form.get('periodo').value},
         abono: this.getPeriodo().balance.days_off.remaining,
         ferias: this.getPeriodo().balance.annual_leaves.remaining
       }

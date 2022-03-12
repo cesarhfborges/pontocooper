@@ -16,9 +16,9 @@
       <ion-card-header>
         <ion-item>
           <ion-label position="stacked">Período:</ion-label>
-          <ion-select formControlName="periodo">
+          <ion-select (ionChange)="getPeriodosDados($event.detail.value.de)" formControlName="periodo">
             <ion-select-option *ngFor="let p of periodos; let i = index" [value]="p">
-              {{p.de | date : 'dd/MM/yy'}} - {{p.ate | date : 'dd/MM/yy'}}
+              {{p.de | date : 'dd/MM/yyyy'}} - {{p.ate | date : 'dd/MM/yyyy'}}
             </ion-select-option>
           </ion-select>
         </ion-item>
@@ -26,9 +26,13 @@
 
       <ion-card-content>
         <ul class="container-grid">
-          <li *ngFor="let t of getPeriodo()?.timeline" class="ion-text-center periodo">
+          <li *ngFor="let t of getPeriodo()?.timeline; let i = index" class="ion-text-center periodo">
             <p>{{(getMonth(t.date) | date : 'MMMM') | titlecase}}</p>
-            <ion-badge [color]="t.days > 0 ? 'success' : 'medium'" *ngIf="t.days !== null">{{t.days}} dia(s)</ion-badge>
+            <ion-badge
+              [color]="t.days > 0 ? ((i + 1) % 6 === 0 ? 'tertiary' : 'success') : 'medium'"
+              *ngIf="t.days !== null">
+              {{t.days}} dia(s)
+            </ion-badge>
           </li>
         </ul>
         <ion-button
@@ -45,9 +49,6 @@
     </ion-card>
 
     <ion-card>
-<!--      <ion-card-header>-->
-<!--        <ion-card-title>Histórico de solicitações</ion-card-title>-->
-<!--      </ion-card-header>-->
 
       <ion-item>
         <ion-icon color="tertiary" name="list-outline" slot="start"></ion-icon>
@@ -67,11 +68,13 @@
             <ion-col [size]="4" class="ion-text-right">
               <p>Adquirido:</p>
             </ion-col>
-            <ion-col [size]="4" class="ion-text-center linha-ferias" style="border-top-left-radius: 8px; border-bottom: 1px solid rgba(0,0,0,.15)">
+            <ion-col [size]="4" class="ion-text-center linha-ferias"
+                     style="border-top-left-radius: 8px; border-bottom: 1px solid rgba(0,0,0,.15)">
               <p *ngIf="!loading.periodos">{{getPeriodo()?.balance.annual_leaves.obtained}} dia(s)</p>
               <ion-skeleton-text *ngIf="loading.periodos" animated style="height: 16px;"></ion-skeleton-text>
             </ion-col>
-            <ion-col [size]="4" class="ion-text-center linha-abono" style="border-top-right-radius: 8px; border-bottom: 1px solid rgba(0,0,0,.15)">
+            <ion-col [size]="4" class="ion-text-center linha-abono"
+                     style="border-top-right-radius: 8px; border-bottom: 1px solid rgba(0,0,0,.15)">
               <p *ngIf="!loading.periodos">{{getPeriodo()?.balance.days_off.obtained}} dia(s)</p>
               <ion-skeleton-text *ngIf="loading.periodos" animated style="height: 16px;"></ion-skeleton-text>
             </ion-col>
@@ -102,10 +105,9 @@
       </ion-card-content>
     </ion-card>
   </form>
-
-<!--  <pre>-->
-<!--    <code>-->
-<!--      {{getPeriodo()|json}}-->
-<!--    </code>-->
-<!--  </pre>-->
+  <pre>
+    <code>
+      {{form.value|json}}
+    </code>
+  </pre>
 </ion-content>

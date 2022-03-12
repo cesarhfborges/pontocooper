@@ -18,8 +18,11 @@ interface Detalhes {
 export class SolicitarDescansoComponent implements OnInit {
 
   @Input() periodos: Array<{ de: Date; ate: Date }>;
+  @Input() selecionado: { de: Date; ate: Date };
   @Input() abono = 0;
   @Input() ferias = 0;
+
+  duracao = [5, 10];
 
   hoje: string = format(new Date(), 'yyyy-MM-dd');
   dt = {
@@ -35,10 +38,11 @@ export class SolicitarDescansoComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
-      tipo: ['abono', [Validators.required]],
+      tipo: ['ferias', [Validators.required]],
       periodo: [null, [Validators.required]],
-      duracao: ['00:00', [Validators.required]],
-      justificativa: [null, [Validators.required]],
+      duracao: [null, [Validators.required]],
+      dataInicio: [null, [Validators.required]],
+      receberAdiantamento: [null, []],
     });
   }
 

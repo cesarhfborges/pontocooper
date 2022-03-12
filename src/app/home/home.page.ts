@@ -115,12 +115,6 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     private routerOutlet: IonRouterOutlet,
     private localNotifications: LocalNotifications
   ) {
-    this.localNotifications.on('click').pipe(distinctUntilChanged()).toPromise().then(success => {
-      console.log(success);
-      // await this.cancelarNotificacoes();
-    }).catch(e => {
-      console.log(e);
-    });
     this.timer = timer(1000, 1000);
     this.dataAtual = new Date();
     const batidas: Array<Date> = [];
@@ -141,6 +135,11 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   ngOnInit(): void {
+    this.platform.ready().then(() => {
+      if (this.platform.is('cordova')) {
+        this.notificacoes().catch();
+      }
+    });
     this.loading.perfil = true;
     this.authService.perfil().subscribe(response => {
         this.perfil = response;
@@ -154,6 +153,15 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
         App.exitApp();
       }
     });
+  }
+
+  async notificacoes() {
+    try {
+      const response = await this.localNotifications.on('click').pipe(distinctUntilChanged()).toPromise();
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   ngAfterViewInit(): void {
