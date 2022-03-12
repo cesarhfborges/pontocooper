@@ -3,12 +3,13 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ThemeDetection} from '@ionic-native/theme-detection/ngx';
 import {ToastsService} from '../shared/services/toasts.service';
 import {LoadingController, Platform} from '@ionic/angular';
-import npm from '../../../package.json';
-import {delay} from 'rxjs/operators';
 import {DownloadService} from '../core/services/download.service';
 import {FileTransfer} from '@awesome-cordova-plugins/file-transfer/ngx';
 import {File} from '@awesome-cordova-plugins/file/ngx';
+import {FileOpener} from '@awesome-cordova-plugins/file-opener/ngx';
 import {Update} from '../core/models/update';
+import npm from '../../../package.json';
+import {delay} from 'rxjs/operators';
 
 @Component({
   selector: 'app-opcoes',
@@ -71,7 +72,8 @@ export class OpcoesPage implements OnInit, AfterViewInit {
     private loadingController: LoadingController,
     private downloadService: DownloadService,
     private transfer: FileTransfer,
-    private file: File
+    private file: File,
+    private fileOpener: FileOpener
   ) {
     this.form = this.fb.group({
       darkMode: this.fb.control('automatico', [Validators.required]),
@@ -140,8 +142,11 @@ export class OpcoesPage implements OnInit, AfterViewInit {
     try {
       this.loading = true;
       const versaoApp: Array<number> = npm.version.split('.').map(n => Number(n));
+      console.log('versaoApp: ', versaoApp);
       const data: any = await this.downloadService.getAppVersion().pipe(delay(2500)).toPromise();
+      console.log('data: ', data);
       const versaoAtual: Array<number> = data.version.split('.').map(n => Number(n));
+      console.log('versaoAtual: ', versaoAtual);
       for (let i = 0; i < versaoAtual.length; i++) {
         if (versaoAtual[i] > versaoApp[i]) {
           this.atualizacaoDisponivel = true;
@@ -156,8 +161,14 @@ export class OpcoesPage implements OnInit, AfterViewInit {
   }
 
   async download() {
-    this.atualizacao = new Update(this.transfer.create(), this.file.dataDirectory);
-    await this.atualizacao.download();
+    try {
+      this.atualizacao = new Update(this.transfer.create(), this.file.dataDirectory);
+      const response = await this.atualizacao.download();
+      const open = await this.fileOpener.open(response.nativeURL, 'application/vnd.android.package-archive');
+      console.log(open);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   ngAfterViewInit(): void {

@@ -21,6 +21,7 @@ import {SharedModule} from './shared/shared.module';
 import {BackgroundMode} from '@awesome-cordova-plugins/background-mode/ngx';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {FileTransfer, FileTransferObject} from '@awesome-cordova-plugins/file-transfer/ngx';
+import {FileOpener} from '@awesome-cordova-plugins/file-opener/ngx';
 import {File} from '@awesome-cordova-plugins/file/ngx';
 
 import {appInitializer} from './core/functions/app-initializer';
@@ -56,6 +57,7 @@ registerLocaleData(ptBr);
     FileTransfer,
     FileTransferObject,
     File,
+    FileOpener,
     {provide: LOCALE_ID, useValue: 'pt-BR'},
     {
       provide: APP_INITIALIZER,

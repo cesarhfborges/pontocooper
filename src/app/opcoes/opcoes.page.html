@@ -97,17 +97,10 @@
         color="tertiary"
         expand="block"
         class="ion-margin-top"
-        fill="solid">
-        Baixar nova versão
-      </ion-button>
-      <ion-button
-        color="tertiary"
-        expand="block"
-        class="ion-margin-top"
         fill="solid"
         [disabled]="atualizacao?.baixando"
         (click)="download()">
-        Baixar nova versão TESTE
+        Baixar nova versão
       </ion-button>
       <ion-progress-bar
         *ngIf="atualizacao"

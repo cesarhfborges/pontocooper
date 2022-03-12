@@ -29,7 +29,7 @@ export class Update {
     this.percent$.next(valor);
   }
 
-  async download(): Promise<void> {
+  async download(): Promise<any> {
     return await new Promise<void>((resolve, reject) => {
       this.baixando = true;
       this.fileTransfer.download(
@@ -38,10 +38,9 @@ export class Update {
         true,
         {withCredentials: true}
       ).then(r => {
-        console.log(r);
         this.baixando = false;
         this.status = 'concluido';
-        resolve();
+        resolve(r);
       }).catch(
         e => {
           this.baixando = false;
