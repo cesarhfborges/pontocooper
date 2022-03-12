@@ -1,6 +1,6 @@
 {
   "name": "pontocooper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": "Cesar HenriQ",
   "homepage": "https://portal.coopersystem.com.br/",
   "scripts": {
@@ -19,6 +19,7 @@
     "generate-icon-ios": "cordova-res ios --skip-config --copy",
     "generate-icon-android": "cordova-res android --skip-config --copy",
     "icons-capacitor": "capacitor-resources",
+    "copy-apk": "copy /v /y .\\android\\app\\build\\outputs\\apk\\debug\\app-debug.apk .\\apk\\portal-coopersystem.apk",
     "pre-push": "npm run lint && npm run test",
     "postinstall": "jetifier"
   },
