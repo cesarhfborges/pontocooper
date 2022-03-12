@@ -63,6 +63,7 @@ export class OpcoesPage implements OnInit, AfterViewInit {
 
   form: FormGroup;
   versaoApp = '';
+  plataforma = false;
 
   constructor(
     private fb: FormBuilder,
@@ -75,6 +76,7 @@ export class OpcoesPage implements OnInit, AfterViewInit {
     private file: File,
     private fileOpener: FileOpener
   ) {
+    this.plataforma = this.platform.is('cordova');
     this.form = this.fb.group({
       darkMode: this.fb.control('automatico', [Validators.required]),
       loginRemember: this.fb.control(false, [Validators.required]),
@@ -142,11 +144,8 @@ export class OpcoesPage implements OnInit, AfterViewInit {
     try {
       this.loading = true;
       const versaoApp: Array<number> = npm.version.split('.').map(n => Number(n));
-      console.log('versaoApp: ', versaoApp);
       const data: any = await this.downloadService.getAppVersion().pipe(delay(2500)).toPromise();
-      console.log('data: ', data);
       const versaoAtual: Array<number> = data.version.split('.').map(n => Number(n));
-      console.log('versaoAtual: ', versaoAtual);
       for (let i = 0; i < versaoAtual.length; i++) {
         if (versaoAtual[i] > versaoApp[i]) {
           this.atualizacaoDisponivel = true;

@@ -89,9 +89,15 @@
           </ion-text>
         </ng-template>
       </ion-item>
-      <ion-button expand="block" class="ion-margin-bottom" fill="outline" (click)="checkUpdate()">
+      <ion-button
+        expand="block"
+        class="ion-margin-bottom"
+        fill="outline"
+        [disabled]="!plataforma"
+        (click)="checkUpdate()">
         Verificar atualizações
       </ion-button>
+      <h2 *ngIf="!plataforma">Não é possivel baixar atualizações nesta plataforma.</h2>
       <ion-button
         *ngIf="!loading && atualizacaoDisponivel"
         color="tertiary"
