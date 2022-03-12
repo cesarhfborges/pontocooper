@@ -36,7 +36,8 @@ export class Update {
         this.url,
         this.dataDirectory + '/portal-coopersystem.apk',
         true,
-        {withCredentials: true, cache: false}
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        {withCredentials: true, cache: false, 'Cache-Control': 'no-cache', Pragma: 'no-cache'}
       ).then(r => {
         this.baixando = false;
         this.status = 'concluido';
