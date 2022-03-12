@@ -42,20 +42,10 @@
 
         <ng-template [ngIf]="tipo === 'ferias'" [ngIfElse]="elAbono">
 
-          <ion-item>
+          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
             <ion-label>Saldo atual:</ion-label>
             <ion-label slot="end">{{ferias}} dias</ion-label>
           </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Duração (dias uteis):</ion-label>
-            <ion-select interface="popover" formControlName="duracao">
-              <ion-select-option *ngFor="let d of duracao; let i = index" [value]="d">
-                {{d}}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-
 
           <ion-item>
             <ion-label position="stacked">Data de início:</ion-label>
@@ -74,27 +64,37 @@
           </ion-item>
 
           <ion-item>
-            <ion-label>Desejo receber 70% de adiantamento para estas Férias</ion-label>
-            <ion-checkbox slot="start"></ion-checkbox>
+            <ion-label position="stacked">Duração (dias uteis):</ion-label>
+            <ion-select interface="popover" formControlName="duracao">
+              <ion-select-option *ngFor="let d of duracao; let i = index" [value]="d">
+                {{d}}
+              </ion-select-option>
+            </ion-select>
           </ion-item>
 
-          <ion-item>
+          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
             <ion-label>Perdiodo Selecionado:</ion-label>
             <ion-label slot="end">{{form.controls.duracao.value ?? 0}} dias</ion-label>
           </ion-item>
 
-          <ion-item>
+          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
             <ion-label>Saldo restante após aprovação:</ion-label>
             <ion-label slot="end">{{ferias - (form.controls.duracao.value ?? 0)}} dias</ion-label>
           </ion-item>
+
+          <ion-item>
+            <ion-label>Desejo receber 70% de adiantamento para estas Férias</ion-label>
+            <ion-checkbox slot="start"></ion-checkbox>
+          </ion-item>
         </ng-template>
         <ng-template #elAbono>
-          <ion-item>
+          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
             <ion-label>Saldo atual:</ion-label>
-            <ion-label slot="end">{{abono}} dias</ion-label>
+            <ion-label slot="end">{{ferias}} dias</ion-label>
           </ion-item>
+
           <ion-item>
-            <ion-label position="stacked">Data de abono:</ion-label>
+            <ion-label position="stacked">Data de início:</ion-label>
             <ion-datetime
               displayFormat="DD/MM/YYYY"
               pickerFormat="DD MMMM YYYY"
@@ -103,20 +103,29 @@
               cancelText="Cancelar"
               [min]="dt.min"
               [max]="dt.max"
-              formControlName="periodo"
+              formControlName="dataInicio"
               monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
               monthNames="Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro"
             ></ion-datetime>
           </ion-item>
 
           <ion-item>
-            <ion-label position="stacked">Duração:</ion-label>
-            <ion-datetime formControlName="duracao" displayFormat="HH:mm"></ion-datetime>
+            <ion-label position="stacked">Duração (dias uteis):</ion-label>
+            <ion-select interface="popover" formControlName="duracao">
+              <ion-select-option *ngFor="let d of duracao; let i = index" [value]="d">
+                {{d}}
+              </ion-select-option>
+            </ion-select>
           </ion-item>
 
-          <ion-item class="ion-margin-bottom">
-            <ion-label position="stacked">Motivo:</ion-label>
-            <ion-textarea formControlName="justificativa"></ion-textarea>
+          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
+            <ion-label>Perdiodo Selecionado:</ion-label>
+            <ion-label slot="end">{{form.controls.duracao.value ?? 0}} dias</ion-label>
+          </ion-item>
+
+          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
+            <ion-label>Saldo restante após aprovação:</ion-label>
+            <ion-label slot="end">{{ferias - (form.controls.duracao.value ?? 0)}} dias</ion-label>
           </ion-item>
         </ng-template>
 
@@ -125,18 +134,4 @@
       </ion-card-content>
     </ion-card>
   </form>
-  <pre>
-      <code>
-        {{abono|json}}
-      </code>
-      <code>
-        {{ferias|json}}
-      </code>
-      <code>
-        {{periodo|json}}
-      </code>
-      <code>
-        {{form.value|json}}
-      </code>
-    </pre>
 </ion-content>

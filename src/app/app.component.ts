@@ -50,7 +50,7 @@ export class AppComponent {
       icon: 'planet-outline'
     },
     {
-      label: 'Auseências e Horas extras',
+      label: 'Ausências e Horas extras',
       link: '/ausencias-horas-extras',
       icon: 'planet-outline'
     },

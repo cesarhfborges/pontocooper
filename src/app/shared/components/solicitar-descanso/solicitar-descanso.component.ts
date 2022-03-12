@@ -42,7 +42,7 @@ export class SolicitarDescansoComponent implements OnInit {
       periodo: [null, [Validators.required]],
       duracao: [null, [Validators.required]],
       dataInicio: [null, [Validators.required]],
-      receberAdiantamento: [null, []],
+      receberAdiantamento: [false, []],
     });
   }
 
@@ -51,6 +51,7 @@ export class SolicitarDescansoComponent implements OnInit {
   }
 
   set tipo(tipo: string) {
+    this.form.reset();
     this.form.get('tipo').patchValue(tipo);
   }
 
