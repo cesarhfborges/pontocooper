@@ -19,6 +19,9 @@ import {addMinutes, format, getHours, parseISO, set, subMinutes} from 'date-fns'
 import {Observable, timer} from 'rxjs';
 import {App} from '@capacitor/app';
 import {distinctUntilChanged} from 'rxjs/operators';
+import {DownloadService} from '../core/services/download.service';
+import npm from '../../../package.json';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -98,7 +101,8 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     timeline: true,
     bancoDeHoras: true,
     opcoes: true,
-    perfil: true
+    perfil: true,
+    update: true,
   };
 
   timer: Observable<number>;
@@ -113,7 +117,9 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     private menu: MenuController,
     private toastController: ToastController,
     private routerOutlet: IonRouterOutlet,
-    private localNotifications: LocalNotifications
+    private localNotifications: LocalNotifications,
+    private downloadService: DownloadService,
+    private router: Router,
   ) {
     this.timer = timer(1000, 1000);
     this.dataAtual = new Date();
@@ -175,6 +181,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       });
     }).catch(e => {
     });
+    this.checkUpdate().catch();
   }
 
   calculaValor(valorHora: number): void {
@@ -404,5 +411,49 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       await this.localNotifications.schedule(notificacao);
     }
     return Promise.resolve();
+  }
+
+  async checkUpdate() {
+    try {
+      this.loading.update = true;
+      const versaoApp: Array<number> = npm.version.split('.').map(n => Number(n));
+      const data: any = await this.downloadService.getAppVersion().toPromise();
+      const versaoAtual: Array<number> = data.version.split('.').map(n => Number(n));
+      for (let i = 0; i < versaoAtual.length; i++) {
+        if (versaoAtual[i] > versaoApp[i]) {
+
+          const descriptions: Array<string> = npm.description.split(',');
+          console.log(descriptions);
+          const alert = await this.alertController.create({
+            cssClass: 'buttonsCss',
+            header: 'Atualização',
+            backdropDismiss: false,
+            message: `
+                <p>Nova versão disponivel <strong>${data.version}</strong></p>
+                <ul>${descriptions.map(u => '<li>' + u + '.</li>').join('')}</ul>
+            `,
+            buttons: [
+              {
+                text: 'Depois',
+                role: 'cancel',
+                cssClass: 'dismissButton'
+              }, {
+                text: 'Atualizar',
+                cssClass: 'updateButton',
+                handler: () => {
+                  this.router.navigate(['/opcoes']);
+                }
+              }
+            ]
+          });
+          await alert.present();
+          break;
+        }
+      }
+      // this.versaoApp = data.version;
+      this.loading.update = false;
+    } catch (e) {
+      this.loading.update = false;
+    }
   }
 }

@@ -24,4 +24,19 @@
       }
     }
   }
+
+  .buttonsCss {
+    ul {
+      padding: 0 1rem;
+      margin: 0;
+    }
+
+    button.alert-button.dismissButton {
+      color: var(--ion-color-medium);
+    }
+
+    button.alert-button.updateButton {
+      color: var(--ion-color-primary);
+    }
+  }
 }
