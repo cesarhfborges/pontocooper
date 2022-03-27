@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
+    <ion-back-button [defaultHref]="'/home'" slot="start"></ion-back-button>
     <ion-img src="assets/logo-horizontal-white.png" style="height: 45px;"></ion-img>
     <ion-buttons slot="end" style="opacity: 0;">
       <ion-button fill="clear" size="large">
@@ -23,7 +23,7 @@
 
           <ion-item>
             <ion-label>Modo escuro</ion-label>
-            <ion-select formControlName="darkMode" okText="Selecionar" cancelText="Cancelar">
+            <ion-select cancelText="Cancelar" formControlName="darkMode" okText="Selecionar">
               <ion-select-option *ngFor="let opt of opcoes.darkMode"
                                  [value]="opt.value">{{opt.label}}</ion-select-option>
             </ion-select>
@@ -31,7 +31,7 @@
 
           <ion-item>
             <ion-label>Lembrar login</ion-label>
-            <ion-select formControlName="loginRemember" okText="Selecionar" cancelText="Cancelar">
+            <ion-select cancelText="Cancelar" formControlName="loginRemember" okText="Selecionar">
               <ion-select-option *ngFor="let opt of opcoes.loginRemember"
                                  [value]="opt.value">{{opt.label}}</ion-select-option>
             </ion-select>
@@ -39,7 +39,7 @@
 
           <ion-item>
             <ion-label>Valor acumulado:</ion-label>
-            <ion-select formControlName="valorAcumulado" okText="Selecionar" cancelText="Cancelar">
+            <ion-select cancelText="Cancelar" formControlName="valorAcumulado" okText="Selecionar">
               <ion-select-option *ngFor="let opt of opcoes.loginRemember"
                                  [value]="opt.value">{{opt.label}}</ion-select-option>
             </ion-select>
@@ -47,7 +47,7 @@
 
           <ion-item>
             <ion-label>Tempo de intervalo:</ion-label>
-            <ion-select formControlName="intervalo" name="intervalo" okText="Selecionar" cancelText="Cancelar">
+            <ion-select cancelText="Cancelar" formControlName="intervalo" name="intervalo" okText="Selecionar">
               <ion-select-option
                 *ngFor="let opt of opcoes.intervalo"
                 [value]="opt.value"
@@ -69,43 +69,43 @@
       <ion-label>Atualiações</ion-label>
     </ion-item>
     <ion-card-content>
-      <ion-item lines="none" *ngIf="loading">
-        <ion-spinner color="tertiary" slot="start" name="crescent"></ion-spinner>
+      <ion-item *ngIf="loading" lines="none">
+        <ion-spinner color="tertiary" name="crescent" slot="start"></ion-spinner>
         <ion-text>
           <h2>Verificando atualizações</h2>
         </ion-text>
       </ion-item>
-      <ion-item lines="none" *ngIf="!loading">
-        <ng-template [ngIf]="atualizacaoDisponivel" [ngIfElse]="appAtualizado">
-          <ion-icon color="warning" slot="start" name="alert-circle-outline"></ion-icon>
+      <ion-item *ngIf="!loading" lines="none">
+        <ng-template [ngIfElse]="appAtualizado" [ngIf]="atualizacaoDisponivel">
+          <ion-icon color="warning" name="alert-circle-outline" slot="start"></ion-icon>
           <ion-text>
             <h2>Nova versão disponível {{versaoApp}}</h2>
           </ion-text>
         </ng-template>
         <ng-template #appAtualizado>
-          <ion-icon color="success" slot="start" name="checkmark-done-outline"></ion-icon>
+          <ion-icon color="success" name="checkmark-done-outline" slot="start"></ion-icon>
           <ion-text>
             <h2>Aplicativo atualizado {{versaoApp}}</h2>
           </ion-text>
         </ng-template>
       </ion-item>
       <ion-button
-        expand="block"
-        class="ion-margin-bottom"
-        fill="outline"
+        (click)="checkUpdate()"
         [disabled]="!plataforma"
-        (click)="checkUpdate()">
+        class="ion-margin-bottom"
+        expand="block"
+        fill="outline">
         Verificar atualizações
       </ion-button>
       <h2 *ngIf="!plataforma">Não é possivel baixar atualizações nesta plataforma.</h2>
       <ion-button
+        (click)="download()"
         *ngIf="!loading && atualizacaoDisponivel"
+        [disabled]="atualizacao?.baixando"
+        class="ion-margin-top"
         color="tertiary"
         expand="block"
-        class="ion-margin-top"
-        fill="solid"
-        [disabled]="atualizacao?.baixando"
-        (click)="download()">
+        fill="solid">
         Baixar nova versão
       </ion-button>
       <ion-progress-bar

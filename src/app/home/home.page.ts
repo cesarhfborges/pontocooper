@@ -62,10 +62,10 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   valorAcumulado = 0;
   valorHora = 0;
 
-  coords = {
-    lat: -15.7962774,
-    lon: -47.9481004
-  };
+  // coords = {
+  //   lat: -15.7962774,
+  //   lon: -47.9481004
+  // };
 
   perfil: any;
 
@@ -136,7 +136,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   }
 
   get jornadaDiaria(): number {
-    const val = Math.trunc(getHours(this.horasTrabalhadas) / 8 * 100);
+    const val = Math.trunc(getHours(this.horasTrabalhadas) / (this.summary.workingHours ?? 8) * 100);
     return val > 99 ? 100 : val;
   }
 
@@ -174,11 +174,9 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     this.platform.ready().then(() => {
       this.statusBar.overlaysWebView(false);
       this.statusBar.backgroundColorByHexString('#178865');
-      this.geolocation.getCurrentPosition().then((resp) => {
-        this.coords.lat = resp.coords.latitude;
-        this.coords.lon = resp.coords.longitude;
-      }).catch(e => {
-      });
+      // this.getCoords().then(r => {
+      //   this.coords = r;
+      // });
     }).catch(e => {
     });
     this.checkUpdate().catch();
@@ -205,6 +203,11 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     } catch (e) {
       $event.target.cancel();
     }
+  }
+
+  async getCoords(): Promise<{ latitude: number; longitude: number }> {
+    const {coords} = await this.geolocation.getCurrentPosition();
+    return coords;
   }
 
   async getBancoDeHoras(): Promise<void> {
@@ -318,10 +321,11 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       const {data} = await alert.onDidDismiss();
       if (data !== undefined) {
         await this.cancelarNotificacoes();
+        const {latitude, longitude} = await this.getCoords();
         const response: any = await this.dadosService.baterPonto({
           check_in: !this.ponto.trabalhando,
-          latitude: this.coords.lat,
-          longitude: this.coords.lon
+          latitude: latitude ?? -15.7962774,
+          longitude: longitude ?? -47.9481004
         }).toPromise();
         if (response !== undefined) {
           this.ponto.baterPonto();
