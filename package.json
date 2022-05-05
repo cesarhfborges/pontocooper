@@ -1,8 +1,8 @@
 {
   "name": "pontocooper",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "Cesar HenriQ",
-  "description": "Novas funcionalidades, correções de software, Fix localização gps",
+  "description": "Adicionado o menu dinamico de aplicativos no menu de contexto.",
   "homepage": "https://portal.coopersystem.com.br/",
   "scripts": {
     "ng": "ng",
