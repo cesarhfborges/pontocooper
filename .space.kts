@@ -7,7 +7,7 @@
 job("Run npm steps") {
     startOn {
         gitPush { 
-            enabled = true,
+            enabled = true
             repository = "master"
         }
     }
