@@ -1,6 +1,6 @@
 {
   "name": "pontocooper",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "author": "Cesar HenriQ",
   "description": "Adicionado o menu dinamico de aplicativos no menu de contexto.",
   "homepage": "https://portal.coopersystem.com.br/",
@@ -11,7 +11,9 @@
     "test": "ng test  --code-coverage --watch=true --sourceMap=true",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "android-build": "ionic build && ionic cap sync && ionic capacitor build android",
+    "android-build": "ionic cap sync && ionic cap build android --no-open && cd android && gradlew assembleDebug && cd .. && npm run copy-apk",
+    "android-build-production": "ionic cap sync && ionic cap build android --no-open && cd android && gradlew assembleRelease && cd .. && npm run copy-apk",
+    "android-studio-build": "ionic build && ionic cap sync && ionic capacitor build android",
     "android-run": "ionic build && ionic cap run android",
     "android-open": "ionic build && ionic cap open android",
     "ios-run": "ionic build && ionic cap sync && ionic cap run ios",

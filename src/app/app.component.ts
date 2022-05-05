@@ -265,7 +265,7 @@ export class AppComponent {
             check_in: !ponto.trabalhando,
             latitude: latitude ?? -15.7962774,
             longitude: longitude ?? -47.9481004
-          });
+          }).pipe(delay(1800)).toPromise();
           await loading.dismiss();
           const toast: any = await this.toastController.create({
             message: `${ponto.trabalhando ? 'Entrada' : 'Saída'} registrada com sucesso!`,
