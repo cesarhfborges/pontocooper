@@ -12,7 +12,7 @@ job("Build apk") {
         }
     }
 
-    container(displayName = "ionic-capacitor-image", image = "robingenz/ionic-capacitor github.com/robingenz/docker-ionic-capacitor") {
+    container(displayName = "ionic-capacitor", image = "github.com/robingenz/docker-ionic-capacitor") {
         // env["GOOGLE_SA_KEY"] = Secrets("google_sa_key")
         // env["KEY_STORE"] = Secrets("key_store")
         // env["KEY_STORE_PASSWORD"] = Secrets("key_store_password")
