@@ -6,12 +6,12 @@
 
 job("Run npm steps") {
     startOn {
-        gitPush { 
+        gitPush {
             enabled = true
             repository = "master"
         }
     }
-    
+
     container(displayName = "Run publish script", image = "node:14-alpine") {
         env["REGISTRY"] = "https://npm.pkg.jetbrains.space/mycompany/p/projectkey/mynpm"
         shellScript {
@@ -28,8 +28,8 @@ job("Run npm steps") {
 
 job("Build and publish bundle to internal track") {
     startOn {
-        gitPush { 
-            enabled = true,
+        gitPush {
+            enabled = true
             repository = "master"
         }
     }
