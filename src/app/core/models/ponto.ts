@@ -1,5 +1,6 @@
 import {addMinutes, addSeconds, differenceInMinutes, differenceInSeconds, formatISO, parseISO, set} from 'date-fns';
 import {Observable, of} from 'rxjs';
+import {Batida} from './batida';
 
 export class Ponto {
 
@@ -13,13 +14,13 @@ export class Ponto {
     {value: 90, label: '01:30'},
     {value: 120, label: '02:00'},
   ];
-  private listaBatidas: Array<Date>;
+  private listaBatidas: Array<Batida>;
 
-  constructor(batidas: Array<Date>) {
+  constructor(batidas: Array<Batida>) {
     this.listaBatidas = batidas;
   }
 
-  get batidas(): Array<Date> {
+  get batidas(): Array<Batida> {
     return this.listaBatidas;
   }
 
@@ -36,7 +37,7 @@ export class Ponto {
     });
 
     if (this.listaBatidas && this.listaBatidas.length > 0) {
-      const diff: Array<number> = this.listaBatidas.map(e => e.getTime() / 1000);
+      const diff: Array<number> = this.listaBatidas.map(e => e.worktime_clock.getTime() / 1000);
       if (diff.length % 2 === 1) {
         diff.push(new Date().getTime() / 1000);
       }
@@ -53,8 +54,17 @@ export class Ponto {
     return {value: 30, label: '00:30'};
   }
 
-  public baterPonto(): void {
-    this.listaBatidas.push(new Date());
+  public baterPonto(pausa: boolean = false): void {
+    this.listaBatidas.push({
+      worktime_clock: new Date(),
+      id: null,
+      check_in: true,
+      check_in_display: 'teste',
+      longitude: null,
+      latitude: null,
+      minimum_break: pausa,
+      position: 99
+    });
   }
 
   setIntervalo(intervalo: boolean = false, tempo: number = 0): void {
@@ -81,8 +91,8 @@ export class Ponto {
     return of(undefined);
   }
 
-  public addPonto(data: Date): void {
-    this.listaBatidas.unshift(data);
+  public addPonto(batida: Batida): void {
+    this.listaBatidas.unshift(batida);
   }
 
   public limparPontos(): void {
@@ -96,9 +106,9 @@ export class Ponto {
       this.listaBatidas.length > 1 &&
       this.listaBatidas.length % 2 === 0
     ) {
-      const ultimaBatida: Date = this.listaBatidas[this.listaBatidas.length - 1];
-      if (ultimaBatida) {
-        return differenceInMinutes(new Date(), ultimaBatida) < 2;
+      const ultimaBatida: Batida = this.listaBatidas[this.listaBatidas.length - 1];
+      if (ultimaBatida?.minimum_break === true) {
+        return differenceInMinutes(new Date(), ultimaBatida.worktime_clock) < 1;
       }
     }
     return false;
@@ -106,7 +116,7 @@ export class Ponto {
 
   getTempoPonto(): string {
     if (this.isInterval) {
-      const ultimaBatida: Date = this.listaBatidas[this.listaBatidas.length - 1];
+      const ultimaBatida: Date = this.listaBatidas[this.listaBatidas.length - 1].worktime_clock;
       const dateEntered = addMinutes(ultimaBatida, 30);
       const now = new Date();
       const difference = dateEntered.getTime() - now.getTime();

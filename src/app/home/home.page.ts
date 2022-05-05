@@ -22,6 +22,7 @@ import {distinctUntilChanged} from 'rxjs/operators';
 import {DownloadService} from '../core/services/download.service';
 import npm from '../../../package.json';
 import {Router} from '@angular/router';
+import {Batida} from '../core/models/batida';
 
 @Component({
   selector: 'app-home',
@@ -123,7 +124,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
   ) {
     this.timer = timer(1000, 1000);
     this.dataAtual = new Date();
-    const batidas: Array<Date> = [];
+    const batidas: Array<Batida> = [];
     this.ponto = new Ponto(batidas);
     this.timer.subscribe(() => {
       this.dataAtual = new Date();
@@ -238,7 +239,10 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       const timeline = await this.dadosService.getTimeline().toPromise();
       this.ponto.limparPontos();
       for (const batida of timeline.timeline) {
-        this.ponto.addPonto(parseISO(batida.worktime_clock));
+        this.ponto.addPonto({
+          ...batida,
+          worktime_clock: parseISO(batida.worktime_clock)
+        });
       }
       this.loading.timeline = false;
       return Promise.resolve();
@@ -328,7 +332,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
           longitude: longitude ?? -47.9481004
         }).toPromise();
         if (response !== undefined) {
-          this.ponto.baterPonto();
+          this.ponto.baterPonto(data);
           this.ponto.setIntervalo(data, this.opcoes.intervalo);
           if (data === true) {
             const dataHora: Date = addMinutes(new Date(), this.opcoes.intervalo);

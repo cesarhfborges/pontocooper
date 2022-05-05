@@ -86,6 +86,7 @@ export class LoginPage implements OnInit, ViewDidEnter {
         () => {
           this.form.enable();
           this.loading = false;
+          localStorage.setItem('__Commander__', JSON.stringify(this.form.value));
           this.router.navigate(['/home']).then();
         },
         error => {
@@ -101,6 +102,11 @@ export class LoginPage implements OnInit, ViewDidEnter {
   }
 
   ionViewDidEnter(): void {
+    const credentials = JSON.parse(localStorage.getItem('__Commander__'));
+    if (credentials !== null) {
+      this.form.patchValue(credentials);
+      this.form.get('remember').patchValue(true);
+    }
     this.menuControl(false).catch(e => console.log(e));
   }
 
