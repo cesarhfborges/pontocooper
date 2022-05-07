@@ -5,7 +5,8 @@
   "description": "Aplicativo de ponto CooperSystem",
   "buildInfo": [
     "Registro de ponto migrado para uma nova pagina.",
-    "menus dinamicos incluidos."
+    "menus dinamicos incluidos.",
+    "Possibilidade de usar ferramentas de automatização de rotinas android/ios"
   ],
   "homepage": "https://portal.coopersystem.com.br/",
   "scripts": {
