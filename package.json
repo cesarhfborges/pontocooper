@@ -1,8 +1,12 @@
 {
   "name": "pontocooper",
-  "version": "1.0.10",
+  "version": "1.0.9",
   "author": "Cesar HenriQ",
-  "description": "Adicionado o menu dinamico de aplicativos no menu de contexto.",
+  "description": "Aplicativo de ponto CooperSystem",
+  "buildInfo": [
+    "Registro de ponto migrado para uma nova pagina.",
+    "menus dinamicos incluidos."
+  ],
   "homepage": "https://portal.coopersystem.com.br/",
   "scripts": {
     "ng": "ng",

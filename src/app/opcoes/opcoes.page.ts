@@ -63,6 +63,10 @@ export class OpcoesPage implements OnInit, AfterViewInit {
 
   form: FormGroup;
   versaoApp = '';
+  buildInfo: string[] = [
+    'Registro de ponto migrado para uma nova pagina.',
+    'menus dinamicos incluidos.'
+  ];
   plataforma = false;
 
   constructor(
@@ -153,6 +157,7 @@ export class OpcoesPage implements OnInit, AfterViewInit {
         }
       }
       this.versaoApp = data.version;
+      this.buildInfo = data?.buildInfo ?? [];
       this.loading = false;
     } catch (e) {
       this.loading = false;

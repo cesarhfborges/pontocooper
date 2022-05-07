@@ -55,8 +55,11 @@ const routes: Routes = [
     loadChildren: () => import('./ausencias-horas-extras/ausencias-horas-extras.module').then(m => m.AusenciasHorasExtrasPageModule),
     canActivate: [AuthGuardService],
     canActivateChild: [AuthGuardService]
+  },
+  {
+    path: 'ponto',
+    loadChildren: () => import('./ponto-automatico/ponto-automatico.module').then(m => m.PontoAutomaticoPageModule)
   }
-
 ];
 
 @NgModule({

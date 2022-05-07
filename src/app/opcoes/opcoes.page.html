@@ -100,7 +100,7 @@
       <h2 *ngIf="!plataforma">Não é possivel baixar atualizações nesta plataforma.</h2>
       <ion-button
         (click)="download()"
-        *ngIf="!loading && atualizacaoDisponivel"
+        *ngIf="plataforma && !loading && atualizacaoDisponivel"
         [disabled]="atualizacao?.baixando"
         class="ion-margin-top"
         color="tertiary"
@@ -114,6 +114,14 @@
         [color]="atualizacao.getStatusColor()"
         [value]="atualizacao.porcentagem()|async"
       ></ion-progress-bar>
+
+      <ion-list *ngIf="!loading && atualizacaoDisponivel">
+        <ion-item *ngFor="let item of buildInfo">
+          <ion-label style="white-space: unset;">{{item}}</ion-label>
+          <ion-icon slot="end" color="warning" name="alert-outline"></ion-icon>
+        </ion-item>
+      </ion-list>
+
     </ion-card-content>
   </ion-card>
 </ion-content>

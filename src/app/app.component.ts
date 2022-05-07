@@ -81,8 +81,6 @@ export class AppComponent {
     private loadingController: LoadingController,
     private localNotifications: LocalNotifications,
     private backgroundMode: BackgroundMode,
-    private geolocation: Geolocation,
-    private toastController: ToastController,
   ) {
     if (this.platform.is('cordova')) {
       this.addDynamicShortCuts().catch();
@@ -160,56 +158,46 @@ export class AppComponent {
             },
             data: 'ponto',
           },
-          // {
-          //   id: 'producao',
-          //   shortLabel: 'Minha produção',
-          //   longLabel: 'Minha produção',
-          //   icon: {
-          //     type: 'Bitmap',
-          //     name: 'aaa'
-          //   },
-          //   data: 'producao',
-          // },
-          // {
-          //   id: 'historico',
-          //   shortLabel: 'Histórico(GPS)',
-          //   longLabel: 'Histórico(GPS)',
-          //   icon: {
-          //     type: 'Bitmap',
-          //     name: 'aaa'
-          //   },
-          //   data: 'historico',
-          // },
-          // {
-          //   id: 'ferias-abonos',
-          //   shortLabel: 'Férias e abonos',
-          //   longLabel: 'Férias e abonos',
-          //   icon: {
-          //     type: 'Bitmap',
-          //     name: 'aaa'
-          //   },
-          //   data: 'ferias-abonos',
-          // },
-          // {
-          //   id: 'opcoes',
-          //   shortLabel: 'Opções',
-          //   longLabel: 'Opções',
-          //   icon: {
-          //     type: 'Bitmap',
-          //     name: 'aaa'
-          //   },
-          //   data: 'opcoes',
-          // },
-          // {
-          //   id: 'perfil',
-          //   shortLabel: 'Perfil',
-          //   longLabel: 'Perfil',
-          //   icon: {
-          //     type: 'Bitmap',
-          //     name: 'aaa'
-          //   },
-          //   data: 'perfil',
-          // },
+          {
+            id: 'producao',
+            shortLabel: 'Minha produção',
+            longLabel: 'Minha produção',
+            icon: {
+              type: 'Bitmap',
+              name: 'aaa'
+            },
+            data: 'producao',
+          },
+          {
+            id: 'historico',
+            shortLabel: 'Histórico(GPS)',
+            longLabel: 'Histórico(GPS)',
+            icon: {
+              type: 'Bitmap',
+              name: 'aaa'
+            },
+            data: 'historico',
+          },
+          {
+            id: 'ferias-abonos',
+            shortLabel: 'Férias e abonos',
+            longLabel: 'Férias e abonos',
+            icon: {
+              type: 'Bitmap',
+              name: 'aaa'
+            },
+            data: 'ferias-abonos',
+          },
+          {
+            id: 'perfil',
+            shortLabel: 'Perfil',
+            longLabel: 'Perfil',
+            icon: {
+              type: 'Bitmap',
+              name: 'aaa'
+            },
+            data: 'perfil',
+          },
         ],
       });
     }
@@ -249,64 +237,8 @@ export class AppComponent {
     const pinnedSupported = await AndroidShortcuts.isPinnedSupported();
     if (dynamicSupported.result || pinnedSupported.result) {
       await AndroidShortcuts.addListener('shortcut', async listen => {
-        if (listen.data === 'ponto') {
-          const loading = await this.loadingScreen('Aguarde registrando ponto...');
-          await loading.present();
-          const ponto: Ponto = new Ponto([]);
-          const timeline = await this.dadosService.getTimeline().toPromise();
-          for (const batida of timeline.timeline) {
-            ponto.addPonto({
-              ...batida,
-              worktime_clock: parseISO(batida.worktime_clock)
-            });
-          }
-          const {latitude, longitude} = await this.getCoords();
-          const response: any = await this.dadosService.baterPonto({
-            check_in: !ponto.trabalhando,
-            latitude: latitude ?? -15.7962774,
-            longitude: longitude ?? -47.9481004
-          }).pipe(delay(1800)).toPromise();
-          await loading.dismiss();
-          const toast: any = await this.toastController.create({
-            message: `${ponto.trabalhando ? 'Entrada' : 'Saída'} registrada com sucesso!`,
-            duration: 3000,
-            color: 'success',
-          });
-          toast.present();
-          await this.router.navigate([`/login`], {skipLocationChange: false});
-        } else if (listen.data) {
-          this.router.navigate([`${listen.data}`]).catch();
-        }
+        this.router.navigate([`${listen.data}`]).catch();
       });
-    }
-  }
-
-  private async loadingScreen(message = 'Aguarde...') {
-    return await this.loadingController.create({
-      message,
-      cssClass: 'my-custom-class',
-      backdropDismiss: false,
-      showBackdrop: true,
-      animated: true,
-      keyboardClose: false,
-      spinner: 'bubbles',
-    });
-  }
-
-  private async getCoords(): Promise<{ latitude: number; longitude: number }> {
-    try {
-      const opts: GeolocationOptions = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 30000
-      };
-      const {coords} = await this.geolocation.getCurrentPosition();
-      return coords;
-    } catch (e) {
-      return {
-        latitude: -15.7962774,
-        longitude: -47.9481004
-      };
     }
   }
 }
