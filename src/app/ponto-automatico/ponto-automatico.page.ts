@@ -27,7 +27,11 @@ export class PontoAutomaticoPage implements OnInit {
 
   ponto: Ponto = new Ponto([]);
 
-  gps: { latitude: number; longitude: number };
+  gps: { latitude: number; longitude: number } = {
+    latitude: -15.7962774,
+    longitude: -47.9481004
+  };
+  private loadingComponent: any;
 
   constructor(
     private router: Router,
@@ -42,30 +46,43 @@ export class PontoAutomaticoPage implements OnInit {
     this.init().then(() => {
       this.showToast();
     }).catch((err) => {
+      console.log(err);
       this.showToast('Não foi possível registrar o ponto', 'danger');
     }).finally(() => {
+      this.loadingComponent.dismiss();
       this.router.navigate(['/home']).catch();
     });
   }
 
   async init() {
-    // const loading = await this.loadingScreen('Aguarde registrando ponto...');
-    // await loading.present();
+    this.loadingComponent = await this.loadingScreen('Inicializando...');
+    this.loadingComponent.present();
     const {latitude, longitude} = await this.getCoords();
-    this.gps.latitude = latitude;
-    this.gps.longitude = longitude;
+
+    if (latitude && longitude) {
+      this.gps.latitude = latitude;
+      this.gps.longitude = longitude;
+    }
+    this.loadingComponent.dismiss();
+
+    this.loadingComponent = await this.loadingScreen('Obtendo dados...');
+    this.loadingComponent.present();
     const timeline = await this.dadosService.getTimeline().pipe(
       delay(10000),
       pluck('timeline'),
     ).toPromise();
+    this.loadingComponent.dismiss();
+
+    this.loadingComponent = await this.loadingScreen('Aguarde registrando ponto...');
+    this.loadingComponent.present();
+
     for (const batida of timeline) {
       this.ponto.addPonto({
         ...batida,
         worktime_clock: parseISO(batida.worktime_clock)
       });
     }
-    // await this.registrarPonto();
-    // await loading.dismiss();
+    await this.registrarPonto();
   }
 
   async registrarPonto() {
@@ -77,7 +94,7 @@ export class PontoAutomaticoPage implements OnInit {
   }
 
   showToast(
-    mensagem: string = `${this.ponto?.trabalhando ? 'Entrada' : 'Saída'} registrada com sucesso!`,
+    mensagem: string = `${!this.ponto?.trabalhando ? 'Entrada' : 'Saída'} registrada com sucesso!`,
     type: PredefinedColors = 'success',
     time: number = 3000,
   ) {
@@ -108,6 +125,7 @@ export class PontoAutomaticoPage implements OnInit {
         maximumAge: 30000
       };
       const {coords} = await this.geolocation.getCurrentPosition(opts);
+      console.log(coords);
       return coords;
     } catch (e) {
       return {

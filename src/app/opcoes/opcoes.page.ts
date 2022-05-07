@@ -63,10 +63,7 @@ export class OpcoesPage implements OnInit, AfterViewInit {
 
   form: FormGroup;
   versaoApp = '';
-  buildInfo: string[] = [
-    'Registro de ponto migrado para uma nova pagina.',
-    'menus dinamicos incluidos.'
-  ];
+  buildInfo: string[] = [];
   plataforma = false;
 
   constructor(

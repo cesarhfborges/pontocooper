@@ -430,8 +430,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       for (let i = 0; i < versaoAtual.length; i++) {
         if (versaoAtual[i] > versaoApp[i]) {
 
-          const descriptions: Array<string> = npm.description.split(',');
-          console.log(descriptions);
+          const descriptions: Array<string> = npm.buildInfo;
           const alert = await this.alertController.create({
             cssClass: 'buttonsCss',
             header: 'Atualização',

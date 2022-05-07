@@ -97,7 +97,8 @@
         fill="outline">
         Verificar atualizações
       </ion-button>
-      <h2 *ngIf="!plataforma">Não é possivel baixar atualizações nesta plataforma.</h2>
+      <h2 *ngIf="!plataforma">Não é possível baixar atualizações nesta plataforma.</h2>
+
       <ion-button
         (click)="download()"
         *ngIf="plataforma && !loading && atualizacaoDisponivel"
@@ -115,7 +116,9 @@
         [value]="atualizacao.porcentagem()|async"
       ></ion-progress-bar>
 
-      <ion-list *ngIf="!loading && atualizacaoDisponivel">
+      <hr *ngIf="!loading && atualizacaoDisponivel"/>
+
+      <ion-list *ngIf="!loading && atualizacaoDisponivel && buildInfo?.length > 0">
         <ion-item *ngFor="let item of buildInfo">
           <ion-label style="white-space: unset;">{{item}}</ion-label>
           <ion-icon slot="end" color="warning" name="alert-outline"></ion-icon>
