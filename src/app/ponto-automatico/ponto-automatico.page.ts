@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation/ngx';
-import {LoadingController, ToastController} from '@ionic/angular';
+import {LoadingController, Platform, ToastController} from '@ionic/angular';
 import {Ponto} from '../core/models/ponto';
 import {DadosService} from '../core/services/dados.service';
 import {Router} from '@angular/router';
 import {parseISO} from 'date-fns';
 import {delay, pluck} from 'rxjs/operators';
+import {BackgroundMode} from '@awesome-cordova-plugins/background-mode/ngx';
 
 type PredefinedColors =
   'primary'
@@ -39,6 +40,8 @@ export class PontoAutomaticoPage implements OnInit {
     private geolocation: Geolocation,
     private loadingController: LoadingController,
     private toastController: ToastController,
+    private backgroundMode: BackgroundMode,
+    private platform: Platform,
   ) {
   }
 
@@ -55,6 +58,9 @@ export class PontoAutomaticoPage implements OnInit {
   }
 
   async init() {
+    if (this.platform.is('cordova')) {
+      this.backgroundMode.unlock();
+    }
     this.loadingComponent = await this.loadingScreen('Inicializando...');
     this.loadingComponent.present();
     const {latitude, longitude} = await this.getCoords();

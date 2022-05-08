@@ -86,9 +86,19 @@ export class AppComponent {
       this.addDynamicShortCuts().catch();
       // this.addPinnedShortCuts().catch();
       this.listenShortCuts().catch();
-      this.lockScreen().catch();
+      this.lockScreenOrientation().catch();
       this.permissaoNotif().catch();
-      this.backgroundMode.setDefaults({silent: true, resume: true, hidden: false});
+      this.backgroundMode.configure({
+        title: 'CooperSystem',
+        text: 'CooperSystem está em execução',
+        icon: 'icon',
+        color: '#ffffff',
+        bigText: true,
+        silent: true,
+        resume: true,
+        hidden: false,
+      });
+      this.backgroundMode.disableBatteryOptimizations();
       this.backgroundMode.enable();
     }
     const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
@@ -127,7 +137,7 @@ export class AppComponent {
     return Promise.resolve();
   }
 
-  async lockScreen(): Promise<void> {
+  async lockScreenOrientation(): Promise<void> {
     await this.platform.ready();
     if (this.platform.is('cordova')) {
       await this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
