@@ -7,15 +7,17 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item
-          *ngFor="let menu of menus; let i = index"
-          [lines]="menus.length > 1 ? 'full' : 'none'"
-          (click)="menuPrincipal.close()"
-          [routerLink]="[menu.link]"
-        >
-          <ion-icon *ngIf="menu.icon" slot="start" [name]="menu.icon"></ion-icon>
-          <ion-label>{{menu.label}}</ion-label>
-        </ion-item>
+        <div *ngFor="let menu of menus; let i = index">
+          <ion-item
+            *ngIf="menu.visible"
+            [lines]="menus.length > 1 ? 'full' : 'none'"
+            (click)="menuPrincipal.close()"
+            [routerLink]="[menu.link]"
+          >
+            <ion-icon *ngIf="menu.icon" slot="start" [name]="menu.icon"></ion-icon>
+            <ion-label>{{menu.label}}</ion-label>
+          </ion-item>
+        </div>
       </ion-list>
     </ion-content>
     <p style="text-align: center;">versao: {{versao}}</p>

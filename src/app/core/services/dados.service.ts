@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
+import {format} from 'date-fns';
 
 @Injectable({
   providedIn: 'root'
@@ -41,8 +42,12 @@ export class DadosService {
     return this.http.get<Array<any>>(`${environment.apiUrl}/paid_leave/reference_periods`);
   }
 
-  getPeriodosDados(periodo: string): Observable<Array<any>> {
-    return this.http.get<Array<any>>(`${environment.apiUrl}/paid_leave/?reference_period_start=${periodo}`);
+  getPeriodos(): Observable<Array<any>> {
+    return this.http.get<Array<any>>(`${environment.apiUrl}/paid_leave/`);
+  }
+
+  getPeriodosDados(periodo: string): Observable<any> {
+    return this.http.get<Array<any>>(`${environment.apiUrl}/paid_leave/?start_period=${periodo}`);
   }
 
   getProducao(year: number, month: number): Observable<Array<any>> {
@@ -63,5 +68,9 @@ export class DadosService {
 
   getAusenciasHorasExtras(page: number = 1, size: number = 10): Observable<any> {
     return this.http.get(`${environment.apiUrl}/request/?page=${page}&page_size=${size}`);
+  }
+
+  calcularUltimoDia(data: Date, quantidade: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/paid_leave/calculate_last_date/${format(data, 'yyyy-MM-dd')}/${quantidade}`);
   }
 }

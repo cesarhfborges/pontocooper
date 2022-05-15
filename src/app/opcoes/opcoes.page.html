@@ -79,7 +79,8 @@
         <ng-template [ngIfElse]="appAtualizado" [ngIf]="atualizacaoDisponivel">
           <ion-icon color="warning" name="alert-circle-outline" slot="start"></ion-icon>
           <ion-text>
-            <h2>Nova versão disponível {{versaoApp}}</h2>
+            <h2 *ngIf="atualizacaoDisponivel">versão Atual: {{versaoAtual}}</h2>
+            <h2 *ngIf="!atualizacaoDisponivel">Nova versão disponível {{versaoApp}}</h2>
           </ion-text>
         </ng-template>
         <ng-template #appAtualizado>

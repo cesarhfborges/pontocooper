@@ -6,11 +6,11 @@ ion-content {
     position: absolute;
     width: 100vw;
     height: 100vh;
-    background: url("https://www.benner.com.br/wp-content/uploads/2021/02/lei-geral-de-protecao-de-dados-scaled-1.jpeg");
+    background: url("./../../assets/background.jpg") no-repeat center;
     background-size: cover;
-    background-position: center;
   }
-  --background: rgba(0,0,0,.5);
+
+  --background: rgba(0, 0, 0, .5);
 
   ion-input {
     border-bottom: 1px solid var(--ion-color-primary);

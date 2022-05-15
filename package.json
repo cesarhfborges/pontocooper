@@ -1,6 +1,6 @@
 {
   "name": "pontocooper",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "author": "Cesar HenriQ",
   "description": "Aplicativo de ponto CooperSystem",
   "buildInfo": [
@@ -17,7 +17,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "android-build": "ionic cap sync && ionic cap build android --no-open && cd android && gradlew assembleDebug && cd .. && npm run copy-apk",
-    "android-build-production": "ionic cap sync && ionic cap build android --no-open && cd android && gradlew assembleRelease && cd .. && npm run copy-apk",
+    "android-build-production": "ionic cap sync && ionic cap build android --no-open --prod && cd android && gradlew assembleRelease && cd .. && npm run copy-apk",
     "android-studio-build": "ionic build && ionic cap sync && ionic capacitor build android",
     "android-run": "ionic build && ionic cap run android",
     "android-open": "ionic build && ionic cap open android",

@@ -1,30 +1,57 @@
 import {Component, OnInit} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {map, mergeMap, toArray} from 'rxjs/operators';
-import {format, parseISO} from 'date-fns';
+import {distinctUntilChanged, map, mergeMap, toArray} from 'rxjs/operators';
+import {format, parseISO, set} from 'date-fns';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {SolicitarDescansoComponent} from '../shared/components/solicitar-descanso/solicitar-descanso.component';
 
-interface Periodo {
-  balance: {
-    annual_leaves: {
-      approved: number;
-      obtained: number;
-      remaining: number;
-    };
-    days_off: {
-      approved: number;
-      obtained: number;
-      remaining: number;
-    };
+interface Balance {
+  days_off: {
+    obtained: number;
+    approved: number;
+    remaining: number;
   };
-  history: Array<any>;
-  reference_period_start: string;
-  timeline: Array<{
-    date: string;
-    days: number;
-  }>;
+  annual_leaves: {
+    obtained: number;
+    approved: number;
+    remaining: number;
+  };
+}
+
+interface MonthsProportions {
+  month: {
+    month_id: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+    month_display:
+      'January' |
+      'February' |
+      'March' |
+      'April' |
+      'May' |
+      'June' |
+      'July' |
+      'August' |
+      'September' |
+      'October' |
+      'November' |
+      'December';
+  };
+  obteined: number;
+  propotion: number;
+}
+
+interface Periodo {
+  id: number;
+  first_name: string;
+  last_name: string;
+  timeline: {
+    start_date: Date | string;
+    end_date: Date | string;
+    situation: 'ACTUAL' | string;
+    history: [];
+    balance: Balance[];
+    months_proportions: MonthsProportions[];
+  };
 }
 
 @Component({
@@ -34,7 +61,7 @@ interface Periodo {
 })
 export class FeriasAbonosPage implements OnInit {
 
-  paidLeave: Array<Periodo>;
+  paidLeave: Periodo;
 
   loading: {
     periodos: boolean;
@@ -61,10 +88,16 @@ export class FeriasAbonosPage implements OnInit {
   async ngOnInit() {
     try {
       await this.getPeriodosFeriasAbonos();
-      await this.getPeriodosDados(this.periodos[this.periodos.length - 1].de);
+      const periodos = await this.getPeriodos();
+      console.log(periodos);
+      await this.getPeriodosDados(this.form.get('periodo').value.de);
     } catch (e) {
       console.log(e);
     }
+  }
+
+  async getPeriodos(): Promise<any> {
+    return this.dadosService.getPeriodos().toPromise();
   }
 
   async getPeriodosDados(data: Date) {
@@ -86,7 +119,6 @@ export class FeriasAbonosPage implements OnInit {
         map((item: Array<string>) => item.map(i => parseISO(i))),
         toArray()
       ).toPromise();
-      console.log('getPeriodosFeriasAbonos: ', response);
       this.periodos = response.map(i => ({de: i[0], ate: i[1]}));
       this.form.patchValue({
         periodo: this.periodos[this.periodos.length - 1]
@@ -98,15 +130,19 @@ export class FeriasAbonosPage implements OnInit {
     }
   }
 
-  getPeriodo(i: number = 0): Periodo {
-    if (this.paidLeave?.length > 0) {
-      return this.paidLeave[0];
+  getPeriodo(): Periodo {
+    if (this.paidLeave) {
+      return this.paidLeave;
     }
     return null;
   }
 
   getMonth(date: string): Date {
     return parseISO(date);
+  }
+
+  getMonthFromId(month_id: number): Date {
+    return set(new Date(), {date: 0, month: month_id, hours: 0, minutes: 0, seconds: 0, milliseconds: 0,});
   }
 
   async modalSolicitarDescanso() {
@@ -119,9 +155,9 @@ export class FeriasAbonosPage implements OnInit {
       animated: true,
       componentProps: {
         periodos: this.periodos,
-        selecionado: {de: this.form.get('periodo').value},
-        abono: this.getPeriodo().balance.days_off.remaining,
-        ferias: this.getPeriodo().balance.annual_leaves.remaining
+        selecionado: this.form.get('periodo').value,
+        abono: this.getPeriodo()?.timeline?.balance[0]?.days_off.remaining,
+        ferias: this.getPeriodo()?.timeline?.balance[0]?.annual_leaves.remaining
       }
     });
     await modal.present();

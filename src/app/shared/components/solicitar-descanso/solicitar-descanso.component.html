@@ -1,13 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button fill="clear" size="large" (click)="cancelar()">
+      <ion-button (click)="cancelar()" fill="clear" size="large">
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title style="text-align: center;">Solicitar Férias / Abono</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="clear" size="large" (click)="salvar()">
+      <ion-button (click)="salvar()" fill="clear" size="large">
         <ion-icon name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -15,7 +15,7 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="form" (submit)="onSubmit()">
+  <form (submit)="onSubmit()" [formGroup]="form">
     <ion-card>
       <ion-card-header>
         <ion-item>
@@ -40,9 +40,9 @@
           </ion-select>
         </ion-item>
 
-        <ng-template [ngIf]="tipo === 'ferias'" [ngIfElse]="elAbono">
+        <ng-template [ngIfElse]="elAbono" [ngIf]="tipo === 'ferias'">
 
-          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
+          <ion-item class="ion-margin-vertical" lines="none" style="--background: #999999; border-radius: 7px;">
             <ion-label>Saldo atual:</ion-label>
             <ion-label slot="end">{{ferias}} dias</ion-label>
           </ion-item>
@@ -50,36 +50,42 @@
           <ion-item>
             <ion-label position="stacked">Data de início:</ion-label>
             <ion-datetime
+              [max]="dt.max"
+              [min]="dt.min"
+              cancelText="Cancelar"
               displayFormat="DD/MM/YYYY"
+              doneText="Selecionar"
+              formControlName="dataInicio"
+              monthNames="Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro"
+              monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
               pickerFormat="DD MMMM YYYY"
               placeholder="Selecione uma data"
-              doneText="Selecionar"
-              cancelText="Cancelar"
-              [min]="dt.min"
-              [max]="dt.max"
-              formControlName="dataInicio"
-              monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
-              monthNames="Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro"
             ></ion-datetime>
           </ion-item>
 
           <ion-item>
             <ion-label position="stacked">Duração (dias uteis):</ion-label>
-            <ion-select interface="popover" formControlName="duracao">
+            <ion-select formControlName="duracao" interface="popover">
               <ion-select-option *ngFor="let d of duracao; let i = index" [value]="d">
                 {{d}}
               </ion-select-option>
             </ion-select>
           </ion-item>
 
-          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
-            <ion-label>Perdiodo Selecionado:</ion-label>
-            <ion-label slot="end">{{form.controls.duracao.value ?? 0}} dias</ion-label>
-          </ion-item>
+          <!--          <ion-item class="ion-margin-vertical" lines="none" style="&#45;&#45;background: #999999; border-radius: 7px;">-->
+          <!--            <ion-label>Perdiodo Selecionado:</ion-label>-->
+          <!--            <ion-label slot="end">{{form.controls.duracao.value ?? 0}} dias</ion-label>-->
+          <!--          </ion-item>-->
 
-          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
+          <ion-item class="ion-margin-vertical" lines="none" style="--background: #999999; border-radius: 7px;">
             <ion-label>Saldo restante após aprovação:</ion-label>
             <ion-label slot="end">{{ferias - (form.controls.duracao.value ?? 0)}} dias</ion-label>
+          </ion-item>
+
+          <ion-item *ngIf="termino" class="ion-margin-vertical" lines="none"
+                    style="--background: #999999; border-radius: 7px;">
+            <ion-label>Data de término do descanso:</ion-label>
+            <ion-label slot="end">{{termino | date : 'dd/MM/yyyy'}}</ion-label>
           </ion-item>
 
           <ion-item>
@@ -88,7 +94,7 @@
           </ion-item>
         </ng-template>
         <ng-template #elAbono>
-          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
+          <ion-item class="ion-margin-vertical" lines="none" style="--background: #999999; border-radius: 7px;">
             <ion-label>Saldo atual:</ion-label>
             <ion-label slot="end">{{ferias}} dias</ion-label>
           </ion-item>
@@ -96,34 +102,34 @@
           <ion-item>
             <ion-label position="stacked">Data de início:</ion-label>
             <ion-datetime
+              [max]="dt.max"
+              [min]="dt.min"
+              cancelText="Cancelar"
               displayFormat="DD/MM/YYYY"
+              doneText="Selecionar"
+              formControlName="dataInicio"
+              monthNames="Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro"
+              monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
               pickerFormat="DD MMMM YYYY"
               placeholder="Selecione uma data"
-              doneText="Selecionar"
-              cancelText="Cancelar"
-              [min]="dt.min"
-              [max]="dt.max"
-              formControlName="dataInicio"
-              monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
-              monthNames="Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro"
             ></ion-datetime>
           </ion-item>
 
           <ion-item>
             <ion-label position="stacked">Duração (dias uteis):</ion-label>
-            <ion-select interface="popover" formControlName="duracao">
+            <ion-select formControlName="duracao" interface="popover">
               <ion-select-option *ngFor="let d of duracao; let i = index" [value]="d">
                 {{d}}
               </ion-select-option>
             </ion-select>
           </ion-item>
 
-          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
+          <ion-item class="ion-margin-vertical" lines="none" style="--background: #999999; border-radius: 7px;">
             <ion-label>Perdiodo Selecionado:</ion-label>
             <ion-label slot="end">{{form.controls.duracao.value ?? 0}} dias</ion-label>
           </ion-item>
 
-          <ion-item lines="none" style="--background: #999999; border-radius: 7px;" class="ion-margin-vertical">
+          <ion-item class="ion-margin-vertical" lines="none" style="--background: #999999; border-radius: 7px;">
             <ion-label>Saldo restante após aprovação:</ion-label>
             <ion-label slot="end">{{ferias - (form.controls.duracao.value ?? 0)}} dias</ion-label>
           </ion-item>
@@ -134,4 +140,10 @@
       </ion-card-content>
     </ion-card>
   </form>
+
+  <pre>
+    <code>
+      {{form.value | json}}
+    </code>
+  </pre>
 </ion-content>

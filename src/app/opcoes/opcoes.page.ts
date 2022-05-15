@@ -10,6 +10,7 @@ import {FileOpener} from '@awesome-cordova-plugins/file-opener/ngx';
 import {Update} from '../core/models/update';
 import npm from '../../../package.json';
 import {delay} from 'rxjs/operators';
+import {AuthService} from '../core/services/auth.service';
 
 @Component({
   selector: 'app-opcoes',
@@ -63,6 +64,7 @@ export class OpcoesPage implements OnInit, AfterViewInit {
 
   form: FormGroup;
   versaoApp = '';
+  versaoAtual = npm.version;
   buildInfo: string[] = [];
   plataforma = false;
 
@@ -75,7 +77,7 @@ export class OpcoesPage implements OnInit, AfterViewInit {
     private downloadService: DownloadService,
     private transfer: FileTransfer,
     private file: File,
-    private fileOpener: FileOpener
+    private fileOpener: FileOpener,
   ) {
     this.plataforma = this.platform.is('cordova');
     this.form = this.fb.group({

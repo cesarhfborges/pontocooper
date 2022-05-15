@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {addYears, format, parseISO} from 'date-fns';
+import {addYears, format, parse, parseISO} from 'date-fns';
 import {DadosService} from '../../../core/services/dados.service';
+import {distinctUntilChanged, map} from 'rxjs/operators';
 
 interface Detalhes {
   approved: number;
@@ -23,6 +24,8 @@ export class SolicitarDescansoComponent implements OnInit {
   @Input() ferias = 0;
 
   duracao = [5, 10];
+
+  termino: Date = null;
 
   hoje: string = format(new Date(), 'yyyy-MM-dd');
   dt = {
@@ -56,6 +59,19 @@ export class SolicitarDescansoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.form.get('periodo').patchValue(this.selecionado);
+    this.form.valueChanges.pipe(
+      distinctUntilChanged()
+    ).subscribe(async (value) => {
+      if (value.duracao !== null && value.duracao !== '' && value.dataInicio !== null && value.dataInicio !== '') {
+        this.termino = await this.dadosService.calcularUltimoDia(parseISO(value.dataInicio), value.duracao).pipe(
+          map(r => parse(r.last_date, 'yyyy-MM-dd', new Date()))
+        ).toPromise();
+      } else {
+        this.termino = null;
+      }
+      console.log(value);
+    });
   }
 
   async cancelar() {

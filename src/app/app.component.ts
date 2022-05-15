@@ -16,11 +16,13 @@ import {Geolocation, GeolocationOptions} from '@ionic-native/geolocation/ngx';
 import {parseISO} from 'date-fns';
 import {Ponto} from './core/models/ponto';
 import {Batida} from './core/models/batida';
+import {environment} from '../environments/environment';
 
 interface Menu {
   label: string;
   link: string;
   icon?: string;
+  visible: boolean;
 }
 
 @Component({
@@ -30,43 +32,58 @@ interface Menu {
 })
 export class AppComponent {
 
+  devMode = false;
+
   versao = npm.version;
 
   menus: Array<Menu> = [
     {
       label: 'Home',
       link: '/home',
-      icon: 'planet'
+      icon: 'planet',
+      visible: true
     },
     {
       label: 'Produção',
       link: '/producao',
-      icon: 'calendar-outline'
+      icon: 'calendar-outline',
+      visible: true
     },
     {
       label: 'Histórico (GPS)',
       link: '/historico',
-      icon: 'navigate-outline'
+      icon: 'navigate-outline',
+      visible: true
     },
     {
       label: 'Férias e Abonos',
       link: '/ferias-abonos',
-      icon: 'planet-outline'
+      icon: 'planet-outline',
+      visible: true
     },
     {
       label: 'Ausências e Horas extras',
       link: '/ausencias-horas-extras',
-      icon: 'planet-outline'
+      icon: 'planet-outline',
+      visible: true
     },
     {
       label: 'Opções',
       link: '/opcoes',
-      icon: 'settings-outline'
+      icon: 'settings-outline',
+      visible: true
     },
     {
       label: 'Perfil',
       link: '/perfil',
-      icon: 'person-outline'
+      icon: 'person-outline',
+      visible: true
+    },
+    {
+      label: 'Dev',
+      link: '/testes',
+      icon: 'code-working-outline',
+      visible: !environment.production
     }
   ];
 
@@ -83,23 +100,23 @@ export class AppComponent {
     private backgroundMode: BackgroundMode,
   ) {
     if (this.platform.is('cordova')) {
+      this.backgroundMode.setDefaults({
+        title: 'Cooper System',
+        text: 'Cooper System está em execução',
+        silent: false,
+        hidden: false,
+        resume: false,
+      });
       this.addDynamicShortCuts().catch();
       // this.addPinnedShortCuts().catch();
       this.listenShortCuts().catch();
       this.lockScreenOrientation().catch();
       this.permissaoNotif().catch();
-      this.backgroundMode.configure({
-        title: 'CooperSystem',
-        text: 'CooperSystem está em execução',
-        icon: 'icon',
-        color: '#ffffff',
-        bigText: true,
-        silent: true,
-        resume: true,
-        hidden: false,
+      this.backgroundMode.un('enable', () => {
+        console.log('============== backgroundMode activate ==============');
       });
       this.backgroundMode.disableBatteryOptimizations();
-      this.backgroundMode.enable();
+      // this.backgroundMode.enable();
     }
     const darkMode: any = JSON.parse(localStorage.getItem('opcoes')).darkMode;
     switch (darkMode) {

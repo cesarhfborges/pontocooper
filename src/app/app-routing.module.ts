@@ -58,8 +58,17 @@ const routes: Routes = [
   },
   {
     path: 'ponto',
-    loadChildren: () => import('./ponto-automatico/ponto-automatico.module').then(m => m.PontoAutomaticoPageModule)
+    loadChildren: () => import('./ponto-automatico/ponto-automatico.module').then(m => m.PontoAutomaticoPageModule),
+    canActivate: [AuthGuardService],
+    canActivateChild: [AuthGuardService]
+  },
+  {
+    path: 'testes',
+    loadChildren: () => import('./testes/testes.module').then(m => m.TestesPageModule),
+    canActivate: [AuthGuardService],
+    canActivateChild: [AuthGuardService]
   }
+
 ];
 
 @NgModule({
