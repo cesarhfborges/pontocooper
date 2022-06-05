@@ -1,129 +1,20 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-menu-button [autoHide]="true" slot="start" menu="principal"></ion-menu-button>
-    <ion-img style="height: 45px;" src="assets/logo-horizontal-white.png"></ion-img>
-    <ion-buttons slot="end">
-      <ion-button [routerLink]="['/perfil']">
-        <ion-icon slot="icon-only" name="person-circle-outline" style="font-size: 1.8rem;"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+  <ion-toolbar>
+    <ion-title>
+      Blank
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <p class="ion-padding-horizontal">Arraste para atualizar</p>
-  <ion-refresher slot="fixed" (ionRefresh)="getDados($event)" pullFactor="0.5" pullMin="120" pullMax="120">
-    <ion-refresher-content
-      pullingIcon="chevron-down-circle-outline"
-      pullingText="Arraste para atualizar"
-      refreshingSpinner="circles"
-      refreshingText="Atualizando aguarde...">
-    </ion-refresher-content>
-  </ion-refresher>
-  <ion-card>
-    <ion-item>
-      <ion-icon color="tertiary" name="planet" slot="start"></ion-icon>
-      <ion-label>Produção de hoje</ion-label>
-      <ion-button fill="outline" slot="end">
-        {{(dataAtual | date : 'ccc dd') + ' de ' + (dataAtual | date : 'MMMM')}}
-      </ion-button>
-    </ion-item>
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Blank</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-    <ion-card-content>
-      <ion-row>
-        <ion-col size="12">
-          <p>Banco de Horas:</p>
-        </ion-col>
-        <ion-col size="6">
-          <h2>Aprovadas:</h2>
-          <h1>{{bancoDeHoras?.balance ?? '0'}}h</h1>
-        </ion-col>
-        <ion-col size="6">
-          <h2>Em análise:</h2>
-          <h1>{{bancoDeHoras?.pending ?? '0'}}h</h1>
-        </ion-col>
-        <ion-col size="6">
-          <h2>Jornada:</h2>
-          <h1>{{summary?.workingHours ?? '0'}}h</h1>
-        </ion-col>
-        <ion-col size="6">
-          <h2>Carga Horária:</h2>
-          <h1>{{summary?.hoursToWork ?? '0'}}h</h1>
-        </ion-col>
-        <ion-col size="6">
-          <h2>Dias úteis:</h2>
-          <h1>{{summary?.businessDays ?? '0'}}</h1>
-        </ion-col>
-        <ion-col size="6">
-          <h2>Restante:</h2>
-          <h1>{{summary?.remainingHours ?? '0'}}h</h1>
-        </ion-col>
-      </ion-row>
-
-      <p>
-        Entradas/Saídas:
-      </p>
-
-      <ion-list [@slideOutAnimation]="ponto?.batidas?.length">
-        <ng-template [ngIf]="!loading.timeline && ponto?.batidas?.length > 0" [ngIfElse]="listaVazia">
-          <ion-item *ngFor="let batida of ponto?.batidas; let i = index">
-            <ion-icon
-              [color]="i % 2 === 0 ? 'success' : 'danger'"
-              [name]="i % 2 === 0 ? 'arrow-forward-outline' : 'arrow-back-outline'"
-              slot="start"
-            ></ion-icon>
-            <h1>{{batida.worktime_clock | date : 'HH:mm:ss'}}</h1>
-          </ion-item>
-        </ng-template>
-        <ng-template #listaVazia>
-          <ion-item>
-            <ion-icon
-              [color]="loading.timeline ? 'tertiary': 'warning'"
-              [name]="loading.timeline ? 'hourglass-outline' : 'information-outline'"
-              slot="start"
-            ></ion-icon>
-            <ion-label [color]="loading.timeline ? 'tertiary': 'warning'">
-              {{loading.timeline ? 'Carregando...' : 'Nenhum ponto registrado hoje.'}}
-            </ion-label>
-          </ion-item>
-        </ng-template>
-      </ion-list>
-
-    </ion-card-content>
-  </ion-card>
-
-  <!--  <pre>-->
-  <!--    <code>-->
-  <!--      {{ponto.batidas|json}}-->
-  <!--    </code>-->
-  <!--  </pre>-->
+  <div id="container">
+    <strong>Ready to create an app?</strong>
+    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  </div>
 </ion-content>
-
-<ion-footer>
-  <ion-toolbar style="padding: 0 10px 10px 10px;">
-    <div style="margin-bottom: 0; margin-top: 0;">
-      <ion-progress-bar
-        [buffer]="ponto?.trabalhando && jornadaDiaria < 100 ? 0 : 1"
-        [color]="jornadaDiaria > 99 ? 'success' : 'warning'"
-        [value]="jornadaDiaria / 100"
-      ></ion-progress-bar>
-    </div>
-    <h1
-      style="margin-top: 9px; margin-bottom: 0; text-align: center; font-size: 2rem;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>
-    <h2 *ngIf="opcoes?.valorAcumulado && perfil"
-        style="margin-top: 0; margin-bottom: 0; text-align: center;font-size: 1.4rem;"
-    >{{valorAcumulado | currency : 'BRL' : 'R$ ' : '1.2-2'}}</h2>
-    <ion-button
-      size="large"
-      type="button"
-      expand="block"
-      [color]="ponto?.trabalhando ? 'danger' : 'success'"
-      (click)="registrarPonto()"
-      [disabled]="isLoading()"
-      style="margin-top: 4px;"
-    >
-      <ion-icon slot="start" [name]="ponto?.trabalhando ? 'exit-outline' : 'enter-outline'"></ion-icon>
-      {{ponto?.trabalhando ? ' Saida ' : ' Entrada ' + (ponto?.isInterval() ? (((ponto?.getIntervalo() | async) | date : 'HH:mm:ss') ?? '') : '')}}
-    </ion-button>
-  </ion-toolbar>
-</ion-footer>
