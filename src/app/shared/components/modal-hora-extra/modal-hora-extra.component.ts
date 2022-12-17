@@ -3,7 +3,7 @@ import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DadosService} from '../../../core/services/dados.service';
 import {Dia} from '../../../core/models/dia';
-import {getHours, getMinutes, parseISO} from 'date-fns';
+import {format, getHours, getMinutes, parseISO} from 'date-fns';
 
 @Component({
   selector: 'app-modal-hora-extra',
@@ -22,9 +22,9 @@ export class ModalHoraExtraComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
-      reason: [null, [Validators.required, Validators.minLength(4)]],
-      status: ['em_analise', [Validators.required]],
-      status_display: ['Em análise', [Validators.required]],
+      reason: [null, [Validators.required, Validators.minLength(8)]],
+      // status: ['em_analise', [Validators.required]],
+      // status_display: ['Em análise', [Validators.required]],
     });
   }
 
@@ -53,18 +53,18 @@ export class ModalHoraExtraComponent implements OnInit {
 
   salvar(): void {
     if (this.form.valid) {
-      // const data: string = format(this.formatDate(this.dados.date), 'yyyy-MM-dd');
-      // this.dadosService.solicitarHoraExtra(data, this.form.value).subscribe(
-      //   response => {
-      //     // this.modalController.dismiss({
-      //     //   success: true,
-      //     //   data: {teste: true}
-      //     // });
-      //   },
-      //   error => {
-      //     console.log(error);
-      //   }
-      // );
+      const data: string = format(this.formatDate(this.dados.date), 'yyyy-MM-dd');
+      this.dadosService.solicitarHoraExtra(data, this.form.value).subscribe(
+        response => {
+          this.modalController.dismiss({
+            success: true,
+            data: {teste: true}
+          });
+        },
+        error => {
+          console.log(error);
+        }
+      );
       this.modalController.dismiss({
         success: true,
         data: {teste: true}

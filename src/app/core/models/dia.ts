@@ -1,5 +1,8 @@
 export interface Dia {
-  balance: string;
+  balance: {
+    solicitation: Solicitation[];
+    total_balance: string;
+  };
   date: string;
   day_type?: {
     day_type: string;
@@ -10,6 +13,13 @@ export interface Dia {
   paid_leave: any;
   production: string;
   timeline: Array<Timeline>;
+}
+
+export interface Solicitation {
+  status: string;
+  status_display: string;
+  request_type: string;
+  request_type_display: string;
 }
 
 export interface Timeline {

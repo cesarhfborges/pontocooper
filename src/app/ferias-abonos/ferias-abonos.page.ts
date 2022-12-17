@@ -89,7 +89,6 @@ export class FeriasAbonosPage implements OnInit {
     try {
       await this.getPeriodosFeriasAbonos();
       const periodos = await this.getPeriodos();
-      console.log(periodos);
       await this.getPeriodosDados(this.form.get('periodo').value.de);
     } catch (e) {
       console.log(e);
@@ -121,7 +120,7 @@ export class FeriasAbonosPage implements OnInit {
       ).toPromise();
       this.periodos = response.map(i => ({de: i[0], ate: i[1]}));
       this.form.patchValue({
-        periodo: this.periodos[this.periodos.length - 1]
+        periodo: this.periodos[0]
       });
       this.loading.feriasAbonos = false;
       return Promise.resolve();
@@ -162,7 +161,6 @@ export class FeriasAbonosPage implements OnInit {
     });
     await modal.present();
     const {data} = await modal.onWillDismiss();
-    console.log(data);
     if (data?.success) {
       // this.toastsService.showToastSuccess('Hora(s) extra(s), solicitada(s) com sucesso.');
       // this.getProducao();

@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DadosService} from '../core/services/dados.service';
-import {AlertController, IonContent, ModalController, Platform} from '@ionic/angular';
+import {AlertController, IonContent, ModalController, Platform, ToastController} from '@ionic/angular';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AuthService} from '../core/services/auth.service';
 import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
@@ -67,7 +67,8 @@ export class ProducaoPage implements OnInit {
     private statusBar: StatusBar,
     private toastsService: ToastsService,
     private modalController: ModalController,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastController: ToastController
   ) {
   }
 
@@ -120,23 +121,32 @@ export class ProducaoPage implements OnInit {
   }
 
   async modalHoraExtra(dia: Dia) {
-    const modal = await this.modalController.create({
-      component: ModalHoraExtraComponent,
-      cssClass: 'my-custom-class',
-      swipeToClose: true,
-      backdropDismiss: false,
-      keyboardClose: false,
-      animated: true,
-      componentProps: {
-        dados: dia
+    if (dia.balance?.solicitation.length > 0) {
+      const modal = await this.modalController.create({
+        component: ModalHoraExtraComponent,
+        cssClass: 'my-custom-class',
+        swipeToClose: true,
+        backdropDismiss: false,
+        keyboardClose: false,
+        animated: true,
+        componentProps: {
+          dados: dia
+        }
+      });
+      await modal.present();
+      const {data} = await modal.onWillDismiss();
+      if (data.success) {
+        this.toastsService.showToastSuccess('Hora(s) extra(s), solicitada(s) com sucesso.');
+        this.getProducao();
       }
-    });
-    await modal.present();
-    const {data} = await modal.onWillDismiss();
-    console.log(data);
-    if (data.success) {
-      this.toastsService.showToastSuccess('Hora(s) extra(s), solicitada(s) com sucesso.');
-      this.getProducao();
+    } else {
+      const toast = await this.toastController.create({
+        message: 'Ops, não existe hora extra para o dia selecionado.',
+        duration: 3000,
+        color: 'secondary',
+        position: 'bottom',
+      });
+      await toast.present();
     }
   }
 
