@@ -16,7 +16,7 @@
       <ion-card-header>
         <ion-item>
           <ion-label position="stacked">Período:</ion-label>
-          <ion-select (ionChange)="getPeriodosDados($event.detail.value.de)" formControlName="periodo">
+          <ion-select (ionChange)="getPeriodosDados($event.detail.value.de)" cancelText="Cancelar" okText="Confirmar" formControlName="periodo">
             <ion-select-option *ngFor="let p of periodos; let i = index" [value]="p">
               {{p.de | date : 'dd/MM/yyyy'}} - {{p.ate | date : 'dd/MM/yyyy'}}
             </ion-select-option>
