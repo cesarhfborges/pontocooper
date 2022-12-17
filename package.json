@@ -1,11 +1,11 @@
 {
   "name": "pontocooper",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "author": "Cesar HenriQ",
   "description": "Aplicativo de ponto CooperSystem",
   "buildInfo": [
-    "Registro de ponto migrado para uma nova pagina.",
-    "menus dinamicos incluidos.",
+    "Ajustes na tela de solicitar hora extra",
+    "Correções",
     "Possibilidade de usar ferramentas de automatização de rotinas android/ios"
   ],
   "homepage": "https://portal.coopersystem.com.br/",

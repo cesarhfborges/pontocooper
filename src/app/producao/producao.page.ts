@@ -32,7 +32,7 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class ProducaoPage implements OnInit {
 
-  @ViewChild(IonContent, null) content: IonContent;
+  @ViewChild(IonContent, { static: false }) content: IonContent;
 
   producao: Array<Dia>;
 
