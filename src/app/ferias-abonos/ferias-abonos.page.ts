@@ -99,10 +99,10 @@ export class FeriasAbonosPage implements OnInit {
     return this.dadosService.getPeriodos().toPromise();
   }
 
-  async getPeriodosDados(data: Date) {
+  async getPeriodosDados(event: any) {
     try {
       this.loading.periodos = true;
-      this.paidLeave = await this.dadosService.getPeriodosDados(format(data, 'yyyy-MM-dd')).toPromise();
+      this.paidLeave = await this.dadosService.getPeriodosDados(format(event.detail?.value?.de, 'yyyy-MM-dd')).toPromise();
       this.loading.periodos = false;
       return Promise.resolve();
     } catch (e) {
