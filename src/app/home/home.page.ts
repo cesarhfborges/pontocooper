@@ -3,7 +3,7 @@ import {DadosService} from '../core/services/dados.service';
 import {
   AlertController,
   AlertInput,
-  IonRouterOutlet,
+  IonRouterOutlet, LoadingController,
   MenuController,
   Platform,
   ToastController,
@@ -18,7 +18,7 @@ import {animate, query, stagger, style, transition, trigger} from '@angular/anim
 import {addMinutes, format, getHours, parseISO, set, subMinutes} from 'date-fns';
 import {Observable, timer} from 'rxjs';
 import {App} from '@capacitor/app';
-import {distinctUntilChanged} from 'rxjs/operators';
+import {delay, distinctUntilChanged} from 'rxjs/operators';
 import {DownloadService} from '../core/services/download.service';
 import npm from '../../../package.json';
 import {Router} from '@angular/router';
@@ -120,6 +120,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
     private routerOutlet: IonRouterOutlet,
     private localNotifications: LocalNotifications,
     private downloadService: DownloadService,
+    private loadingController: LoadingController,
     private router: Router,
   ) {
     this.timer = timer(1000, 1000);
@@ -324,6 +325,16 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
       }, 120000);
       const {data} = await alert.onDidDismiss();
       if (data !== undefined) {
+        const loading = await this.loadingController.create({
+          cssClass: 'my-custom-class',
+          message: 'Registrando',
+          backdropDismiss: false,
+          keyboardClose: false,
+          showBackdrop: true,
+          animated: true,
+          spinner: 'bubbles',
+        });
+        await loading.present();
         await this.cancelarNotificacoes();
         const {latitude, longitude} = await this.getCoords();
         const response: any = await this.dadosService.baterPonto({
@@ -331,6 +342,7 @@ export class HomePage implements OnInit, AfterViewInit, ViewDidEnter {
           latitude: latitude ?? -15.7962774,
           longitude: longitude ?? -47.9481004
         }).toPromise();
+        await loading.dismiss();
         if (response !== undefined) {
           this.ponto.baterPonto(data);
           this.ponto.setIntervalo(data, this.opcoes.intervalo);

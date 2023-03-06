@@ -172,7 +172,7 @@ export class AppComponent {
 
   private async addDynamicShortCuts(): Promise<void> {
     const {result} = await AndroidShortcuts.isDynamicSupported();
-    if (result) {
+    if (result && this.authService.isAuthenticated()) {
       await AndroidShortcuts.addDynamic({
         items: [
           {
