@@ -1,42 +1,27 @@
-::ng-deep {
-  .alerta {
-    .alert-wrapper {
-      width: calc(100% - 22px);
-      max-width: 400px;
+#container {
+  text-align: center;
 
-      .alert-checkbox-group {
-        vertical-align: middle;
-        //background: red;
-        .alert-tappable {
-          margin-top: 32px;
-          margin-bottom: 32px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
 
-          .alert-checkbox-label {
-            white-space: unset;
-          }
-        }
-      }
-    }
+#container strong {
+  font-size: 20px;
+  line-height: 26px;
+}
 
-    .alert-button-group {
-      .alert-button {
-        font-weight: bold;
-      }
-    }
-  }
+#container p {
+  font-size: 16px;
+  line-height: 22px;
 
-  .buttonsCss {
-    ul {
-      padding: 0 1rem;
-      margin: 0;
-    }
+  color: #8c8c8c;
 
-    button.alert-button.dismissButton {
-      color: var(--ion-color-medium);
-    }
+  margin: 0;
+}
 
-    button.alert-button.updateButton {
-      color: var(--ion-color-primary);
-    }
-  }
+#container a {
+  text-decoration: none;
 }
