@@ -1,12 +1,10 @@
 {
   "name": "pontocooper",
-  "version": "1.0.18",
+  "version": "1.1.0",
   "author": "Cesar HenriQ",
   "description": "Aplicativo de ponto CooperSystem",
   "buildInfo": [
-    "Ajustes na tela de solicitar hora extra",
-    "Correções",
-    "Possibilidade de usar ferramentas de automatização de rotinas android/ios"
+    "Nova versão base do aplicativo"
   ],
   "homepage": "https://portal.coopersystem.com.br/",
   "scripts": {
