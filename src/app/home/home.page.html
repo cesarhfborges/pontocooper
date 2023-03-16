@@ -12,7 +12,7 @@
 
 <ion-content [fullscreen]="true">
   <p class="ion-padding-horizontal">Arraste para atualizar</p>
-  <ion-refresher slot="fixed" [closeDuration]="'600ms'" pullFactor="0.5" pullMin="120" pullMax="120">
+  <ion-refresher slot="fixed" [snapbackDuration]="200" [closeDuration]="200" pullFactor="0.5" pullMin="120" pullMax="120">
     <ion-refresher-content
       pullingIcon="chevron-down-circle-outline"
       pullingText="Arraste para atualizar"

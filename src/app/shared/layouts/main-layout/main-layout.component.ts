@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Menu } from './menu';
+import {IonRouterOutlet, Platform} from '@ionic/angular';
+import {App} from '@capacitor/app';
 
 @Component({
   selector: 'app-main-layout',
@@ -64,8 +66,17 @@ export class MainLayoutComponent  implements OnInit {
     }
   ];
 
-  constructor() { }
+  constructor(
+    private platform: Platform,
+    private routerOutlet: IonRouterOutlet,
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.platform.backButton.subscribeWithPriority(-1, () => {
+      if (!this.routerOutlet.canGoBack()) {
+        App.exitApp().catch();
+      }
+    });
+  }
 
 }
