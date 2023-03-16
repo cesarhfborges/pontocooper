@@ -1,14 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ViewWillEnter} from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements OnInit, ViewWillEnter {
+
+  @ViewChild('inputUsername') inputUser: any;
 
   form: FormGroup;
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -24,5 +28,8 @@ export class LoginPage implements OnInit {
   }
 
   onSubmit(): void {
+  }
+
+  ionViewWillEnter(): void {
   }
 }
