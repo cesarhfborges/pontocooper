@@ -1,0 +1,54 @@
+<ion-content>
+  <!--  <video autoplay loop src="assets/videoplayback.mp4"></video>-->
+  <ion-grid style="height: 100%;">
+    <ion-row style="height: 100%;">
+      <ion-col size="12" class="ion-align-self-center">
+        <form [formGroup]="form" (submit)="onSubmit()">
+          <ion-card>
+            <ion-card-header>
+              <div class="logotipo"></div>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-item lines="none">
+                <ion-label position="stacked">Usuário:</ion-label>
+                <ion-input
+                  #inputUsername
+                  type="text"
+                  enterkeyhint="next"
+                  inputmode="text"
+                  spellcheck="false"
+                  name='username'
+                  formControlName="username"
+                  (keyup.enter)="inputPass.setFocus()"
+                  autofocus
+                  clearInput
+                ></ion-input>
+                <app-invalid-message [control]="form?.get('username')"></app-invalid-message>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label position="stacked">Senha:</ion-label>
+                <ion-input
+                  #inputPass
+                  type="password"
+                  enterkeyhint="send"
+                  inputmode="text"
+                  spellcheck="false"
+                  (keyup.enter)="onSubmit()"
+                  name="password"
+                  formControlName="password"
+                  clearInput
+                ></ion-input>
+                <app-invalid-message [control]="form?.get('password')"></app-invalid-message>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label>Lembrar</ion-label>
+                <ion-checkbox slot="start" formControlName="remember"></ion-checkbox>
+              </ion-item>
+              <ion-button style="margin: 16px 16px 16px 16px;" type="submit" expand="block">Entrar</ion-button>
+            </ion-card-content>
+          </ion-card>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

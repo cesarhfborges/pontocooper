@@ -1,0 +1,38 @@
+.btn-toggle {
+  width: calc(100% - 32px);
+  margin: 0 16px;
+
+  ion-button {
+    width: 50%;
+    border: 1px solid rgba(176, 176, 176, 0.84);
+    margin: 0 !important;
+
+    &:first-child {
+      border-right: unset;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+
+    &.active {
+      &.ion-color-primary {
+        background: var(--ion-color-primary);
+        color: var(--ion-color-primary-contrast) !important;
+        --ion-color-base: var(--ion-color-primary-contrast) !important;
+      }
+    }
+  }
+}
+
+div.info {
+  background: rgb(252, 252, 252);
+  border-radius: 3px;
+  margin: 8px 0;
+  width: 100%;
+  color: #0d0d0d;
+  padding: 4px 8px;
+}
