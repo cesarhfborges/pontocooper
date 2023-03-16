@@ -9,10 +9,15 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'home',
+    path: '', // App Pages
     component: MainLayoutComponent,
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
-  },
+    children: [
+      {
+        path: 'home',
+        loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
+      }
+    ]
+  }
 ];
 
 @NgModule({

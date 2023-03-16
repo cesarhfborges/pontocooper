@@ -11,6 +11,8 @@ export class MainLayoutComponent  implements OnInit {
 
   versao = '0.0.0';
 
+  swipe = false;
+
   menus: Array<Menu> = [
     {
       label: 'Home',
