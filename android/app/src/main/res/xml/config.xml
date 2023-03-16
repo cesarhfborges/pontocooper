@@ -2,59 +2,5 @@
 <widget version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <access origin="*" />
   
-  <feature name="BackgroundMode">
-    <param name="android-package" value="de.appplant.cordova.plugin.background.BackgroundMode"/>
-  </feature>
-  <feature name="BackgroundModeExt">
-    <param name="android-package" value="de.appplant.cordova.plugin.background.BackgroundModeExt"/>
-  </feature>
-
-  <feature name="Badge">
-    <param name="android-package" value="de.appplant.cordova.plugin.badge.Badge"/>
-  </feature>
-
-  <feature name="Device">
-    <param name="android-package" value="org.apache.cordova.device.Device"/>
-  </feature>
-
-  <feature name="File">
-    <param name="android-package" value="org.apache.cordova.file.FileUtils"/>
-    <param name="onload" value="true"/>
-  </feature>
-
-  <feature name="FileOpener2">
-    <param name="android-package" value="io.github.pwlin.cordova.plugins.fileopener2.FileOpener2"/>
-  </feature>
-
-  <feature name="FileTransfer">
-    <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer"/>
-  </feature>
-
-  <feature name="Geolocation">
-    <param name="android-package" value="org.apache.cordova.geolocation.Geolocation"/>
-  </feature>
-
-  <feature name="LocalNotification">
-    <param name="android-package" value="de.appplant.cordova.plugin.localnotification.LocalNotification"/>
-  </feature>
-
-  <feature name="CDVOrientation">
-    <param name="android-package" value="cordova.plugins.screenorientation.CDVOrientation"/>
-  </feature>
-
-  <feature name="StatusBar">
-    <param name="android-package" value="org.apache.cordova.statusbar.StatusBar"/>
-    <param name="onload" value="true"/>
-  </feature>
-
-  <feature name="ThemeDetection">
-    <param name="android-package" value="de.mariusbackes.cordova.plugin.ThemeDetection"/>
-  </feature>
-
-  <feature name="Whitelist">
-    <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin"/>
-    <param name="onload" value="true"/>
-  </feature>
-
   
 </widget>
