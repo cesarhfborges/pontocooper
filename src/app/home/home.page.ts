@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {SessionStorageService} from '../core/services/session-storage.service';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +8,7 @@ import {Component, OnInit} from '@angular/core';
 })
 export class HomePage implements OnInit {
   constructor(
+    private session: SessionStorageService
   ) {
   }
 

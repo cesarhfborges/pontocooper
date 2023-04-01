@@ -18,16 +18,19 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(catchError(err => {
-      if (!['/login', '/cadastro', '/recuperarsenha'].includes(this.router.url) && [401].includes(err.status)) {
-        const token: string = this.authService.getRefreshToken();
-        if (this.authService.isAuthenticated && token !== undefined && token !== null) {
-          this.authService.refreshToken(token).toPromise().catch(() => {
-            this.authService.logout(); // auto logout if 401 response returned from api backend
-          });
+    return next.handle(request).pipe(
+      catchError(err => {
+        if (!['/login', '/cadastro', '/recuperarsenha'].includes(this.router.url) && [401].includes(err.status)) {
+          // this.authService.auth().then(auth => {
+          //   if (auth !== undefined && auth !== null) {
+          //     // this.authService.refreshToken(token).toPromise().catch(() => {
+          //     //   this.authService.logout(); // auto logout if 401 response returned from api backend
+          //     // });
+          //   }
+          // });
         }
-      }
-      return throwError({...err.error});
-    }));
+        return throwError({...err.error});
+      })
+    );
   }
 }

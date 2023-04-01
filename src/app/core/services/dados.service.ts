@@ -22,7 +22,7 @@ export class DadosService {
     return this.http.get(`${environment.apiUrl}/person/current`);
   }
 
-  baterPonto(dados): Observable<any> {
+  baterPonto(dados: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}/daily_worktime_clock/`, dados);
   }
 
@@ -34,7 +34,7 @@ export class DadosService {
     return this.http.get(`${environment.apiUrl}/my_compensatory_time`);
   }
 
-  getSummary(year, month): Observable<any> {
+  getSummary(year: number, month: number): Observable<any> {
     return this.http.get(`${environment.apiUrl}/work_month_summary/${year}/${month}/`);
   }
 

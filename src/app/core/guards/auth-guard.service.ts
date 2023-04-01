@@ -1,16 +1,16 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router, RouterStateSnapshot} from '@angular/router';
-import {AuthService} from '../services/auth.service';
-import {Observable} from 'rxjs';
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
+import {map, Observable, tap} from 'rxjs';
+import {SessionStorageService} from '../services/session-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardService implements CanActivate, CanActivateChild {
+export class AuthGuardService {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private session: SessionStorageService
   ) {
   }
 
@@ -22,27 +22,31 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
     return this.checkRoute(state);
   }
 
-  private checkRoute = (state: RouterStateSnapshot): boolean => {
-    if (state.url !== '/') {
-      const routes = [
-        'login',
-      ];
-      const rotaAtual = state.url.split('/').filter(i => i !== '')[0];
-      if (this.authService.isAuthenticated()) {
-        if (routes.includes(rotaAtual)) {
-          this.router.navigate(['/home']).catch();
-          return false;
+  private checkRoute(state: RouterStateSnapshot): Observable<boolean> {
+    return this.session.isAuthenticated().pipe(
+      tap((loggedIn) => {
+        if (state.url !== '/') {
+          const routes = [
+            'login',
+          ];
+          const rotaAtual = state.url.split('/').filter(i => i !== '')[0];
+          if (loggedIn) {
+            if (routes.includes(rotaAtual)) {
+              this.router.navigate(['/home']).catch();
+              return false;
+            }
+            return true;
+          } else {
+            if (routes.includes(rotaAtual)) {
+              return true;
+            } else {
+              this.router.navigate(['/login']).catch();
+              return false;
+            }
+          }
         }
         return true;
-      } else {
-        if (routes.includes(rotaAtual)) {
-          return true;
-        } else {
-          this.router.navigate(['/login']).catch();
-          return false;
-        }
-      }
-    }
-    return true;
+      }),
+    );
   };
 }
