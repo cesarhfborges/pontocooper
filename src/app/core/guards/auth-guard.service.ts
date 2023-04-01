@@ -24,7 +24,7 @@ export class AuthGuardService {
 
   private checkRoute(state: RouterStateSnapshot): Observable<boolean> {
     return this.session.isAuthenticated().pipe(
-      tap((loggedIn) => {
+      map((loggedIn) => {
         if (state.url !== '/') {
           const routes = [
             'login',
