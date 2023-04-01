@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
-import {map, Observable, tap} from 'rxjs';
+import {map, Observable} from 'rxjs';
 import {SessionStorageService} from '../services/session-storage.service';
 
 @Injectable({
