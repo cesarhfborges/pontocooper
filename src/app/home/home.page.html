@@ -21,14 +21,50 @@
     </ion-refresher-content>
   </ion-refresher>
   <ion-card>
-    <ion-card-header>
-      <ion-icon color="tertiary" name="planet" slot="start"></ion-icon>
-      <ion-card-title>Produção de hoje</ion-card-title>
-      <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-    </ion-card-header>
 
     <ion-card-content>
-      Here's a small text description for the card content. Nothing more, nothing less.
+      <ion-item class="title" lines="none">
+        <ion-icon color="tertiary" name="planet" slot="start"></ion-icon>
+        <ion-badge slot="end">Qui. 07 de ABRIL</ion-badge>
+        <ion-label>
+          <h5>Produção de hoje</h5>
+        </ion-label>
+      </ion-item>
+
+      <h5>Banco de horas:</h5>
+      <ion-grid  [fixed]="false">
+        <ion-row>
+          <ion-col>
+            <p>Aprovadas:</p>
+            <h3>+33:31h</h3>
+          </ion-col>
+          <ion-col>
+            <p>Em análise:</p>
+            <h3>00:00h</h3>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <p>Jornada:</p>
+            <h3>8h</h3>
+          </ion-col>
+          <ion-col>
+            <p>Carga horária:</p>
+            <h3>184h</h3>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <p>Dias úteis:</p>
+            <h3>23</h3>
+          </ion-col>
+          <ion-col>
+            <p>Restante:</p>
+            <h3>93h</h3>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
     </ion-card-content>
   </ion-card>
 </ion-content>

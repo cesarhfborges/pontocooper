@@ -27,24 +27,28 @@
               </ion-item>
               <ion-item lines="none">
                 <ion-label position="stacked">Senha:</ion-label>
-                <ion-input
-                  #inputPass
-                  type="password"
-                  enterkeyhint="send"
-                  inputmode="text"
-                  spellcheck="false"
-                  (keyup.enter)="onSubmit()"
-                  name="password"
-                  formControlName="password"
-                  clearInput
-                ></ion-input>
+                <app-input-password-toggle>
+                  <ion-input
+                    #inputPass
+                    class="input-pass"
+                    [type]="hidePasswd ? 'password' : 'text'"
+                    enterkeyhint="send"
+                    inputmode="text"
+                    spellcheck="false"
+                    (keyup.enter)="onSubmit()"
+                    [clearOnEdit]="true"
+                    name="password"
+                    formControlName="password"
+                    clearInput
+                  ></ion-input>
+                </app-input-password-toggle>
                 <app-invalid-message [control]="form.get('password')"></app-invalid-message>
               </ion-item>
               <ion-item lines="none">
                 <ion-label>Lembrar</ion-label>
                 <ion-checkbox slot="start" formControlName="remember"></ion-checkbox>
               </ion-item>
-              <ion-button style="margin: 16px 16px 16px 16px;" type="submit" expand="block">Entrar</ion-button>
+              <ion-button class="ion-margin" type="submit" expand="block">Entrar</ion-button>
             </ion-card-content>
           </ion-card>
         </form>

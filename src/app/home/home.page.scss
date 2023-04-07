@@ -25,3 +25,24 @@
 //#container a {
 //  text-decoration: none;
 //}
+
+ion-card {
+  ion-card-content {
+    padding-top: 0;
+
+    ion-item.title {
+      --inner-padding-end: 0px;
+      --padding-start:0px;
+      border-bottom: 1px solid rgb(63, 63, 63);
+      margin-bottom: 12px;
+
+      ion-icon {
+        margin-inline-end: 12px;
+      }
+
+      ion-badge {
+        margin-inline-start: 2px;
+      }
+    }
+  }
+}

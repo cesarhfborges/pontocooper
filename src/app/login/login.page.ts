@@ -1,8 +1,10 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Preferences} from '@capacitor/preferences';
 import {ViewWillEnter} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
+import {Router} from '@angular/router';
+import {environment} from '../../environments/environment';
+import {ToastsService} from '../shared/services/toasts.service';
 
 @Component({
   selector: 'app-login',
@@ -12,19 +14,31 @@ import {AuthService} from '../core/services/auth.service';
 export class LoginPage implements OnInit, ViewWillEnter {
 
   @ViewChild('inputUsername') inputUser: any;
+  @ViewChild('inputPass') inputPass: HTMLIonInputElement | undefined;
 
   form: FormGroup;
   loading = false;
 
+  hidePasswd = true;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private router: Router,
+    private toastsService: ToastsService,
   ) {
     this.form = this.fb.group({
-      username: this.fb.control('cesar.borges', [Validators.required]),
-      password: this.fb.control('@Dj.91344356', [Validators.required, Validators.minLength(4)]),
+      username: this.fb.control('', [Validators.required]),
+      password: this.fb.control('', [Validators.required, Validators.minLength(4)]),
       remember: this.fb.control(false, [Validators.required]),
     });
+    if (!environment.production) {
+      this.form.patchValue({
+        username: 'cesar.borges',
+        password: '@Dj.91344356',
+        remember: true
+      });
+    }
   }
 
   ngOnInit() {
@@ -35,21 +49,25 @@ export class LoginPage implements OnInit, ViewWillEnter {
     if (this.form.valid) {
       this.form.disable();
       this.loading = true;
-      this.authService.login(this.form.value).subscribe(
-        () => {
+      this.authService.login(this.form.value).subscribe({
+        next: (response) => {
           this.form.enable();
           this.loading = false;
-          // this.router.navigate(['/home']).then();
+          this.router.navigate(['/home']).then();
         },
-        error => {
-          console.log(error);
+        error: (error) => {
           this.form.enable();
-          // this.toastsService.showToastDanger('Usuário e/ou senha inválido(s), tente novamente');
-          // this.form.get('password').reset();
-          this.inputUser.setFocus();
+          this.toastsService.showToastDanger('Usuário e/ou senha inválido(s), tente novamente');
+          this.form?.get('password')?.reset();
+          // TODO: ajustar quando estiver no emulador
+          // this.inputPass?.getInputElement().then(r => {
+          //   console.log(r);
+          //   r.focus();
+          // });
+          // // this.inputUser.setFocus();
           this.loading = false;
         }
-      );
+      });
     }
   }
 

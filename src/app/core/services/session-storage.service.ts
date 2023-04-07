@@ -1,49 +1,59 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, map, Observable} from 'rxjs';
 import {Auth} from '../interfaces/auth';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionStorageService {
-
   private user_key = 'suyJN1guijg/9avvjE1ctw==';
-  private authentication: BehaviorSubject<Auth | undefined> = new BehaviorSubject<Auth | undefined>(undefined);
+  private credentials: Auth | undefined = undefined;
 
   constructor() {
-    this.load().then(data => {
-      this.authentication.next(data);
-    }).catch(error => {
-      this.authentication.next(undefined);
-    });
+    this.load();
   }
 
-  public isAuthenticated(): Observable<boolean> {
-    return this.authentication.asObservable().pipe(
-      map(data => !!data)
-    );
+  get authentication(): Auth {
+    if (this.credentials) {
+      return this.credentials;
+    }
+    return {access: '', expire: '', refresh: ''};
+  }
+
+  // set authentication(value: Auth | undefined) {
+  //   this.credentials = value;
+  // }
+
+  public isAuthenticated(): boolean {
+    return this.credentials !== undefined;
   }
 
   public clear(): void {
-    this.authentication.next(undefined);
+    this.credentials = undefined;
     window.localStorage.clear();
   }
 
-  private async store(data: Auth) {
+  store(data: Auth) {
     try {
       const stringfied: string = JSON.stringify(data);
       const encripted: string = btoa(stringfied);
-      await window.localStorage.setItem(this.user_key, encripted);
+      window.localStorage.setItem(this.user_key, encripted);
+      this.credentials = data;
+      if (!environment.production) {
+        window.localStorage.setItem('development', JSON.stringify(data));
+      }
     } catch (e) {
       throw new Error('Não foi possível realizar o store das credenciais.');
     }
   }
 
-  private async load(): Promise<any> {
+  private load(): void {
     const storage: any = window.localStorage.getItem(this.user_key);
-    if (!!storage) {
-      return atob(storage);
+    if (!storage) {
+      this.credentials = undefined;
+    } else {
+      const auth: string = atob(storage);
+      this.credentials = JSON.parse(auth);
     }
-    throw new Error('Não foi possível recuperar as credenciais.');
   }
 }
