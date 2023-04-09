@@ -1,4 +1,12 @@
-<ion-menu #menuPrincipal [swipeGesture]="swipe" type="reveal" side="start" menuId="principal" contentId="principal">
+<ion-menu
+  #menuPrincipal
+  [swipeGesture]="swipe"
+  type="push"
+  side="start"
+  menuId="principal"
+  contentId="principal"
+  class="appMenu"
+>
   <ion-header [translucent]="true">
     <ion-toolbar color="primary">
       <ion-title>Menu</ion-title>
@@ -19,6 +27,19 @@
       </div>
     </ion-list>
   </ion-content>
-  <p style="text-align: center;">versao: {{versao}}</p>
+  <p style="text-align: center;">Versão: {{versao}}</p>
 </ion-menu>
 <ion-router-outlet id="principal"></ion-router-outlet>
+
+<!--<ion-tabs>-->
+<!--  <ion-router-outlet></ion-router-outlet>-->
+<!--  <ion-tab-bar slot="bottom">-->
+<!--    <ng-container *ngFor="let menu of menus; let i = index">-->
+<!--      <ion-tab-button *ngIf="menu.visible" [tab]="menu.link">-->
+<!--        &lt;!&ndash;      <ion-icon name="play-circle"></ion-icon>&ndash;&gt;-->
+<!--        <ion-icon [name]="menu.icon"></ion-icon>-->
+<!--        {{menu.label}}-->
+<!--      </ion-tab-button>-->
+<!--    </ng-container>-->
+<!--  </ion-tab-bar>-->
+<!--</ion-tabs>-->

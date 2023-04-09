@@ -1,10 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-menu-button slot="start" menu="principal"></ion-menu-button>
+    <ion-menu-button color="light" slot="start" menu="principal"></ion-menu-button>
     <ion-img style="height: 45px;" src="assets/logo-horizontal-white.png"></ion-img>
     <ion-buttons slot="end">
-      <ion-button [routerLink]="['/perfil']">
-        <ion-icon slot="icon-only" name="person-circle-outline" style="font-size: 1.8rem;"></ion-icon>
+      <ion-button [routerLink]="['/profile']">
+        <ion-icon color="light" slot="icon-only" name="person-circle-outline" style="font-size: 1.8rem;"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -65,6 +65,74 @@
         </ion-row>
       </ion-grid>
 
+      <p>
+        Entradas/Saídas:
+      </p>
+
+      <ion-list>
+        <ion-item>
+          <ion-icon
+            [color]="'success'"
+            [name]="'arrow-back-outline'"
+            slot="start"
+          ></ion-icon>
+          <h1>HH:mm:ss</h1>
+        </ion-item>
+<!--        <ng-template>-->
+<!--          <ion-item>-->
+<!--            <ion-icon-->
+<!--              [color]="'success'"-->
+<!--              [name]="'arrow-back-outline'"-->
+<!--              slot="start"-->
+<!--            ></ion-icon>-->
+<!--            <h1>HH:mm:ss</h1>-->
+<!--          </ion-item>-->
+<!--        </ng-template>-->
+<!--        <ng-template #listaVazia>-->
+<!--          <ion-item>-->
+<!--            <ion-icon-->
+<!--              [color]="loading.timeline ? 'tertiary': 'warning'"-->
+<!--              [name]="loading.timeline ? 'hourglass-outline' : 'information-outline'"-->
+<!--              slot="start"-->
+<!--            ></ion-icon>-->
+<!--            <ion-label [color]="loading.timeline ? 'tertiary': 'warning'">-->
+<!--              {{loading.timeline ? 'Carregando...' : 'Nenhum ponto registrado hoje.'}}-->
+<!--            </ion-label>-->
+<!--          </ion-item>-->
+<!--        </ng-template>-->
+      </ion-list>
+
     </ion-card-content>
   </ion-card>
+
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar style="padding: 0 10px 10px 10px;">
+    <div style="margin-bottom: 0; margin-top: 0;">
+      <ion-progress-bar
+        [buffer]="1"
+        [color]="'success'"
+        [value]="10 / 100"
+      ></ion-progress-bar>
+    </div>
+    <h1
+      style="margin-top: 9px; margin-bottom: 0; text-align: center; font-size: 2rem;">HH:mm:ss</h1>
+    <ion-button
+      size="large"
+      type="button"
+      expand="block"
+      [color]="'success'"
+      style="margin-top: 4px;"
+    >
+      <ion-icon slot="start" [name]="'enter-outline'"></ion-icon>
+      Entrada
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
+
+<!--<ion-footer>-->
+<!--  <ion-toolbar color="primary">-->
+<!--    <ion-button type="button" expand="block" (click)="console.log('Click')">Block</ion-button>-->
+<!--  </ion-toolbar>-->
+<!--</ion-footer>-->

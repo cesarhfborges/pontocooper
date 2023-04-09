@@ -13,56 +13,56 @@ export class MainLayoutComponent  implements OnInit {
 
   versao = '0.0.0';
 
-  swipe = false;
+  swipe = true;
 
   menus: Array<Menu> = [
     {
       label: 'Home',
-      link: '/home',
+      link: 'home',
       icon: 'planet',
       visible: true
     },
     {
       label: 'Produção',
-      link: '/producao',
+      link: 'producao',
       icon: 'calendar-outline',
       visible: true
     },
     {
       label: 'Histórico (GPS)',
-      link: '/historico',
+      link: 'historico',
       icon: 'navigate-outline',
       visible: true
     },
     {
       label: 'Férias e Abonos',
-      link: '/ferias-abonos',
+      link: 'ferias-abonos',
       icon: 'planet-outline',
-      visible: true
+      visible: false
     },
     {
       label: 'Ausências e Horas extras',
-      link: '/ausencias-horas-extras',
+      link: 'ausencias-horas-extras',
       icon: 'planet-outline',
-      visible: true
+      visible: false
     },
     {
       label: 'Opções',
-      link: '/opcoes',
+      link: 'opcoes',
       icon: 'settings-outline',
-      visible: true
+      visible: false
     },
     {
       label: 'Perfil',
-      link: '/perfil',
+      link: 'profile',
       icon: 'person-outline',
       visible: true
     },
     {
       label: 'Dev',
-      link: '/testes',
+      link: 'testes',
       icon: 'code-working-outline',
-      visible: !environment.production
+      visible: !environment.production && false
     }
   ];
 

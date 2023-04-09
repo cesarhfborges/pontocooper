@@ -1,0 +1,20 @@
+ion-menu.appMenu {
+  &::part(container) {
+    box-shadow: 0 0 21px 15px rgba(0,0,0,0.46);
+  }
+
+  ion-header {
+    ion-toolbar {
+      --min-height: 50px;
+      --border-width: 0;
+      .toolbar-container {
+        min-height: 51px;
+      }
+    }
+  }
+  ion-content {
+    &::part(scroll) {
+      background: blue;
+    }
+  }
+}

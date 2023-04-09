@@ -14,4 +14,8 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
   }
+
+  teste() {
+    console.warn('Click');
+  }
 }
