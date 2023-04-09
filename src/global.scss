@@ -39,3 +39,7 @@ body {
 .alert-wrapper {
   min-width: 290px!important;
 }
+
+ion-item {
+  --background: unset;
+}

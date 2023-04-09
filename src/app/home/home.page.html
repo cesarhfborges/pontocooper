@@ -25,7 +25,9 @@
     <ion-card-content>
       <ion-item class="title" lines="none">
         <ion-icon color="tertiary" name="planet" slot="start"></ion-icon>
-        <ion-badge slot="end">Qui. 07 de ABRIL</ion-badge>
+        <ion-badge slot="end">
+          {{(dataAtual | date : 'ccc dd') + ' de ' + (dataAtual | date : 'MMMM')}}
+        </ion-badge>
         <ion-label>
           <h5>Produção de hoje</h5>
         </ion-label>
@@ -73,7 +75,7 @@
         <ion-item>
           <ion-icon
             [color]="'success'"
-            [name]="'arrow-back-outline'"
+            [name]="'arrow-forward-outline'"
             slot="start"
           ></ion-icon>
           <h1>HH:mm:ss</h1>
