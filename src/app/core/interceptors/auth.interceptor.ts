@@ -3,8 +3,10 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest}
 import {ActivatedRoute, Router} from '@angular/router';
 import {SessionService} from '../state/session.service';
 import {AuthService} from '../services/auth.service';
-import {flatMap, Observable, switchMap, tap, throwError} from 'rxjs';
+import {flatMap, Observable, tap, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
+import {ToastController} from '@ionic/angular';
+import {Color} from '@ionic/core';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +18,15 @@ export class AuthInterceptor implements HttpInterceptor {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
+    private toastController: ToastController
   ) {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
+      tap(() => {
+        this.showToast('teste de mensagem de requisição', 'danger');
+      }),
       catchError(err => {
         console.warn('Efetuando refresh token, aguarde...');
         if (err instanceof HttpErrorResponse) {
@@ -39,6 +45,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 catchError(() => {
                   console.log(' ============================================== ');
                   console.log('cai no catchError Não deu pra fazer refresh token');
+                  this.showToast('Ooops, Usuário não autenticado, efetue login novamente', 'danger');
                   this.authService.logout();
                   return throwError({...err.error});
                 })
@@ -49,5 +56,20 @@ export class AuthInterceptor implements HttpInterceptor {
         return throwError({...err.error});
       })
     );
+  }
+
+  private showLoading(): void {
+
+  }
+
+  private showToast(text: string, status: Color = 'danger'): void {
+    this.toastController.create({
+      message: text,
+      duration: 3500,
+      position: 'bottom',
+      color: status,
+    }).then((toast) => {
+      toast.present().catch();
+    });
   }
 }
