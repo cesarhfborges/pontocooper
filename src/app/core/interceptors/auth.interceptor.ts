@@ -25,16 +25,23 @@ export class AuthInterceptor implements HttpInterceptor {
         console.warn('Efetuando refresh token, aguarde...');
         if (err instanceof HttpErrorResponse) {
           if ([401].includes(err.status)) {
-            if (this.session.isLoggedIn() && this.session.credentials !== null) {
+            if (this.session.credentials !== null) {
               console.log('Estou logado e farei o refresh');
               return this.authService.refreshToken().pipe(
                 flatMap(() => {
+                  console.log(' ============================================== ');
+                  console.log('cai no flat map Sucesso');
                   const customHeaders: any = request.headers.set('Authorization', `Bearer ${this.session?.credentials?.access}`);
                   const req: HttpRequest<any> = request.clone({withCredentials: true, headers: customHeaders});
                   console.log('request data: ', req);
                   return next.handle(req);
                 }),
-                catchError(() => throwError({...err.error}))
+                catchError(() => {
+                  console.log(' ============================================== ');
+                  console.log('cai no catchError Não deu pra fazer refresh token');
+                  this.authService.logout();
+                  return throwError({...err.error});
+                })
               );
             }
           }
