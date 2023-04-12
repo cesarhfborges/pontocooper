@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { Menu } from './menu';
+import {Component, OnInit} from '@angular/core';
 import {IonRouterOutlet, Platform} from '@ionic/angular';
-import {App} from '@capacitor/app';
+import {environment} from 'src/environments/environment';
+import {Menu} from './menu';
+import {AuthService} from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss'],
 })
-export class MainLayoutComponent  implements OnInit {
+export class MainLayoutComponent implements OnInit {
 
   versao = '0.0.0';
 
@@ -69,13 +69,15 @@ export class MainLayoutComponent  implements OnInit {
   constructor(
     private platform: Platform,
     private routerOutlet: IonRouterOutlet,
-  ) { }
+    private authService: AuthService
+  ) {
+  }
 
   ngOnInit() {
     this.platform.backButton.subscribeWithPriority(-1, () => {
-      if (!this.routerOutlet.canGoBack()) {
-        App.exitApp().catch();
-      }
+      // if (!this.routerOutlet.canGoBack()) {
+      //   App.exitApp().catch();
+      // }
     });
   }
 

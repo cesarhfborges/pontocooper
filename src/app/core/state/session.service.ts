@@ -11,7 +11,6 @@ export class SessionService {
   private auth: Auth | null = null;
 
   constructor() {
-    console.log('Construtor SessionService');
     this.auth = this.load();
   }
 
