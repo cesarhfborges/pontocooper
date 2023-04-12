@@ -34,75 +34,12 @@
       </ion-item>
 
       <h5>Banco de horas:</h5>
-      <ion-grid  [fixed]="false">
-        <ion-row>
-          <ion-col>
-            <p>Aprovadas:</p>
-            <h3>+33:31h</h3>
-          </ion-col>
-          <ion-col>
-            <p>Em análise:</p>
-            <h3>00:00h</h3>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <p>Jornada:</p>
-            <h3>8h</h3>
-          </ion-col>
-          <ion-col>
-            <p>Carga horária:</p>
-            <h3>184h</h3>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <p>Dias úteis:</p>
-            <h3>23</h3>
-          </ion-col>
-          <ion-col>
-            <p>Restante:</p>
-            <h3>93h</h3>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <app-banco-de-horas></app-banco-de-horas>
 
       <p>
         Entradas/Saídas:
       </p>
-
-      <ion-list>
-        <ion-item>
-          <ion-icon
-            [color]="'success'"
-            [name]="'arrow-forward-outline'"
-            slot="start"
-          ></ion-icon>
-          <h1>HH:mm:ss</h1>
-        </ion-item>
-<!--        <ng-template>-->
-<!--          <ion-item>-->
-<!--            <ion-icon-->
-<!--              [color]="'success'"-->
-<!--              [name]="'arrow-back-outline'"-->
-<!--              slot="start"-->
-<!--            ></ion-icon>-->
-<!--            <h1>HH:mm:ss</h1>-->
-<!--          </ion-item>-->
-<!--        </ng-template>-->
-<!--        <ng-template #listaVazia>-->
-<!--          <ion-item>-->
-<!--            <ion-icon-->
-<!--              [color]="loading.timeline ? 'tertiary': 'warning'"-->
-<!--              [name]="loading.timeline ? 'hourglass-outline' : 'information-outline'"-->
-<!--              slot="start"-->
-<!--            ></ion-icon>-->
-<!--            <ion-label [color]="loading.timeline ? 'tertiary': 'warning'">-->
-<!--              {{loading.timeline ? 'Carregando...' : 'Nenhum ponto registrado hoje.'}}-->
-<!--            </ion-label>-->
-<!--          </ion-item>-->
-<!--        </ng-template>-->
-      </ion-list>
+      <app-entradas-saidas></app-entradas-saidas>
 
     </ion-card-content>
   </ion-card>

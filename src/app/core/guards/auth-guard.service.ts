@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
 import {Observable} from 'rxjs';
-import {SessionStorageService} from '../services/session-storage.service';
+import {SessionService} from '../state/session.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class AuthGuardService {
 
   constructor(
     private router: Router,
-    private session: SessionStorageService
+    private session: SessionService
   ) {
   }
 
@@ -28,7 +28,7 @@ export class AuthGuardService {
         'login',
       ];
       const rotaAtual = state.url.split('/').filter(i => i !== '')[0];
-      if (this.session.isAuthenticated()) {
+      if (this.session.isLoggedIn()) {
         if (routes.includes(rotaAtual)) {
           this.router.navigate(['/home']).catch();
           return false;

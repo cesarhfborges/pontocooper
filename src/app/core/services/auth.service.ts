@@ -1,7 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {delay, map, Observable, tap} from 'rxjs';
-import {SessionStorageService} from './session-storage.service';
+import {Usuario} from '../models/usuario';
+import {SessionService} from '../state/session.service';
+import {Router} from '@angular/router';
+import {Auth} from "../models/auth";
 
 interface IAuth {
   access: string;
@@ -22,7 +25,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private session: SessionStorageService
+    private session: SessionService,
+    private router: Router,
   ) {
   }
 
@@ -31,13 +35,41 @@ export class AuthService {
       username: data.username,
       password: data.password
     };
-    return this.http.post<any>(`/api/auth`, credentials).pipe(
+    return this.http.post<any>(`/api/v1/auth`, credentials).pipe(
       tap((response: any) => {
         if (response?.access) {
-          this.session.store(response);
+          this.session.credentials = response;
         }
       }),
-      map(response => !!response?.access)
+      delay(350),
+      map(response => !!response?.access && !!response.refresh)
+    );
+  }
+
+  logout(): void {
+    this.session.clear();
+    this.router.navigate(['/login']).then();
+    // window.location.reload();
+  }
+
+  perfil(): Observable<Usuario> {
+    return this.http.get<Usuario>(`/api/v1/person/current`);
+  }
+
+  refreshToken(): Observable<boolean> {
+    const data: any = {
+      refresh: `${this.session?.credentials?.refresh}`
+    };
+    return this.http.post<any>(`/api/v1/auth/refresh/`, data).pipe(
+      tap((response: any) => {
+        if (response?.access) {
+          // @ts-ignore
+          const newCredentials: Auth = this.session.credentials;
+          newCredentials.access = response.access;
+          this.session.credentials = newCredentials;
+        }
+      }),
+      map(response => !!response.access)
     );
   }
 }

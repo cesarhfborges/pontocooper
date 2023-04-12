@@ -1,8 +1,11 @@
 {
-  "/api": {
-    "target": "https://api.portal.coopersystem.com.br/api/v1",
+  "/api/*": {
+    "target": "https://api.portal.coopersystem.com.br/api",
     "secure": true,
     "logLevel": "debug",
-    "changeOrigin": true
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
   }
 }
