@@ -1,15 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {IonRouterOutlet, Platform} from '@ionic/angular';
 import {environment} from 'src/environments/environment';
 import {Menu} from './menu';
 import {AuthService} from '../../../core/services/auth.service';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss'],
 })
-export class MainLayoutComponent implements OnInit {
+export class MainLayoutComponent implements OnInit, AfterViewInit {
 
   versao = '0.0.0';
 
@@ -81,4 +82,24 @@ export class MainLayoutComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.platform.ready().then(async () => {
+      if (this.platform.is('capacitor')) {
+        if (this.platform.is('android')) {
+          await StatusBar.setOverlaysWebView({ overlay: false });
+          await StatusBar.setBackgroundColor({color: '#178865'});
+          const info = await StatusBar.getInfo();
+          console.log('statusBar info: ', info);
+        }
+      }
+
+      // this.platform.is('cordova');
+      // this.statusBar.overlaysWebView(false);
+      // this.statusBar.backgroundColorByHexString('#178865');
+      // this.getCoords().then(r => {
+      //   this.coords = r;
+      // });
+    }).catch(e => {
+    });
+  }
 }
