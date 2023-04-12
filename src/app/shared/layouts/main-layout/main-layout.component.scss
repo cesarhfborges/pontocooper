@@ -5,16 +5,44 @@ ion-menu.appMenu {
 
   ion-header {
     ion-toolbar {
-      --min-height: 50px;
+      //--min-height: 56px;
       --border-width: 0;
       .toolbar-container {
-        min-height: 51px;
+        //min-height: 51px;
       }
     }
   }
   ion-content {
     &::part(scroll) {
       //background: blue;
+    }
+  }
+
+  &:host(.menu-type-overlay) .show-backdrop {
+    //background: rgba(0, 255, 0, 1)!important;
+    //opacity: 1;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-content.main-menu {
+    &::part(background) {
+      //background: #051a13;
+      background: #202020;
+    }
+
+    ion-list.menu-list {
+      --background: unset;
+      background: unset;
+      ion-item {
+        --background: unset;
+        background: unset;
+        &::part(native) {
+          --background: unset;
+          background: unset;
+          border-bottom: 2px solid #666666;
+        }
+      }
     }
   }
 }

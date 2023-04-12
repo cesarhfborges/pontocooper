@@ -1,7 +1,7 @@
 <ion-menu
   #menuPrincipal
   [swipeGesture]="swipe"
-  type="push"
+  type="overlay"
   side="start"
   menuId="principal"
   contentId="principal"
@@ -12,8 +12,8 @@
       <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content>
-    <ion-list>
+  <ion-content class="main-menu">
+    <ion-list class="menu-list">
       <div *ngFor="let menu of menus; let i = index">
         <ion-item
           *ngIf="menu.visible"
