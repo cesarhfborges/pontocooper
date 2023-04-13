@@ -5,7 +5,7 @@ import {SessionService} from '../state/session.service';
 import {AuthService} from '../services/auth.service';
 import {delay, delayWhen, flatMap, map, Observable, tap, throwError, timer} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {ToastController} from '@ionic/angular';
+import {LoadingController, ToastController} from '@ionic/angular';
 import {Color} from '@ionic/core';
 
 @Injectable({
@@ -20,7 +20,8 @@ export class AuthInterceptor implements HttpInterceptor {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingController: LoadingController
   ) {
   }
 
@@ -28,25 +29,19 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       delayWhen(() => this.refreshing ? timer(900) : timer(0)),
       catchError(err => {
-        console.warn('Efetuando refresh token, aguarde...');
         if (err instanceof HttpErrorResponse) {
           if ([401].includes(err.status)) {
             if (this.session.credentials !== null && !this.refreshing) {
-              console.log('Estou logado e farei o refresh');
               this.refreshing = true;
+              this.showLoading('Aguarde...');
               return this.authService.refreshToken().pipe(
                 flatMap(() => {
-                  console.log(' ============================================== ');
-                  console.log('cai no flat map Sucesso');
                   const customHeaders: any = request.headers.set('Authorization', `Bearer ${this.session?.credentials?.access}`);
                   const req: HttpRequest<any> = request.clone({withCredentials: true, headers: customHeaders});
-                  console.log('request data: ', req);
                   this.refreshing = false;
                   return next.handle(req);
                 }),
                 catchError(() => {
-                  console.log(' ============================================== ');
-                  console.log('cai no catchError Não deu pra fazer refresh token');
                   this.showToast('Ooops, Usuário não autenticado, efetue login novamente', 'danger');
                   this.refreshing = false;
                   this.authService.logout();
@@ -61,16 +56,29 @@ export class AuthInterceptor implements HttpInterceptor {
     );
   }
 
-  private showLoading(): void {
-
+  private showLoading(message: string, duration: number = 2500): void {
+    const loadingExec = (async () => {
+      const loading = await this.loadingController.create({
+        message,
+        duration,
+        backdropDismiss: false,
+        keyboardClose: false,
+        showBackdrop: true,
+        animated: true,
+        spinner: 'bubbles',
+        cssClass: 'my-custom-class'
+      });
+      await loading.present();
+    });
+    loadingExec().catch();
   }
 
-  private showToast(text: string, status: Color = 'danger'): void {
+  private showToast(message: string, color: Color = 'danger', duration: number = 3500): void {
     this.toastController.create({
-      message: text,
-      duration: 3500,
+      message,
+      duration,
+      color,
       position: 'bottom',
-      color: status,
     }).then((toast) => {
       toast.present().catch();
     });

@@ -4,7 +4,11 @@ import {lastValueFrom, Observable, timer} from 'rxjs';
 import {AuthService} from '../core/services/auth.service';
 import {Usuario} from '../core/models/usuario';
 import {DadosService} from '../core/services/dados.service';
-import {format} from "date-fns";
+import {Summary} from '../core/interfaces/summary';
+import {format, parseISO} from 'date-fns';
+import {BancoDeHoras} from '../core/interfaces/banco-de-horas';
+import {Batida} from '../core/models/batida';
+import {Ponto} from '../core/models/ponto';
 
 @Component({
   selector: 'app-home',
@@ -18,28 +22,35 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
   loading: {
     profile: boolean;
     summary: boolean;
+    bancoDeHoras: boolean;
+    timeline: boolean;
   } = {
-    profile: false,
-    summary: false
+    profile: true,
+    summary: true,
+    bancoDeHoras: true,
+    timeline: true
   };
+
   perfil: Usuario | undefined;
-  summary: {
-    workingHours: number;
-    businessDays: number;
-    hoursToWork: number;
-    remainingHours: number;
-  } = {
+  summary: Summary = {
     workingHours: 0,
     businessDays: 0,
     hoursToWork: 0,
     remainingHours: 0,
   };
+  bancoDeHoras: BancoDeHoras = {
+    balance: '',
+    pending: ''
+  };
+  ponto: Ponto;
 
 
   constructor(
     private authService: AuthService,
     private dadosService: DadosService,
   ) {
+    const batidas: Array<Batida> = [];
+    this.ponto = new Ponto(batidas);
   }
 
   ngOnInit(): void {
@@ -61,22 +72,13 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
 
   ionViewWillEnter(): void {
     console.log('executei o ionViewWillEnter da home');
-    Promise.all([
-      this.getPerfil(),
-      this.getSumario()
-    ]).then(data => {
-      console.log('finalizado !!!!');
-      console.log(data);
-      this.perfil = data[0];
-      this.summary = {
-        workingHours: data[1].working_hours,
-        businessDays: data[1].business_days,
-        hoursToWork: data[1].hours_to_work,
-        remainingHours: data[1].remaining_hours
-      };
-    }).catch(e => {
-      console.log('error: ', e);
+    const init = (async () => {
+      await this.getPerfil();
+      await this.getBancoDeHoras();
+      await this.getSumario();
+      await this.getTimeLine();
     });
+    init().catch();
   }
 
   ngOnDestroy(): void {
@@ -85,25 +87,53 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
 
   async getPerfil() {
     this.loading.profile = true;
-    const request: any = this.authService.perfil();
+    const request = this.authService.perfil();
+    const response = await lastValueFrom<any>(request);
+    this.perfil = response;
     this.loading.profile = false;
-    return await lastValueFrom<any>(request);
-    // .subscribe({
-    //   next: response => {
-    //     this.perfil = response;
-    //     console.log('perfil: ', response);
-    //   },
-    //   error: (error) => {
-    //     console.warn('perfil error: ', error);
-    //   }
-    // });
+    return response;
   }
 
   async getSumario() {
     this.loading.summary = true;
     const request: any = this.dadosService.getSummary(format(this.dataAtual, 'yyyy'), format(this.dataAtual, 'MM'));
+    const response = await lastValueFrom<any>(request);
+    this.summary = {
+      workingHours: response.working_hours,
+      businessDays: response.business_days,
+      hoursToWork: response.hours_to_work,
+      remainingHours: response.remaining_hours
+    };
     this.loading.summary = false;
-    return await lastValueFrom<any>(request);
+  }
+
+  async getBancoDeHoras() {
+    this.loading.bancoDeHoras = true;
+    const request = this.dadosService.getBancoDeHoras();
+    this.bancoDeHoras = await lastValueFrom<any>(request);
+    this.loading.bancoDeHoras = false;
+  }
+
+  async getTimeLine(): Promise<void> {
+    try {
+      this.loading.timeline = true;
+      const timeline = await this.dadosService.getTimeline().toPromise();
+      this.ponto.limparPontos();
+      for (const batida of timeline.timeline) {
+        this.ponto.addPonto({
+          ...batida,
+          worktime_clock: parseISO(batida.worktime_clock)
+        });
+      }
+      this.loading.timeline = false;
+    } catch (e) {
+      // const toast = await this.toastController.create({
+      //   message: 'Erro ao obter linha do tempo, verifique a rede.',
+      //   duration: 2000,
+      //   color: 'danger'
+      // });
+      // await toast.present();
+    }
   }
 
   teste() {

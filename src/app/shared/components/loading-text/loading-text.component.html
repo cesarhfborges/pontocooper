@@ -1,0 +1,9 @@
+<ng-template [ngIf]="loading" [ngIfElse]="elementChild">
+  <ion-skeleton-text
+    [animated]="animated"
+    [style.width]="sizeOfWidth"
+  ></ion-skeleton-text>
+</ng-template>
+<ng-template #elementChild>
+  <ng-content></ng-content>
+</ng-template>

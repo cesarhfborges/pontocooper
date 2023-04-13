@@ -34,12 +34,19 @@
       </ion-item>
 
       <h5>Banco de horas:</h5>
-      <app-banco-de-horas></app-banco-de-horas>
+      <app-banco-de-horas
+        [loading]="{bancoDeHoras: loading.bancoDeHoras, summary: loading.summary}"
+        [bancoDeHoras]="bancoDeHoras"
+        [summary]="summary"
+      ></app-banco-de-horas>
 
       <p>
         Entradas/Saídas:
       </p>
-      <app-entradas-saidas></app-entradas-saidas>
+      <app-entradas-saidas
+        [loading]="loading.timeline"
+        [ponto]="ponto"
+      ></app-entradas-saidas>
 
     </ion-card-content>
   </ion-card>
@@ -69,9 +76,3 @@
     </ion-button>
   </ion-toolbar>
 </ion-footer>
-
-<!--<ion-footer>-->
-<!--  <ion-toolbar color="primary">-->
-<!--    <ion-button type="button" expand="block" (click)="console.log('Click')">Block</ion-button>-->
-<!--  </ion-toolbar>-->
-<!--</ion-footer>-->

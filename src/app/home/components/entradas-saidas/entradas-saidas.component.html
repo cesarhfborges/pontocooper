@@ -1,32 +1,24 @@
-<ion-list>
-  <ion-item>
-    <ion-icon
-      [color]="'success'"
-      [name]="'arrow-forward-outline'"
-      slot="start"
-    ></ion-icon>
-    <h1>HH:mm:ss</h1>
-  </ion-item>
-  <!--        <ng-template>-->
-  <!--          <ion-item>-->
-  <!--            <ion-icon-->
-  <!--              [color]="'success'"-->
-  <!--              [name]="'arrow-back-outline'"-->
-  <!--              slot="start"-->
-  <!--            ></ion-icon>-->
-  <!--            <h1>HH:mm:ss</h1>-->
-  <!--          </ion-item>-->
-  <!--        </ng-template>-->
-  <!--        <ng-template #listaVazia>-->
-  <!--          <ion-item>-->
-  <!--            <ion-icon-->
-  <!--              [color]="loading.timeline ? 'tertiary': 'warning'"-->
-  <!--              [name]="loading.timeline ? 'hourglass-outline' : 'information-outline'"-->
-  <!--              slot="start"-->
-  <!--            ></ion-icon>-->
-  <!--            <ion-label [color]="loading.timeline ? 'tertiary': 'warning'">-->
-  <!--              {{loading.timeline ? 'Carregando...' : 'Nenhum ponto registrado hoje.'}}-->
-  <!--            </ion-label>-->
-  <!--          </ion-item>-->
-  <!--        </ng-template>-->
+<ion-list [@slideOutAnimation]="ponto.batidas.length">
+  <ng-template [ngIf]="!loading && ponto.batidas.length > 0" [ngIfElse]="listaVazia">
+    <ion-item *ngFor="let batida of ponto?.batidas; let i = index">
+      <ion-icon
+        [color]="i % 2 === 0 ? 'success' : 'danger'"
+        [name]="i % 2 === 0 ? 'arrow-forward-outline' : 'arrow-back-outline'"
+        slot="start"
+      ></ion-icon>
+      <h1>{{batida.worktime_clock | date : 'HH:mm:ss'}}</h1>
+    </ion-item>
+  </ng-template>
+  <ng-template #listaVazia>
+    <ion-item>
+      <ion-icon
+        [color]="loading ? 'tertiary': 'warning'"
+        [name]="loading ? 'hourglass-outline' : 'information-outline'"
+        slot="start"
+      ></ion-icon>
+      <ion-label [color]="loading ? 'tertiary': 'warning'">
+        {{loading ? 'Carregando...' : 'Nenhum ponto registrado hoje.'}}
+      </ion-label>
+    </ion-item>
+  </ng-template>
 </ion-list>

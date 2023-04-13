@@ -5,16 +5,19 @@ import {IonicModule} from '@ionic/angular';
 import {RouterLink} from '@angular/router';
 import {InvalidMessageComponent} from './components/invalid-message/invalid-message.component';
 import {InputPasswordToggleComponent} from './components/input-password-toggle/input-password-toggle.component';
+import {LoadingTextComponent} from './components/loading-text/loading-text.component';
 
 @NgModule({
   declarations: [
     MainLayoutComponent,
     InvalidMessageComponent,
-    InputPasswordToggleComponent
+    InputPasswordToggleComponent,
+    LoadingTextComponent
   ],
   exports: [
     InvalidMessageComponent,
-    InputPasswordToggleComponent
+    InputPasswordToggleComponent,
+    LoadingTextComponent
   ],
   imports: [
     IonicModule,

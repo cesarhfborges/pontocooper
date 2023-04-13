@@ -1,32 +1,44 @@
-<ion-grid  [fixed]="false">
+<ion-grid [fixed]="false">
   <ion-row>
     <ion-col>
       <p>Aprovadas:</p>
-      <h3>+33:31h</h3>
+      <app-loading-text [loading]="loading.bancoDeHoras">
+        <h3>{{bancoDeHoras?.balance ?? '0'}}h</h3>
+      </app-loading-text>
     </ion-col>
     <ion-col>
       <p>Em análise:</p>
-      <h3>00:00h</h3>
+      <app-loading-text [loading]="loading.bancoDeHoras">
+        <h3>{{bancoDeHoras?.pending ?? '0'}}h</h3>
+      </app-loading-text>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
       <p>Jornada:</p>
-      <h3>8h</h3>
+      <app-loading-text [loading]="loading.summary">
+        <h3>{{summary?.workingHours ?? '0'}}h</h3>
+      </app-loading-text>
     </ion-col>
     <ion-col>
       <p>Carga horária:</p>
-      <h3>184h</h3>
+      <app-loading-text [loading]="loading.summary">
+        <h3>{{summary?.hoursToWork ?? '0'}}h</h3>
+      </app-loading-text>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
       <p>Dias úteis:</p>
-      <h3>23</h3>
+      <app-loading-text [loading]="loading.summary">
+        <h3>{{summary?.businessDays ?? '0'}}</h3>
+      </app-loading-text>
     </ion-col>
     <ion-col>
       <p>Restante:</p>
-      <h3>93h</h3>
+      <app-loading-text [loading]="loading.summary">
+        <h3>{{summary?.remainingHours ?? '0'}}h</h3>
+      </app-loading-text>
     </ion-col>
   </ion-row>
 </ion-grid>
