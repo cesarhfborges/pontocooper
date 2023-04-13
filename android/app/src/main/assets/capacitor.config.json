@@ -9,8 +9,5 @@
 	"loggingBehavior": "debug",
 	"cordova": {
 		"preferences": {}
-	},
-	"server": {
-		"url": "http://192.168.68.100:8100"
 	}
 }
