@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {PositionService} from '../shared/services/position.service';
 import {PermissionStatus} from '@capacitor/geolocation/dist/esm/definitions';
+import {Network} from '@capacitor/network';
+// import { LocalNotifications} from '@ionic-native/local-notifications/ngx'
 
 @Component({
   selector: 'app-development',
@@ -11,10 +13,23 @@ import {PermissionStatus} from '@capacitor/geolocation/dist/esm/definitions';
 export class DevelopmentPage implements OnInit {
 
   versao = environment.appVersion;
-  loading: { gps: boolean } = {gps: true};
+  loading: {
+    gps: boolean;
+    network: boolean;
+  } = {
+    gps: true,
+    network: true
+  };
   gpsPermissions: PermissionStatus = {
     location: 'denied',
     coarseLocation: 'denied'
+  };
+  networkStatus: {
+    connected: boolean;
+    connectionType: string;
+  } = {
+    connected: false,
+    connectionType: 'none'
   };
 
   constructor(
@@ -62,20 +77,48 @@ export class DevelopmentPage implements OnInit {
   }
 
   ngOnInit() {
-    this.getPosition();
+    Promise.all([
+      this.getPosition(),
+      this.getNetworkStatus(),
+    ]).catch();
   }
 
-  getPosition() {
-    this.loading.gps = true;
-    this.positionService.checkPermissions().then(response => {
-      this.gpsPermissions = response;
-    }).catch(() => {
+  async getNetworkStatus() {
+    try {
+      this.loading.network = true;
+      this.networkStatus = await Network.getStatus();
+    } catch (e) {
+      this.networkStatus = {
+        connectionType: 'none',
+        connected: false
+      };
+    } finally {
+      this.loading.network = false;
+    }
+  }
+
+  async getPosition() {
+    try {
+      this.loading.gps = true;
+      this.gpsPermissions = await this.positionService.checkPermissions();
+    } catch (e) {
       this.gpsPermissions = {
         location: 'denied',
         coarseLocation: 'denied'
       };
-    }).finally(() => {
+    } finally {
       this.loading.gps = false;
-    });
+    }
+    // this.loading.gps = true;
+    // this.positionService.checkPermissions().then(response => {
+    //   this.gpsPermissions = response;
+    // }).catch(() => {
+    //   this.gpsPermissions = {
+    //     location: 'denied',
+    //     coarseLocation: 'denied'
+    //   };
+    // }).finally(() => {
+    //   this.loading.gps = false;
+    // });
   }
 }
