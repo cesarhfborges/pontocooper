@@ -1,18 +1,19 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, OnInit} from '@angular/core';
 import {IonRouterOutlet, Platform} from '@ionic/angular';
 import {environment} from 'src/environments/environment';
 import {Menu} from './menu';
 import {AuthService} from '../../../core/services/auth.service';
-import { StatusBar, Style } from '@capacitor/status-bar';
+import {Animation, StatusBar, Style} from '@capacitor/status-bar';
+import {PositionService} from '../../services/position.service';
 
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss'],
 })
-export class MainLayoutComponent implements OnInit, AfterViewInit {
+export class MainLayoutComponent implements OnInit, AfterViewInit, AfterContentInit {
 
-  versao = '0.0.0';
+  versao = environment.appVersion;
 
   swipe = true;
 
@@ -69,6 +70,7 @@ export class MainLayoutComponent implements OnInit, AfterViewInit {
 
   constructor(
     private platform: Platform,
+    private positionService: PositionService,
     private routerOutlet: IonRouterOutlet,
     private authService: AuthService
   ) {
@@ -87,19 +89,41 @@ export class MainLayoutComponent implements OnInit, AfterViewInit {
       if (this.platform.is('capacitor')) {
         if (this.platform.is('android')) {
           await StatusBar.setOverlaysWebView({ overlay: false });
+          await StatusBar.show({animation: Animation.Fade});
           await StatusBar.setBackgroundColor({color: '#178865'});
-          const info = await StatusBar.getInfo();
-          console.log('statusBar info: ', info);
+          await StatusBar.setStyle({style: Style.Dark});
+        }
+        if (this.platform.is('ios')) {
+          // await StatusBar.show({animation: Animation.Slide});
+          // await StatusBar.setStyle({style: Style.Dark});
+          // await StatusBar.setBackgroundColor({color: '#178865'});
         }
       }
-
-      // this.platform.is('cordova');
-      // this.statusBar.overlaysWebView(false);
-      // this.statusBar.backgroundColorByHexString('#178865');
-      // this.getCoords().then(r => {
-      //   this.coords = r;
-      // });
     }).catch(e => {
     });
+  }
+
+  ngAfterContentInit(): void {
+    this.positionService.requestPermissions().catch();
+    // console.log('=============================================================');
+    // console.log('ngAfterContentInit');
+    // const permissionsPosition = async () => {
+    //   const permissions = await Geolocation.checkPermissions();
+    //   console.log('permissions: ', permissions);
+    //   if (permissions.location === 'prompt' || permissions.coarseLocation === 'prompt') {
+    //     const options: GeolocationPluginPermissions = {
+    //       permissions: [
+    //         'location',
+    //         'coarseLocation'
+    //       ]
+    //     };
+    //     const requestPermissions = await Geolocation.requestPermissions(options);
+    //     console.log('requestPermissions: ', requestPermissions);
+    //   }
+    //   const coordinates = await Geolocation.getCurrentPosition();
+    //   console.log('Current position: ', coordinates);
+    // };
+    // permissionsPosition().catch();
+    // console.log('=============================================================');
   }
 }
