@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Geolocation} from '@capacitor/geolocation';
-import {GeolocationPluginPermissions, Position} from '@capacitor/geolocation/dist/esm/definitions';
-import {PermissionState} from "@capacitor/core";
+import {GeolocationPluginPermissions, PermissionStatus, Position} from '@capacitor/geolocation/dist/esm/definitions';
+import {PermissionState} from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +9,10 @@ import {PermissionState} from "@capacitor/core";
 export class PositionService {
 
   constructor() {
+  }
+
+  async checkPermissions(): Promise<PermissionStatus> {
+    return await Geolocation.checkPermissions();
   }
 
   async requestPermissions(): Promise<boolean> {

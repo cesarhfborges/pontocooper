@@ -23,6 +23,10 @@ const routes: Routes = [
         path: 'profile',
         loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
       },
+      {
+        path: 'development',
+        loadChildren: () => import('./development/development.module').then( m => m.DevelopmentPageModule)
+      },
     ]
   },
   {
@@ -35,7 +39,7 @@ const routes: Routes = [
     path: '**',
     redirectTo: 'home',
     pathMatch: 'full'
-  },
+  }
 ];
 
 @NgModule({
