@@ -20,49 +20,49 @@ export class MainLayoutComponent implements OnInit, AfterViewInit, AfterContentI
   menus: Array<Menu> = [
     {
       label: 'Home',
-      link: 'home',
+      link: '/home',
       icon: 'planet',
       visible: true
     },
     {
       label: 'Produção',
-      link: 'producao',
+      link: '/producao',
       icon: 'calendar-outline',
       visible: true
     },
     {
       label: 'Histórico (GPS)',
-      link: 'historico',
+      link: '/historico',
       icon: 'navigate-outline',
       visible: true
     },
     {
       label: 'Férias e Abonos',
-      link: 'ferias-abonos',
+      link: '/ferias-abonos',
       icon: 'planet-outline',
       visible: false
     },
     {
       label: 'Ausências e Horas extras',
-      link: 'ausencias-horas-extras',
+      link: '/ausencias-horas-extras',
       icon: 'planet-outline',
       visible: false
     },
     {
       label: 'Opções',
-      link: 'opcoes',
+      link: '/opcoes',
       icon: 'settings-outline',
       visible: false
     },
     {
       label: 'Perfil',
-      link: 'profile',
+      link: '/profile',
       icon: 'person-outline',
       visible: true
     },
     {
       label: 'Dev',
-      link: 'development',
+      link: '/development',
       icon: 'code-working-outline',
       visible: !environment.production
     }
