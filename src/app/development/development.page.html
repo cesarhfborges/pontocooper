@@ -43,6 +43,15 @@
       <ion-button
         class="ion-margin-bottom"
         expand="block"
+        (click)="checkNotificationPermissions()"
+        fill="outline">
+        Checar permissão
+      </ion-button>
+
+      <ion-button
+        class="ion-margin-bottom"
+        expand="block"
+        (click)="scheduleNotification()"
         fill="outline">
         Agendar notificação
       </ion-button>
