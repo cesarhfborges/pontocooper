@@ -3,7 +3,7 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest}
 import {ActivatedRoute, Router} from '@angular/router';
 import {SessionService} from '../state/session.service';
 import {AuthService} from '../services/auth.service';
-import {delay, delayWhen, flatMap, map, Observable, tap, throwError, timer} from 'rxjs';
+import {delayWhen, filter, flatMap, map, Observable, switchAll, switchMap, throwError, timer,} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {LoadingController, ToastController} from '@ionic/angular';
 import {Color} from '@ionic/core';

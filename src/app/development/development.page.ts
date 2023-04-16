@@ -145,14 +145,7 @@ export class DevelopmentPage implements OnInit {
         name: 'notificações de teste',
         vibration: true,
         importance: 5,
-        // sound: 'cool.wav',
-        // sound: 'cool',
-        // sound: 'file://assets/sounds/cool.wav',
-        // sound: 'file://assets/public/assets/sounds/cool.wav',
-        // sound: 'res://raw/cool.wav',
-        // sound: './public/assets/sounds/cool.wav',
-        // sound: 'android.resource://br.com.coopersystem.portal/raw/cool.wav',
-        sound: 'android_asset/public/assets/sounds/cool.wav',
+        sound: 'cool.wav',
         lights: true,
         description: 'canal de teste de notificações',
         visibility: 1
@@ -163,17 +156,22 @@ export class DevelopmentPage implements OnInit {
         body: 'teste de notificação',
         largeBody: 'teste de notificação com texto grande para ser exibida de forma expandida. seção expandida.',
         summaryText: 'teste de notificação com texto grande para ser exibida de forma expandida. seção summary.',
-        // sound: './public/assets/sounds/cool.wav',
-        // sound: 'cool',
-        // sound: 'android.resource://br.com.coopersystem.portal/raw/cool.wav',
         channelId: 'teste',
         schedule: {
-          at: addSeconds(new Date(), 40),
+          at: addSeconds(new Date(), 20),
           allowWhileIdle: true
         }
       };
-      const schedule = await LocalNotifications.schedule({notifications: [schema]});
-      console.log('scheduled: ', schedule, format(addSeconds(new Date(), 40), 'dd/MM/yyyy HH:mm:ss'));
+      const schedule = await LocalNotifications.schedule({notifications: [
+          {...schema},
+          {...schema, id: 3},
+          {...schema, id: 4},
+          {...schema, id: 5},
+          {...schema, id: 6},
+          {...schema, id: 7},
+        ]
+      });
+      console.log('scheduled: ', schedule, format(addSeconds(new Date(), 20), 'dd/MM/yyyy HH:mm:ss'));
     } else {
       const request = await LocalNotifications.requestPermissions();
       console.log('request permissions: ', request);

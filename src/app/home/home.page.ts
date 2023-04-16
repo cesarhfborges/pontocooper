@@ -79,6 +79,10 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
       await this.getTimeLine();
     });
     init().catch();
+    // this.getPerfil().catch();
+    // this.getBancoDeHoras().catch();
+    // this.getSumario().catch();
+    // this.getTimeLine().catch();
   }
 
   ngOnDestroy(): void {
