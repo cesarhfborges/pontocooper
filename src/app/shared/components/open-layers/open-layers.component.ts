@@ -3,11 +3,12 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import {OSM} from 'ol/source';
-import {Fill, Icon, Style} from 'ol/style';
+import {Icon, Style} from 'ol/style';
 import {Feature} from 'ol';
 import {Circle, Point} from 'ol/geom';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
+import {ScaleLine, Zoom} from 'ol/control';
 import {transform} from 'ol/proj';
 import {Observable, timer} from 'rxjs';
 
@@ -23,7 +24,7 @@ interface Position {
 })
 export class OpenLayersComponent implements OnInit, AfterViewInit {
 
-  map: Map;
+  map: Map | undefined;
 
   timer: Observable<number>;
 
@@ -31,7 +32,7 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
     this.timer = timer(1000, 1000);
   }
 
-  static transformarCoordenadas(latitude, longitude): Array<number> {
+  static transformarCoordenadas(latitude: number, longitude: number): Array<number> {
     const projection: any = new OSM().getProjection();
     return transform([longitude, latitude], 'EPSG:4326', projection);
   }
@@ -95,26 +96,36 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.map = new Map({
-      layers: [
-        new TileLayer({
-          source: new OSM(),
+    const mapEl = document?.getElementById('map');
+    if (mapEl !== null) {
+      const zoom = new Zoom();
+      const scaleLine = new ScaleLine();
+      this.map = new Map({
+        controls: [
+          zoom,
+          scaleLine
+        ],
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          })
+        ],
+        target: mapEl,
+        view: new View({
+          center: OpenLayersComponent.transformarCoordenadas(-15.8121796, -47.9690582),
+          zoom: 11
         })
-      ],
-      target: document.getElementById('map'),
-      view: new View({
-        center: OpenLayersComponent.transformarCoordenadas(-15.8121796, -47.9690582),
-        zoom: 11
-      })
-    });
-    this.map.render();
+      });
+    } else {
+      throw new Error('Não foi possível inicializar a vizualização do mapa');
+    }
   }
 
   ngAfterViewInit(): void {
-    this.map.addLayer(this.createPinMarker(-15.8951013, -48.116222));
-    console.log('layers: ', this.map.getLayers().getArray()[1].getLayersArray());
+    this.map?.addLayer(this.createPinMarker(-15.8951013, -48.116222));
+    console.log('layers: ', this.map?.getLayers().getArray()[1].getLayersArray());
     this.timer.subscribe(() => {
-      this.map.updateSize();
+      this.map?.updateSize();
       // this.horasTrabalhadas = this.ponto.horasTrabalhadas;
       // this.calculaValor(82);
       // console.log('layers: ', this.map.getLayers().getArray()[1]);
@@ -125,7 +136,7 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
 
   addLocations(locations: Array<Position>): void {
     for (const {latitude, longitude} of locations) {
-      this.map.addLayer(OpenLayersComponent.createPin(latitude, longitude));
+      this.map?.addLayer(OpenLayersComponent.createPin(latitude, longitude));
     }
     if (locations.length > 0) {
       const coords = OpenLayersComponent.transformarCoordenadas(
@@ -143,12 +154,12 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private flyTo(location) {
+  private flyTo(location: number[]) {
     const duration = 2000;
-    const oldZoom = this.map.getView().getZoom();
+    const oldZoom = this.map?.getView().getZoom();
     let parts = 2;
     let called = false;
-    const callback = (complete) => {
+    const callback = (complete: any) => {
       --parts;
       if (called) {
         return;
@@ -157,16 +168,16 @@ export class OpenLayersComponent implements OnInit, AfterViewInit {
         called = true;
       }
     };
-    this.map.getView().animate(
+    this.map?.getView().animate(
       {
         center: location,
         duration,
       },
       callback
     );
-    this.map.getView().animate(
+    this.map?.getView().animate(
       {
-        zoom: oldZoom - 1,
+        zoom: (oldZoom ?? 4) - 1,
         duration: duration / 2,
       },
       {

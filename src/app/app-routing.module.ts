@@ -24,6 +24,10 @@ const routes: Routes = [
         loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
       },
       {
+        path: 'historico',
+        loadChildren: () => import('./historico/historico.module').then( m => m.HistoricoPageModule)
+      },
+      {
         path: 'development',
         loadChildren: () => import('./development/development.module').then( m => m.DevelopmentPageModule)
       },
@@ -39,7 +43,7 @@ const routes: Routes = [
     path: '**',
     redirectTo: 'home',
     pathMatch: 'full'
-  }
+  },
 ];
 
 @NgModule({
