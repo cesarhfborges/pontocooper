@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
     <ion-img style="height: 45px;" src="assets/logo-horizontal-white.png"></ion-img>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" [style.opacity]="loading.producao ? '0' : '1'">
       <ion-button (click)="scrollTo()" fill="clear" size="large">
         <ion-icon name="calendar"></ion-icon>
       </ion-button>
