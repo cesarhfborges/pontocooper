@@ -7,6 +7,8 @@ import {InvalidMessageComponent} from './components/invalid-message/invalid-mess
 import {InputPasswordToggleComponent} from './components/input-password-toggle/input-password-toggle.component';
 import {LoadingTextComponent} from './components/loading-text/loading-text.component';
 import {OpenLayersComponent} from './components/open-layers/open-layers.component';
+import {ModalDatePickerComponent} from './components/modal-date-picker/modal-date-picker.component';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -15,18 +17,21 @@ import {OpenLayersComponent} from './components/open-layers/open-layers.componen
     InputPasswordToggleComponent,
     LoadingTextComponent,
     OpenLayersComponent,
+    ModalDatePickerComponent
   ],
   exports: [
     InvalidMessageComponent,
     InputPasswordToggleComponent,
     LoadingTextComponent,
-    OpenLayersComponent
+    OpenLayersComponent,
+    ModalDatePickerComponent
   ],
   imports: [
     IonicModule,
     CommonModule,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    FormsModule
   ]
 })
 export class SharedModule {
