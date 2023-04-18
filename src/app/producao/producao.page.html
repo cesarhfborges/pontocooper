@@ -1,9 +1,9 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" id="header">
   <ion-toolbar color="primary">
     <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
     <ion-img style="height: 45px;" src="assets/logo-horizontal-white.png"></ion-img>
-    <ion-buttons slot="end" style="opacity: 0;">
-      <ion-button fill="clear" size="large">
+    <ion-buttons slot="end">
+      <ion-button (click)="scrollTo()" fill="clear" size="large">
         <ion-icon name="calendar"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -13,8 +13,93 @@
 <ion-content [scrollEvents]="true">
 
   <ion-item lines="none" fill="outline" color="tertiary" class="ion-margin" (click)="openModal()">
-    <ion-label>{{dataSelecionada | date : 'MMMM \'de\' yyyy'}}</ion-label>
+    <ion-label>{{dataAtual | date : 'MMMM \'de\' yyyy'}}</ion-label>
     <ion-icon name="calendar-number-sharp" color="light" slot="end"></ion-icon>
   </ion-item>
+
+  <div *ngIf="!loading.producao" [@slideOutAnimation]="producao.length > 0">
+    <ion-card *ngFor="let dia of producao" [attr.id]="isNow(dia.date) ? 'hoje' : ''">
+      <ion-item>
+        <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
+        <ion-label>{{(formatDate(dia.date) | date : 'E dd/MM') | titlecase}}</ion-label>
+        <ion-item slot="end" lines="none" style="text-align: right;">
+          <ion-badge
+            *ngIf="isNow(dia.date)"
+            color="success"
+          >Hoje
+          </ion-badge>
+          <ion-badge
+            style="margin-left: 8px;"
+            *ngIf="dia.day_type" [color]="dia.day_type.day_type === 'feriado' ? 'warning' : 'tertiary'"
+          >{{dia.day_type.day_type_display}}</ion-badge>
+        </ion-item>
+      </ion-item>
+
+      <ion-card-content>
+        <ion-row class="header-row">
+
+          <ion-col size="12" *ngIf="dia?.day_type?.day_type === 'feriado'">
+            <h1>
+              Feriado: {{dia?.day_type?.status_display}}
+            </h1>
+          </ion-col>
+
+          <ion-col *ngIf="dia?.timeline?.length === 0" size="12">
+            <h2>Nenhum ponto registrado para este dia.</h2>
+          </ion-col>
+
+          <ion-col size="12" *ngFor="let detalhes of dia?.timeline; let i = index">
+            <h1>
+              <ion-icon [color]="i % 2 === 0 ? 'success' : 'danger'" name="pin"></ion-icon>
+              {{detalhes.worktime_clock | date : 'HH:mm'}}
+              <ion-badge
+                *ngIf="detalhes.rectification"
+                [color]="detalhes.rectification.status === 'aprovado' ? 'success' : 'warning'"
+              >{{detalhes.rectification.status_display}}</ion-badge>
+            </h1>
+          </ion-col>
+
+          <ion-col *ngIf="dia.timeline.length > 0" size="12">
+            <h2>Produção: {{dia.production | date : 'HH:mm'}}</h2>
+          </ion-col>
+
+          <ion-col size="6">
+            <ion-button (click)="modalRasura(dia)" expand="block" color="primary">Rasurar</ion-button>
+          </ion-col>
+
+          <ion-col size="6">
+            <ion-button (click)="modalHoraExtra(dia)" expand="block" color="medium">H. Extra / Ausência</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="loading.producao">
+    <ion-card>
+      <ion-item>
+        <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
+        <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+      </ion-item>
+
+      <ion-card-content>
+        <ion-row class="header-row">
+
+          <ion-col size="12">
+            <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+          </ion-col>
+
+          <ion-col size="6">
+            <ion-button [disabled]="true" expand="block" color="primary">Rasurar</ion-button>
+          </ion-col>
+
+          <ion-col size="6">
+            <ion-button [disabled]="true" expand="block" color="medium">H. Extra / Ausência</ion-button>
+          </ion-col>
+        </ion-row>
+
+      </ion-card-content>
+    </ion-card>
+  </div>
 
 </ion-content>
