@@ -146,7 +146,7 @@ export class ProducaoPage implements OnInit {
     const anchor = document.getElementById('hoje');
     console.log('anchor: ', anchor);
     if (anchor && header) {
-      const posicao = anchor.getBoundingClientRect().top - header.clientHeight - 9;
+      const posicao = anchor.getBoundingClientRect().top - header.clientHeight - 10;
       // anchor.scrollIntoView({behavior: 'smooth', block: 'start'});
       // window.scrollTo({top: posicao, behavior: 'smooth'});
       // const posicao = anchor.getBoundingClientRect().top - header.clientHeight - 9;
