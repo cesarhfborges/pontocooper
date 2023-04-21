@@ -9,7 +9,7 @@ import {format, parseISO} from 'date-fns';
 import {BancoDeHoras} from '../core/interfaces/banco-de-horas';
 import {Batida} from '../core/models/batida';
 import {Ponto} from '../core/models/ponto';
-import {environment} from "../../environments/environment";
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +17,8 @@ import {environment} from "../../environments/environment";
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
+
+  production: boolean = environment.production;
 
   dataAtual: Date = new Date();
   timer: Observable<number> | undefined;
@@ -264,6 +266,4 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
 
     }
   }
-
-  protected readonly environment = environment;
 }
