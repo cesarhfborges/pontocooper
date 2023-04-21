@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { HistoricoPageRoutingModule } from './historico-routing.module';
 
 import { HistoricoPage } from './historico.page';
-import {SharedModule} from "../shared/shared.module";
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
     imports: [

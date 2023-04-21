@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ViewWillEnter} from '@ionic/angular';
-import {lastValueFrom, Observable, timer} from 'rxjs';
+import {Observable, timer} from 'rxjs';
 import {AuthService} from '../core/services/auth.service';
 import {Usuario} from '../core/models/usuario';
 import {DadosService} from '../core/services/dados.service';
@@ -72,72 +72,127 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
 
   ionViewWillEnter(): void {
     console.log('executei o ionViewWillEnter da home');
-    const init = (async () => {
-      await this.getPerfil();
-      await this.getBancoDeHoras();
-      await this.getSumario();
-      await this.getTimeLine();
-    });
-    init().catch();
-    // this.getPerfil().catch();
-    // this.getBancoDeHoras().catch();
-    // this.getSumario().catch();
-    // this.getTimeLine().catch();
+    // const init = (async () => {
+    //   await this.getPerfil();
+    //   await this.getBancoDeHoras();
+    //   await this.getSumario();
+    //   await this.getTimeLine();
+    // });
+    // init().catch();
+    this.getPerfil();
+    this.getBancoDeHoras();
+    this.getSumario();
+    this.getTimeLine();
   }
 
   ngOnDestroy(): void {
     this.timer = undefined;
   }
 
-  async getPerfil() {
+  getPerfil() {
     this.loading.profile = true;
-    const request = this.authService.perfil();
-    const response = await lastValueFrom<any>(request);
-    this.perfil = response;
-    this.loading.profile = false;
-    return response;
+    this.authService.perfil().subscribe({
+      next: (response) => {
+        console.log('valor recebido: ', response);
+        this.perfil = response;
+        this.loading.profile = false;
+      },
+      error: () => {
+        this.loading.profile = false;
+      },
+      // complete: () => {
+      //   console.log('===================================================================');
+      //   console.log('chamei o metodo complete da Home');
+      // }
+    });
+    // const request = this.authService.perfil();
+    // const response = await lastValueFrom<any>(request);
+    // this.perfil = response;
+    // this.loading.profile = false;
+    // return response;
   }
 
-  async getSumario() {
+  getSumario() {
     this.loading.summary = true;
-    const request: any = this.dadosService.getSummary(format(this.dataAtual, 'yyyy'), format(this.dataAtual, 'MM'));
-    const response = await lastValueFrom<any>(request);
-    this.summary = {
-      workingHours: response.working_hours,
-      businessDays: response.business_days,
-      hoursToWork: response.hours_to_work,
-      remainingHours: response.remaining_hours
-    };
-    this.loading.summary = false;
-  }
-
-  async getBancoDeHoras() {
-    this.loading.bancoDeHoras = true;
-    const request = this.dadosService.getBancoDeHoras();
-    this.bancoDeHoras = await lastValueFrom<any>(request);
-    this.loading.bancoDeHoras = false;
-  }
-
-  async getTimeLine(): Promise<void> {
-    try {
-      this.loading.timeline = true;
-      const timeline = await this.dadosService.getTimeline().toPromise();
-      this.ponto.limparPontos();
-      for (const batida of timeline.timeline) {
-        this.ponto.addPonto({
-          ...batida,
-          worktime_clock: parseISO(batida.worktime_clock)
-        });
+    const year: string = format(this.dataAtual, 'yyyy');
+    const month: string = format(this.dataAtual, 'MM');
+    this.dadosService.getSummary(year, month).subscribe({
+      next: (response) => {
+        this.summary = {
+          workingHours: response.working_hours,
+          businessDays: response.business_days,
+          hoursToWork: response.hours_to_work,
+          remainingHours: response.remaining_hours
+        };
+        this.loading.summary = false;
+      },
+      error: () => {
+        this.loading.summary = false;
       }
-      this.loading.timeline = false;
-    } catch (e) {
-      // const toast = await this.toastController.create({
-      //   message: 'Erro ao obter linha do tempo, verifique a rede.',
-      //   duration: 2000,
-      //   color: 'danger'
-      // });
-      // await toast.present();
-    }
+    });
+    // const request: any = this.dadosService.getSummary(format(this.dataAtual, 'yyyy'), format(this.dataAtual, 'MM'));
+    // const response = await lastValueFrom<any>(request);
+    // this.summary = {
+    //   workingHours: response.working_hours,
+    //   businessDays: response.business_days,
+    //   hoursToWork: response.hours_to_work,
+    //   remainingHours: response.remaining_hours
+    // };
+    // this.loading.summary = false;
+  }
+
+  getBancoDeHoras() {
+    this.loading.bancoDeHoras = true;
+    this.dadosService.getBancoDeHoras().subscribe({
+      next: (response) => {
+        this.bancoDeHoras = response;
+        this.loading.bancoDeHoras = false;
+      },
+      error: () => {
+        this.loading.bancoDeHoras = false;
+      },
+    });
+    // const request = this.dadosService.getBancoDeHoras();
+    // this.bancoDeHoras = await lastValueFrom<any>(request);
+    // this.loading.bancoDeHoras = false;
+  }
+
+  getTimeLine() {
+    this.loading.timeline = true;
+    this.dadosService.getTimeline().subscribe({
+      next: (response) => {
+        this.ponto.limparPontos();
+        for (const batida of response.timeline) {
+          this.ponto.addPonto({
+            ...batida,
+            worktime_clock: parseISO(batida.worktime_clock)
+          });
+        }
+        this.loading.timeline = false;
+      },
+      error: () => {
+        this.loading.timeline = false;
+      },
+    });
+    // try {
+    //   this.loading.timeline = true;
+    //   const timeline = await this.dadosService.getTimeline().toPromise();
+    //   this.ponto.limparPontos();
+    //   for (const batida of timeline.timeline) {
+    //     this.ponto.addPonto({
+    //       ...batida,
+    //       worktime_clock: parseISO(batida.worktime_clock)
+    //     });
+    //   }
+    //   this.loading.timeline = false;
+    // } catch (e) {
+    //   // const toast = await this.toastController.create({
+    //   //   message: 'Erro ao obter linha do tempo, verifique a rede.',
+    //   //   duration: 2000,
+    //   //   color: 'danger'
+    //   // });
+    //   // await toast.present();
+    // }
   }
 
   teste() {

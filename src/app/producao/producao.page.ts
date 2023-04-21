@@ -1,10 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
-import {formatISO, getMonth, getYear, isSameDay, parseISO, set, startOfMonth} from 'date-fns';
-import {ModalDatePickerComponent} from '../shared/components/modal-date-picker/modal-date-picker.component';
 import {IonContent, ModalController} from '@ionic/angular';
-import {Dia} from '../core/models/dia';
 import {DadosService} from '../core/services/dados.service';
+import {ModalDatePickerComponent} from '../shared/components/modal-date-picker/modal-date-picker.component';
+import {ModalRasuraComponent} from '../shared/components/modal-rasura/modal-rasura.component';
+import {formatISO, getMonth, getYear, isSameDay, parseISO, set, startOfMonth} from 'date-fns';
+import {Dia} from '../core/models/dia';
 
 @Component({
   selector: 'app-producao',
@@ -27,7 +28,7 @@ import {DadosService} from '../core/services/dados.service';
 })
 export class ProducaoPage implements OnInit {
 
-  @ViewChild(IonContent, { static: false }) content: IonContent | undefined;
+  @ViewChild(IonContent, {static: false}) content: IonContent | undefined;
 
   dataAtual: Date = set(startOfMonth(new Date()), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
 
@@ -82,23 +83,23 @@ export class ProducaoPage implements OnInit {
   }
 
   async modalRasura(dia: Dia) {
-    // const modal = await this.modalController.create({
-    //   component: ModalRasuraComponent,
-    //   cssClass: 'my-custom-class',
-    //   swipeToClose: true,
-    //   backdropDismiss: false,
-    //   keyboardClose: false,
-    //   animated: true,
-    //   componentProps: {
-    //     dados: dia
-    //   }
-    // });
-    // await modal.present();
-    // const {data} = await modal.onWillDismiss();
-    // if (data.success) {
-    //   this.toastsService.showToastSuccess('Rasura(s), inserida(s) com sucesso.');
-    //   this.getProducao();
-    // }
+    const modal = await this.modalCtrl.create({
+      component: ModalRasuraComponent,
+      cssClass: 'my-custom-class',
+      swipeToClose: true,
+      backdropDismiss: false,
+      keyboardClose: false,
+      animated: true,
+      componentProps: {
+        dados: dia
+      }
+    });
+    await modal.present();
+    const {data} = await modal.onWillDismiss();
+    if (data.success) {
+      // this.toastsService.showToastSuccess('Rasura(s), inserida(s) com sucesso.');
+      // this.getProducao();
+    }
   }
 
   async modalHoraExtra(dia: Dia) {

@@ -1,12 +1,10 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ModalController, ViewDidEnter} from '@ionic/angular';
 import {Dia} from '../../../core/models/dia';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {DadosService} from '../../../core/services/dados.service';
-import {interval, Observable, of} from 'rxjs';
-import {takeWhile} from 'rxjs/operators';
-import {addSeconds, differenceInSeconds, format, parseISO, set} from 'date-fns';
-import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
+import {Observable, of} from 'rxjs';
+import {parseISO, set} from 'date-fns';
 
 @Component({
   selector: 'app-modal-rasura',
@@ -38,17 +36,14 @@ import {animate, query, stagger, style, transition, trigger} from '@angular/anim
 })
 export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
 
-  @Input() dados: Dia;
+  @Input() dados: Dia | undefined;
 
   form: FormGroup;
-  agora: Date = new Date();
-  timer = interval(1000);
-  private alive = false;
+
 
   constructor(
-    private dadosService: DadosService,
-    private modalController: ModalController,
     private fb: FormBuilder,
+    private modalCtrl: ModalController,
   ) {
     this.form = this.fb.group({
       date: ['', [Validators.required]],
@@ -58,34 +53,33 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
   }
 
   get retificacoes(): FormArray {
-    return this.form.get('rectifications') as FormArray;
+    if (this.form.get('rectifications') !== null) {
+      return this.form.get('rectifications') as FormArray;
+    }
+    return this.fb.array([]);
   }
 
-  ngOnInit(): void {
-    this.alive = true;
-    this.timer.pipe(
-      takeWhile(() => this.alive)
-    ).subscribe(
-      () => {
-        this.agora = new Date();
-      }
-    );
-    this.form.get('date').patchValue(this.dados.date);
-    for (const dia of this.dados.timeline) {
-      const f: FormGroup = this.createRetificacao();
-      f.patchValue({
-        checkIn: dia.check_in,
-        position: dia.position.toString(),
-        worktimeClock: dia.worktime_clock
-      });
-      // f.disable();
-      this.retificacoes.push(f);
-      this.form.updateValueAndValidity();
-    }
+  ionViewDidEnter(): void {
   }
 
   ngOnDestroy(): void {
-    this.alive = false;
+  }
+
+  ngOnInit(): void {
+    if (this.dados) {
+      this.form.get('date')?.patchValue(this.dados.date);
+      for (const dia of this.dados.timeline) {
+        const f: FormGroup = this.createRetificacao();
+        f.patchValue({
+          checkIn: dia.check_in,
+          position: dia.position.toString(),
+          worktimeClock: dia.worktime_clock
+        });
+        // f.disable();
+        this.retificacoes.push(f);
+        this.form.updateValueAndValidity();
+      }
+    }
   }
 
   createRetificacao(): FormGroup {
@@ -115,66 +109,43 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
     this.form.updateValueAndValidity();
   }
 
-  diferenca(): Observable<Date> {
-    const hoje: Date = set(parseISO(this.dados.date), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
-    const batidas: Array<Date> = this.retificacoes.controls
-      .filter(r => r.get('worktimeClock').value !== null && r.get('worktimeClock').value !== '')
-      .map(r => parseISO(r.get('worktimeClock').value));
-    if (batidas.length > 0) {
-      if (batidas.length % 2 === 1) {
-        batidas.push(this.agora);
-      }
-      const batida: Date = batidas.reduce((a, b, i, x) => {
-        const diff: number = differenceInSeconds(x[i], x[i - 1]);
-        if (i === 0) {
-          return a;
-        } else if (i % 2 === 1) {
-          return addSeconds(a, diff);
-        } else {
-          return a;
-        }
-      }, hoje);
-      return of(batida);
-    }
-    return of(hoje);
+  async cancelar() {
+    await this.modalCtrl.dismiss({
+      success: false
+    });
   }
 
-  cancelar(): void {
-    this.modalController.dismiss({
-      success: false
-    }).catch(e => console.log(e));
+  checkDeletePossible(index: number): boolean {
+    return !!(this.dados && (index + 1) > this.dados.timeline.length);
+  }
+
+  diferenca(): Observable<Date> {
+    // const hoje: Date = set(parseISO(this.dados.date), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
+    // const batidas: Array<Date> = this.retificacoes.controls
+    //   .filter(r => r.get('worktimeClock').value !== null && r.get('worktimeClock').value !== '')
+    //   .map(r => parseISO(r.get('worktimeClock').value));
+    // if (batidas.length > 0) {
+    //   if (batidas.length % 2 === 1) {
+    //     batidas.push(this.agora);
+    //   }
+    //   const batida: Date = batidas.reduce((a, b, i, x) => {
+    //     const diff: number = differenceInSeconds(x[i], x[i - 1]);
+    //     if (i === 0) {
+    //       return a;
+    //     } else if (i % 2 === 1) {
+    //       return addSeconds(a, diff);
+    //     } else {
+    //       return a;
+    //     }
+    //   }, hoje);
+    //   return of(batida);
+    // }
+    return of(new Date());
   }
 
   salvar(): void {
     this.form.markAllAsTouched();
     if (this.form.valid) {
-      const f: any = this.form.value;
-      const dados: any = {
-        ...f,
-        rectifications: f.rectifications.map(
-          (i: any) => ({
-            check_in: i.checkIn,
-            position: i.position,
-            worktime_clock: f.date + 'T' + format(parseISO(i.worktimeClock), 'HH:mm')
-          })
-        )
-      };
-      this.dadosService.solicitarRetificacao([dados]).subscribe(
-        response => {
-          this.modalController.dismiss({
-            success: true,
-            data: dados.rectifications
-          }).catch(e => console.log(e));
-        },
-        error => {
-          console.log(error);
-        }
-      );
-    } else {
-      console.log('Form Inválido');
     }
-  }
-
-  ionViewDidEnter(): void {
   }
 }

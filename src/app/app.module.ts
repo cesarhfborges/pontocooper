@@ -10,7 +10,7 @@ import ptBr from '@angular/common/locales/pt';
 import {SharedModule} from './shared/shared.module';
 import {SessionService} from './core/state/session.service';
 import {JwtInterceptor} from './core/interceptors/jwt.interceptor';
-import {AuthInterceptor} from './core/interceptors/auth.interceptor';
+import {RefreshTokenInterceptor} from './core/interceptors/refresh-token.interceptor';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -33,7 +33,7 @@ registerLocaleData(ptBr);
     {provide: SessionService, multi: false},
     {provide: LOCALE_ID, useValue: 'pt-BR'},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: RefreshTokenInterceptor, multi: true},
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
   ],
   bootstrap: [AppComponent],

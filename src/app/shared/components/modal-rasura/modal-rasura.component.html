@@ -23,25 +23,26 @@
       </ion-item>
 
       <ion-card-content>
-        <ion-list formArrayName="rectifications" [@slideOutAnimation]="retificacoes?.controls?.length">
+        <ion-list formArrayName="rectifications" [@slideOutAnimation]="retificacoes.length > 0">
           <ion-item *ngFor="let item of retificacoes.controls; let i = index" [formGroupName]="i">
-            <ion-label position="stacked">{{item.get('position').value}}&deg; {{item.get('checkIn').value ? 'Entrada' : 'Saída'}}</ion-label>
-            <ion-datetime
-              displayFormat="HH:mm"
-              picker-format="HH:mm"
-              doneText="Ok"
-              cancelText="Cancelar"
-              name="hora"
-              [name]="i"
-              formControlName="worktimeClock"
-            ></ion-datetime>
-            <ion-button *ngIf="(i + 1)> dados.timeline.length" fill="clear" size="large" slot="end" (click)="deleteRetificacao(i)">
+            <ion-icon
+              [color]="item?.get('checkIn')?.value ? 'success' : 'danger'"
+              [name]="item?.get('checkIn')?.value ? 'arrow-forward-outline' : 'arrow-back-outline'"
+              slot="start"
+            ></ion-icon>
+            <ion-label>
+              <h4>{{item?.get('position')?.value}}&deg; {{item?.get('checkIn')?.value ? 'Entrada' : 'Saída'}}</h4>
+              <h2>{{item?.get('worktimeClock')?.value !== null ? (item?.get('worktimeClock')?.value | date : 'HH:mm') : 'Informe a hora'}}</h2>
+            </ion-label>
+            <ion-button *ngIf="checkDeletePossible(i)" fill="clear" size="large" slot="end" (click)="deleteRetificacao(i)">
               <ion-icon color="danger" name="trash"></ion-icon>
             </ion-button>
             <app-invalid-message [control]="item.get('worktimeClock')"></app-invalid-message>
           </ion-item>
           <ion-item lines="none">
-            <ion-label>Carga: {{(diferenca() | async) | date : 'HH:mm:ss' }}</ion-label>
+            <ion-label>
+              <h3>Carga: {{(diferenca() | async) | date : 'HH:mm:ss' }}</h3>
+            </ion-label>
             <ion-icon name="timer-outline" slot="end"></ion-icon>
           </ion-item>
         </ion-list>
@@ -55,20 +56,22 @@
       </ion-card-content>
     </ion-card>
   </form>
-<!--  <pre>-->
-<!--    <code>-->
-<!--      {{(diferenca() | async) | json}}-->
-<!--    </code>-->
-<!--    <code>-->
-<!--      {{form.value | json}}-->
-<!--    </code>-->
-<!--    <code>-->
-<!--      {{dados | json}}-->
-<!--    </code>-->
-<!--  </pre>-->
-  <ion-fab *ngIf="retificacoes.controls.length < 10" vertical="bottom" horizontal="end" slot="fixed">
+
+  <ion-fab *ngIf="retificacoes.length < 10" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="addRetificacao()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
+    <pre>
+      <code>
+        {{form.value | json}}
+      </code>
+      <code>
+        {{retificacoes.length | json}}
+      </code>
+      <code>
+        {{dados | json}}
+      </code>
+    </pre>
 </ion-content>

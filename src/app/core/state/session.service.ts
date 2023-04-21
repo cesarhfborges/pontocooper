@@ -14,11 +14,14 @@ export class SessionService {
     this.auth = this.load();
   }
 
-  get credentials(): Auth | null {
-    return this.auth;
+  get credentials(): Auth {
+    if (this.auth !== null) {
+      return this.auth;
+    }
+    return {access: '', refresh: ''};
   }
 
-  set credentials(data: any) {
+  set credentials(data: Auth) {
     const stringfied: string = JSON.stringify(data);
     const encript: string = btoa(stringfied);
     window.localStorage.setItem(this.storeKey, encript);

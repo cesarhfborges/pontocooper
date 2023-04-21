@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
 import {IonicModule} from '@ionic/angular';
@@ -8,7 +9,7 @@ import {InputPasswordToggleComponent} from './components/input-password-toggle/i
 import {LoadingTextComponent} from './components/loading-text/loading-text.component';
 import {OpenLayersComponent} from './components/open-layers/open-layers.component';
 import {ModalDatePickerComponent} from './components/modal-date-picker/modal-date-picker.component';
-import {FormsModule} from "@angular/forms";
+import {ModalRasuraComponent} from './components/modal-rasura/modal-rasura.component';
 
 @NgModule({
   declarations: [
@@ -17,21 +18,24 @@ import {FormsModule} from "@angular/forms";
     InputPasswordToggleComponent,
     LoadingTextComponent,
     OpenLayersComponent,
-    ModalDatePickerComponent
+    ModalDatePickerComponent,
+    ModalRasuraComponent
   ],
   exports: [
     InvalidMessageComponent,
     InputPasswordToggleComponent,
     LoadingTextComponent,
     OpenLayersComponent,
-    ModalDatePickerComponent
+    ModalDatePickerComponent,
+    ModalRasuraComponent
   ],
   imports: [
     IonicModule,
     CommonModule,
     RouterLink,
     RouterLinkActive,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule {

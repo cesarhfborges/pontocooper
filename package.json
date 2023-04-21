@@ -13,7 +13,7 @@
     "build": "ng build",
     "serve": "ng serve",
     "serve:open": "ng serve --open",
-    "test": "ng test  --code-coverage --watch=true --sourceMap=true",
+    "test": "ng test --code-coverage --watch=true",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "android-build": "ionic cap build android --no-open && ionic cap sync && cd android && gradlew assembleDebug && cd .. && npm run copy-apk-debug",

@@ -7,7 +7,7 @@ import { HomePage } from './home.page';
 import { HomePageRoutingModule } from './home-routing.module';
 import {BancoDeHorasComponent} from './components/banco-de-horas/banco-de-horas.component';
 import {EntradasSaidasComponent} from './components/entradas-saidas/entradas-saidas.component';
-import {SharedModule} from "../shared/shared.module";
+import {SharedModule} from '../shared/shared.module';
 
 
 @NgModule({

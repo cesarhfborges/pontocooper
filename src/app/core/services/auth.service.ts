@@ -4,7 +4,7 @@ import {delay, map, Observable, tap} from 'rxjs';
 import {Usuario} from '../models/usuario';
 import {SessionService} from '../state/session.service';
 import {Router} from '@angular/router';
-import {Auth} from "../models/auth";
+import {Auth} from '../models/auth';
 
 interface IAuth {
   access: string;
@@ -38,7 +38,10 @@ export class AuthService {
     return this.http.post<any>(`/api/v1/auth`, credentials).pipe(
       tap((response: any) => {
         if (response?.access) {
-          this.session.credentials = response;
+          this.session.credentials = {
+            access: response.access,
+            refresh: response.refresh
+          };
         }
       }),
       delay(350),
@@ -56,20 +59,21 @@ export class AuthService {
     return this.http.get<Usuario>(`/api/v1/person/current`);
   }
 
-  refreshToken(): Observable<boolean> {
+  refreshToken(): Observable<any> {
     const data: any = {
       refresh: `${this.session?.credentials?.refresh}`
     };
     return this.http.post<any>(`/api/v1/auth/refresh/`, data).pipe(
       tap((response: any) => {
-        if (response?.access) {
-          // @ts-ignore
-          const newCredentials: Auth = this.session.credentials;
-          newCredentials.access = response.access;
-          this.session.credentials = newCredentials;
+        if (response?.access !== undefined) {
+          this.session.credentials = {
+            refresh: this.session.credentials.refresh,
+            access: response.access
+          };
         }
       }),
-      map(response => !!response.access)
+      delay(350),
+      // map(response => !!response.access)
     );
   }
 }

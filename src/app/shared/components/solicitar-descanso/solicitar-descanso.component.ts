@@ -18,14 +18,14 @@ interface Detalhes {
 })
 export class SolicitarDescansoComponent implements OnInit {
 
-  @Input() periodos: Array<{ de: Date; ate: Date }>;
-  @Input() selecionado: { de: Date; ate: Date };
+  @Input() periodos: Array<{ de: Date; ate: Date }> = [];
+  @Input() selecionado: { de: Date; ate: Date } | undefined = undefined;
   @Input() abono = 0;
   @Input() ferias = 0;
 
   duracao = [5, 10];
 
-  termino: Date = null;
+  termino: Date | undefined = undefined;
 
   hoje: string = format(new Date(), 'yyyy-MM-dd');
   dt = {
@@ -50,16 +50,16 @@ export class SolicitarDescansoComponent implements OnInit {
   }
 
   get tipo(): string {
-    return this.form.get('tipo').value;
+    return this.form?.get('tipo')?.value;
   }
 
   set tipo(tipo: string) {
     this.form.reset();
-    this.form.get('tipo').patchValue(tipo);
+    this.form?.get('tipo')?.patchValue(tipo);
   }
 
   ngOnInit() {
-    this.form.get('periodo').patchValue(this.selecionado);
+    this.form?.get('periodo')?.patchValue(this.selecionado);
     this.form.valueChanges.pipe(
       distinctUntilChanged()
     ).subscribe(async (value) => {
@@ -68,7 +68,7 @@ export class SolicitarDescansoComponent implements OnInit {
           map(r => parse(r.last_date, 'yyyy-MM-dd', new Date()))
         ).toPromise();
       } else {
-        this.termino = null;
+        this.termino = undefined;
       }
       console.log(value);
     });
@@ -90,10 +90,10 @@ export class SolicitarDescansoComponent implements OnInit {
     this.form.markAllAsTouched();
     if (this.form.valid) {
       const seila = {
-        date: format(parseISO(this.form.get('periodo').value), 'yyyy-MM-dd'),
-        hours: this.form.get('duracao').value + ':00',
-        reason: this.form.get('justificativa').value,
-        request_type: this.form.get('tipo').value,
+        date: format(parseISO(this.form?.get('periodo')?.value), 'yyyy-MM-dd'),
+        hours: this.form?.get('duracao')?.value + ':00',
+        reason: this.form?.get('justificativa')?.value,
+        request_type: this.form?.get('tipo')?.value,
       };
       this.dadosService.solicitarAusencia([seila]).subscribe(
         response => {

@@ -12,7 +12,7 @@ import {format, getHours, getMinutes, parseISO} from 'date-fns';
 })
 export class ModalHoraExtraComponent implements OnInit {
 
-  @Input() dados: Dia;
+  @Input() dados: Dia | undefined;
 
   form: FormGroup;
 
@@ -32,7 +32,7 @@ export class ModalHoraExtraComponent implements OnInit {
   }
 
   getTipo(): 'hora_extra' | 'falta' {
-    const producao: Date = parseISO(this.dados.production);
+    const producao: Date = this.dados?.production ? parseISO(this.dados.production) : new Date();
     const horas: number = getHours(producao);
     const minutos: number = getMinutes(producao);
     if (horas > 0 || minutos > 0) {
@@ -53,7 +53,7 @@ export class ModalHoraExtraComponent implements OnInit {
 
   salvar(): void {
     if (this.form.valid) {
-      const data: string = format(this.formatDate(this.dados.date), 'yyyy-MM-dd');
+      const data: string = format(this.dados?.date ? this.formatDate(this.dados.date) : new Date(), 'yyyy-MM-dd');
       this.dadosService.solicitarHoraExtra(data, this.form.value).subscribe(
         response => {
           this.modalController.dismiss({

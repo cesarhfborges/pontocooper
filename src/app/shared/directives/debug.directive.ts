@@ -15,7 +15,7 @@ export class DebugDirective {
     this.debug = localStorage.getItem('debug_mode') === '1';
   }
 
-  @HostListener('click', ['$event']) onClick($event) {
+  @HostListener('click', ['$event']) onClick($event: any) {
     this.count++;
     if (this.count > 9) {
       this.count = 0;

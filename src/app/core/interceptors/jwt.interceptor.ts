@@ -3,6 +3,7 @@ import {HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from 
 import {Observable} from 'rxjs';
 import {AuthService} from '../services/auth.service';
 import {SessionService} from '../state/session.service';
+import { Location } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -11,17 +12,23 @@ export class JwtInterceptor implements HttpInterceptor {
 
   constructor(
     private authService: AuthService,
-    private session: SessionService
+    private session: SessionService,
+    private location: Location
   ) {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let customHeaders: HttpHeaders = new HttpHeaders();
-    customHeaders = customHeaders.set('Content-Type', 'application/json').set('X-Requested-With', 'XMLHttpRequest');
-    if (this.session.isLoggedIn() && this.session.credentials !== null) {
-      customHeaders = customHeaders.set('Authorization', `Bearer ${this.session.credentials.access}`);
+    const isApiRequest = request.url.startsWith(this.location.prepareExternalUrl('/api'));
+
+    if (isApiRequest) {
+      let customHeaders: HttpHeaders = new HttpHeaders();
+      customHeaders = customHeaders.set('Content-Type', 'application/json').set('X-Requested-With', 'XMLHttpRequest');
+      if (this.session.isLoggedIn()) {
+        customHeaders = customHeaders.set('Authorization', `Bearer ${this.session.credentials.access}`);
+      }
+      const req = request.clone({withCredentials: true, headers: customHeaders});
+      return next.handle(req);
     }
-    const req = request.clone({withCredentials: true, headers: customHeaders});
-    return next.handle(req);
+    return next.handle(request);
   }
 }
