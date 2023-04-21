@@ -34,6 +34,7 @@ export class DevelopmentPage implements OnInit {
     connected: false,
     connectionType: 'none'
   };
+  notificationPermissions = false;
 
   constructor(
     private positionService: PositionService,
@@ -84,6 +85,7 @@ export class DevelopmentPage implements OnInit {
     Promise.all([
       this.getPosition(),
       this.getNetworkStatus(),
+      this.getNotificationPermission()
     ]).catch();
   }
 
@@ -126,12 +128,19 @@ export class DevelopmentPage implements OnInit {
     // });
   }
 
-  async checkNotificationPermissions() {
+  async getNotificationPermission() {
+    const permissionStatus = await LocalNotifications.checkPermissions();
+    console.log(permissionStatus);
+    this.notificationPermissions = permissionStatus.display === 'granted';
+  }
+
+  async requestNotificationPermission() {
     const permissionStatus = await LocalNotifications.checkPermissions();
     console.log('permissionStatus: ', permissionStatus);
     if (permissionStatus.display !== 'granted') {
       const request = await LocalNotifications.requestPermissions();
       console.log('request permission: ', request);
+      this.notificationPermissions = request.display === 'granted';
     }
   }
 

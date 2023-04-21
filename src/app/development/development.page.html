@@ -14,38 +14,41 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>Página de testes</ion-card-title>
-      <ion-card-subtitle>Versão Aplicativo: {{versao}}</ion-card-subtitle>
     </ion-card-header>
+    <ion-list lines="full">
+      <ion-item>
+        <ion-label>Versão Aplicativo:</ion-label>
+        <ion-note slot="end">
+          <p>{{versao}}</p>
+        </ion-note>
+      </ion-item>
+    </ion-list>
+  </ion-card>
 
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Notificações</ion-card-title>
+    </ion-card-header>
     <ion-card-content>
-      <ion-list lines="inset">
+      <ion-list lines="full">
         <ion-item>
-          <ion-label>Acesso ao GPS:</ion-label>
-          <ion-note slot="end">{{gpsStatusText}}</ion-note>
+          <ion-label>Permissão:</ion-label>
+          <ion-note slot="end">{{notificationPermissions ? 'Permitido' : 'Bloqueado'}}</ion-note>
           <ion-icon
             slot="end"
-            [name]="gpsStatusIcon"
-            [color]="gpsStatusColor"
-          ></ion-icon>
-        </ion-item>
-        <ion-item>
-          <ion-label>Status da rede:</ion-label>
-          <ion-note slot="end">{{networkStatus.connectionType}}</ion-note>
-          <ion-icon
-            slot="end"
-            [name]="networkStatus.connected ? 'checkmark-outline' : 'close-circle-outline'"
-            [color]="networkStatus.connected ? 'success' : 'danger'"
+            [name]="notificationPermissions ? 'checkmark-outline' : 'close-circle-outline'"
+            [color]="notificationPermissions ? 'success' : 'danger'"
           ></ion-icon>
         </ion-item>
       </ion-list>
 
-
       <ion-button
         class="ion-margin-bottom"
         expand="block"
-        (click)="checkNotificationPermissions()"
+        (click)="requestNotificationPermission()"
         fill="outline">
-        Checar permissão
+        Req. permissão de Notificações
       </ion-button>
 
       <ion-button
@@ -56,9 +59,38 @@
         Agendar notificação
       </ion-button>
 
-      Here's a small text description for the card content. Nothing more, nothing less.
+      <ion-label>Here's a small text description for the card content. Nothing more, nothing less.</ion-label>
     </ion-card-content>
   </ion-card>
+
+  <ion-card>
+    <ion-list lines="inset">
+      <ion-item>
+        <ion-label>Acesso ao GPS:</ion-label>
+        <ion-note slot="end">{{gpsStatusText}}</ion-note>
+        <ion-icon
+          slot="end"
+          [name]="gpsStatusIcon"
+          [color]="gpsStatusColor"
+        ></ion-icon>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+  <ion-card>
+    <ion-list lines="inset">
+      <ion-item>
+        <ion-label>Status da rede:</ion-label>
+        <ion-note slot="end">{{networkStatus.connectionType}}</ion-note>
+        <ion-icon
+          slot="end"
+          [name]="networkStatus.connected ? 'checkmark-outline' : 'close-circle-outline'"
+          [color]="networkStatus.connected ? 'success' : 'danger'"
+        ></ion-icon>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
   <!--  <pre>-->
   <!--    <code>-->
   <!--      {{gpsPermissions|json}}-->
