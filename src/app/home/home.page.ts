@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ViewWillEnter} from '@ionic/angular';
-import {Observable, timer} from 'rxjs';
+import {AlertController, AlertInput, LoadingController, ViewWillEnter} from '@ionic/angular';
+import {delay, Observable, timer} from 'rxjs';
 import {AuthService} from '../core/services/auth.service';
 import {Usuario} from '../core/models/usuario';
 import {DadosService} from '../core/services/dados.service';
@@ -9,6 +9,7 @@ import {format, parseISO} from 'date-fns';
 import {BancoDeHoras} from '../core/interfaces/banco-de-horas';
 import {Batida} from '../core/models/batida';
 import {Ponto} from '../core/models/ponto';
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-home',
@@ -48,6 +49,8 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
   constructor(
     private authService: AuthService,
     private dadosService: DadosService,
+    private alertController: AlertController,
+    private loadingController: LoadingController,
   ) {
     const batidas: Array<Batida> = [];
     this.ponto = new Ponto(batidas);
@@ -198,4 +201,69 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
   teste() {
     console.warn('Click');
   }
+
+  async registrarPonto() {
+    try {
+      const input: AlertInput = {
+        name: 'pausa',
+        type: 'checkbox',
+        label: `Essa é minha pausa de $VALOR_TESTE.`,
+        value: true,
+        checked: false
+      };
+      const isWorking: boolean = this.ponto.trabalhando;
+      const alert = await this.alertController.create({
+        cssClass: 'alerta',
+        header: `Deseja confirmar ${isWorking ? 'Saída' : 'Entrada'}?`,
+        buttons: [
+          {
+            text: 'Cancelar',
+            handler: () => {
+              alert.dismiss(undefined, 'cancelar');
+              return false;
+            }
+          },
+          {
+            text: 'Registrar',
+            handler: (teste: Array<boolean>) => {
+              const r: boolean = teste?.length > 0 ? teste[0] : false;
+              alert.dismiss(r, 'done');
+              return false;
+            }
+          }
+        ],
+        inputs: isWorking ? [input] : []
+      });
+
+      await alert.present();
+      const {data, role} = await alert.onDidDismiss();
+      if (role === 'done') {
+        const loading = await this.loadingController.create({
+          cssClass: 'my-custom-class',
+          message: 'Registrando',
+          backdropDismiss: false,
+          keyboardClose: false,
+          showBackdrop: true,
+          animated: true,
+          spinner: 'bubbles',
+        });
+        await loading.present();
+
+        this.ponto.baterPonto(data);
+
+
+
+
+        await loading.dismiss();
+
+        // await this.cancelarNotificacoes();
+
+
+      }
+    } catch (e) {
+
+    }
+  }
+
+  protected readonly environment = environment;
 }

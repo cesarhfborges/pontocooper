@@ -47,3 +47,47 @@ ion-card {
     }
   }
 }
+
+::ng-deep {
+  .alerta {
+    --background: #202020;
+    .alert-wrapper {
+      width: calc(100% - 22px);
+      max-width: 400px;
+
+      .alert-checkbox-group {
+        vertical-align: middle;
+        //background: red;
+        .alert-tappable {
+          margin-top: 32px;
+          margin-bottom: 32px;
+
+          .alert-checkbox-label {
+            white-space: unset;
+          }
+        }
+      }
+    }
+
+    .alert-button-group {
+      .alert-button {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .buttonsCss {
+    ul {
+      padding: 0 1rem;
+      margin: 0;
+    }
+
+    button.alert-button.dismissButton {
+      color: var(--ion-color-medium);
+    }
+
+    button.alert-button.updateButton {
+      color: var(--ion-color-primary);
+    }
+  }
+}

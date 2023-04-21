@@ -35,6 +35,7 @@ export class EntradasSaidasComponent  implements OnInit {
 
   @Input() loading: boolean;
   @Input() ponto: Ponto;
+  @Input() mostrarSegundos = false;
 
   constructor() {
     this.loading = false;

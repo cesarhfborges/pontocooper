@@ -6,7 +6,7 @@
         [name]="i % 2 === 0 ? 'arrow-forward-outline' : 'arrow-back-outline'"
         slot="start"
       ></ion-icon>
-      <h1>{{batida.worktime_clock | date : 'HH:mm:ss'}}</h1>
+      <h1>{{batida.worktime_clock | date : mostrarSegundos ? 'HH:mm:ss' : 'HH:mm'}}</h1>
     </ion-item>
   </ng-template>
   <ng-template #listaVazia>

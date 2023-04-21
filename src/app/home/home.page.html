@@ -45,6 +45,7 @@
       </p>
       <app-entradas-saidas
         [loading]="loading.timeline"
+        [mostrarSegundos]="!environment.production"
         [ponto]="ponto"
       ></app-entradas-saidas>
 
@@ -70,6 +71,7 @@
       expand="block"
       [color]="'success'"
       style="margin-top: 4px;"
+      (click)="registrarPonto()"
     >
       <ion-icon slot="start" [name]="'enter-outline'"></ion-icon>
       Entrada
