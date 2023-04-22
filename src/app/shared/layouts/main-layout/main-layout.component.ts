@@ -5,6 +5,7 @@ import {Menu} from './menu';
 import {AuthService} from '../../../core/services/auth.service';
 import {Animation, StatusBar, Style} from '@capacitor/status-bar';
 import {PositionService} from '../../services/position.service';
+import {LocalNotifications} from '@capacitor/local-notifications';
 
 @Component({
   selector: 'app-main-layout',
@@ -88,7 +89,7 @@ export class MainLayoutComponent implements OnInit, AfterViewInit, AfterContentI
     this.platform.ready().then(async () => {
       if (this.platform.is('capacitor')) {
         if (this.platform.is('android')) {
-          await StatusBar.setOverlaysWebView({ overlay: false });
+          await StatusBar.setOverlaysWebView({overlay: false});
           await StatusBar.show({animation: Animation.Fade});
           await StatusBar.setBackgroundColor({color: '#178865'});
           await StatusBar.setStyle({style: Style.Dark});
@@ -104,26 +105,36 @@ export class MainLayoutComponent implements OnInit, AfterViewInit, AfterContentI
   }
 
   ngAfterContentInit(): void {
-    this.positionService.requestPermissions().catch();
-    // console.log('=============================================================');
-    // console.log('ngAfterContentInit');
-    // const permissionsPosition = async () => {
-    //   const permissions = await Geolocation.checkPermissions();
-    //   console.log('permissions: ', permissions);
-    //   if (permissions.location === 'prompt' || permissions.coarseLocation === 'prompt') {
-    //     const options: GeolocationPluginPermissions = {
-    //       permissions: [
-    //         'location',
-    //         'coarseLocation'
-    //       ]
-    //     };
-    //     const requestPermissions = await Geolocation.requestPermissions(options);
-    //     console.log('requestPermissions: ', requestPermissions);
-    //   }
-    //   const coordinates = await Geolocation.getCurrentPosition();
-    //   console.log('Current position: ', coordinates);
-    // };
-    // permissionsPosition().catch();
-    // console.log('=============================================================');
+    this.platform.ready().then(async () => {
+      if (this.platform.is('capacitor')) {
+        this.positionService.requestPermissions().catch();
+        if (this.platform.is('android') || this.platform.is('ios')) {
+          this.createNotificationsChannel().catch();
+        }
+      }
+    });
+  }
+
+  async createNotificationsChannel() {
+    const permissionStatus = await LocalNotifications.checkPermissions();
+    if (['prompt', 'prompt-with-rationale'].includes(permissionStatus.display)) {
+      await LocalNotifications.requestPermissions();
+    }
+    if (permissionStatus.display === 'granted') {
+      const channels = await LocalNotifications.listChannels();
+      const pontoChannel = channels.channels.find(i => i.id === 'ponto');
+      if (!pontoChannel) {
+        await LocalNotifications.createChannel({
+          id: 'ponto',
+          name: 'Ponto',
+          vibration: true,
+          importance: 5,
+          sound: 'cool.wav',
+          lights: true,
+          description: 'canal de notificações para ponto eletronico.',
+          visibility: 1
+        });
+      }
+    }
   }
 }

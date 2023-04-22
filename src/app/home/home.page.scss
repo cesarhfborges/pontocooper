@@ -50,7 +50,6 @@ ion-card {
 
 ::ng-deep {
   .alerta {
-    --background: #202020;
     .alert-wrapper {
       width: calc(100% - 22px);
       max-width: 400px;
@@ -88,6 +87,14 @@ ion-card {
 
     button.alert-button.updateButton {
       color: var(--ion-color-primary);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  ::ng-deep {
+    .alerta {
+      --background: #202020;
     }
   }
 }

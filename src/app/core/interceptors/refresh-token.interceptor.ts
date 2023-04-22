@@ -66,7 +66,6 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
     if (token && isApiRequest) {
       request = this.addTokenToRequest(request, token);
     }
-
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 && isApiRequest) {
@@ -79,34 +78,23 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
                 const newToken = response.access;
                 this.isRefreshing = false;
                 this.refreshTokenSubject.next(newToken);
-                this.refreshTokenSubject.complete();
-                return next.handle(this.addTokenToRequest(request, newToken)).pipe(
-                  finalize(() => {
-                    // Executa o método complete do subscribe
-                    console.log('Requisição completada!');
-                  }),
-                );
+                // this.refreshTokenSubject.complete();
+                return next.handle(this.addTokenToRequest(request, newToken));
               }),
-              catchError((e: HttpErrorResponse) => {
+              catchError((e: any) => {
                 this.showToast('Ooops, Usuário não autenticado, efetue login novamente', 'danger');
                 this.authService.logout();
                 return throwError(e);
               })
             );
           } else {
-            return this.refreshTokenSubject.pipe(
-              filter((refToken) => refToken !== null),
-              switchMap((refToken) => next.handle(this.addTokenToRequest(request, refToken))),
-              // switchMap((refToken) => next.handle(this.addTokenToRequest(request, refToken)).pipe(
-              //   finalize(() => {
-              //     // Executa o método complete do subscribe
-              //     console.log('Requisição completada!');
-              //   })
-              // ))
-              // tap(() => {
-              // this.refreshTokenSubject.complete();
-              // })
-            );
+            const isRefreshTokenRequest = request.url.startsWith(this.location.prepareExternalUrl('/api/v1/auth/refresh/'));
+            if (!isRefreshTokenRequest) {
+              return this.refreshTokenSubject.pipe(
+                filter((refToken) => refToken !== null),
+                switchMap((refToken) => next.handle(this.addTokenToRequest(request, refToken))),
+              );
+            }
           }
         }
         return throwError(error);

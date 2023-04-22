@@ -72,7 +72,7 @@ export class AuthService {
           };
         }
       }),
-      delay(350),
+      // delay(350),
       // map(response => !!response.access)
     );
   }
