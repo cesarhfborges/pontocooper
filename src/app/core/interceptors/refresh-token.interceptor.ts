@@ -68,7 +68,8 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
     }
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && isApiRequest) {
+        const isRefreshTokenRequest = request.url.startsWith(this.location.prepareExternalUrl('/api/v1/auth/refresh/'));
+        if (error.status === 401 && isApiRequest && !isRefreshTokenRequest) {
           if (!this.isRefreshing) {
             this.isRefreshing = true;
             this.refreshTokenSubject.next(null);
@@ -88,17 +89,15 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
               })
             );
           } else {
-            const isRefreshTokenRequest = request.url.startsWith(this.location.prepareExternalUrl('/api/v1/auth/refresh/'));
-            if (!isRefreshTokenRequest) {
-              return this.refreshTokenSubject.pipe(
-                filter((refToken) => refToken !== null),
-                switchMap((refToken) => next.handle(this.addTokenToRequest(request, refToken))),
-              );
-            }
+            return this.refreshTokenSubject.pipe(
+              filter((refToken) => refToken !== null),
+              switchMap((refToken) => next.handle(this.addTokenToRequest(request, refToken))),
+            );
           }
         }
         return throwError(error);
-      })
+      }),
+      finalize(() => {})
     );
   }
 
