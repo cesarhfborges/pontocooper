@@ -4,7 +4,7 @@ import {animate, query, stagger, style, transition, trigger} from '@angular/anim
 import {ModalController, ViewDidEnter} from '@ionic/angular';
 import {Dia} from '../../../core/models/dia';
 import {Observable, of} from 'rxjs';
-import {parseISO, set} from 'date-fns';
+import {addSeconds, differenceInSeconds, parseISO, set} from 'date-fns';
 
 @Component({
   selector: 'app-modal-rasura',
@@ -39,6 +39,7 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
   @Input() dados: Dia | undefined;
 
   form: FormGroup;
+  agora: Date = new Date();
 
 
   constructor(
@@ -120,27 +121,29 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
   }
 
   diferenca(): Observable<Date> {
-    // const hoje: Date = set(parseISO(this.dados.date), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
-    // const batidas: Array<Date> = this.retificacoes.controls
-    //   .filter(r => r.get('worktimeClock').value !== null && r.get('worktimeClock').value !== '')
-    //   .map(r => parseISO(r.get('worktimeClock').value));
-    // if (batidas.length > 0) {
-    //   if (batidas.length % 2 === 1) {
-    //     batidas.push(this.agora);
-    //   }
-    //   const batida: Date = batidas.reduce((a, b, i, x) => {
-    //     const diff: number = differenceInSeconds(x[i], x[i - 1]);
-    //     if (i === 0) {
-    //       return a;
-    //     } else if (i % 2 === 1) {
-    //       return addSeconds(a, diff);
-    //     } else {
-    //       return a;
-    //     }
-    //   }, hoje);
-    //   return of(batida);
-    // }
-    return of(new Date());
+    if (this.dados?.date) {
+      const baseDate: Date = set(parseISO(this.dados.date), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
+      const batidas: Array<Date> = this.retificacoes.controls
+        .filter(r => r.get('worktimeClock')?.value !== null && r.get('worktimeClock')?.value !== '')
+        .map(r => parseISO(r.get('worktimeClock')?.value));
+      if (batidas.length > 0) {
+        if (batidas.length % 2 === 1) {
+          batidas.push(this.agora);
+        }
+        const batida: Date = batidas.reduce((a, b, i, x) => {
+          const diff: number = differenceInSeconds(x[i], x[i - 1]);
+          if (i === 0) {
+            return a;
+          } else if (i % 2 === 1) {
+            return addSeconds(a, diff);
+          } else {
+            return a;
+          }
+        }, baseDate);
+        return of(batida);
+      }
+    }
+    return of(set(new Date(), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0}));
   }
 
   salvar(): void {
