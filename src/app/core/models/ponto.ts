@@ -2,18 +2,21 @@ import {addMinutes, addSeconds, differenceInMinutes, differenceInSeconds, format
 import {Observable, of} from 'rxjs';
 import {Batida} from './batida';
 
+interface Intervalo {
+  label: string;
+  value: number;
+}
+
 export class Ponto {
 
-  static intervalos: Array<{
-    label: string;
-    value: number;
-  }> = [
+  static intervalos: Intervalo[] = [
     {value: 30, label: '00:30'},
     {value: 45, label: '00:45'},
     {value: 60, label: '01:00'},
     {value: 90, label: '01:30'},
     {value: 120, label: '02:00'},
   ];
+
   private listaBatidas: Array<Batida>;
 
   constructor(batidas: Array<Batida>) {
@@ -25,7 +28,10 @@ export class Ponto {
   }
 
   get trabalhando(): boolean {
-    return this.listaBatidas?.length > 0 && this.listaBatidas.length % 2 === 1;
+    if (this.listaBatidas !== null && this.listaBatidas !== undefined) {
+      return this.listaBatidas.length > 0 && this.listaBatidas.length % 2 === 1;
+    }
+    return false;
   }
 
   get horasTrabalhadas(): Date {
@@ -47,12 +53,15 @@ export class Ponto {
     return start;
   }
 
-  // static intervalo(val: number): { label: string; value: number } {
-  //   if (val) {
-  //     return Ponto.intervalos.find(i => i.value === val);
-  //   }
-  //   return {value: 30, label: '00:30'};
-  // }
+  static intervalo(val: number): Intervalo {
+    if (val) {
+      const item = Ponto.intervalos.find(i => i.value === val);
+      if (item) {
+        return item;
+      }
+    }
+    return {value: 30, label: '00:30'};
+  }
 
   public baterPonto(pausa: boolean = false): void {
     this.listaBatidas.push({
@@ -99,14 +108,20 @@ export class Ponto {
     this.listaBatidas = [];
   }
 
-  public isInterval(): boolean {
-    if (
-      this.listaBatidas !== null &&
-      this.listaBatidas !== undefined &&
-      this.listaBatidas.length > 1 &&
-      this.listaBatidas.length % 2 === 0
-    ) {
+  public isMinInterval(): boolean {
+    if (this.trabalhando) {
       const ultimaBatida: Batida = this.listaBatidas[this.listaBatidas.length - 1];
+      const diff = differenceInMinutes(new Date(), ultimaBatida.worktime_clock);
+      return diff < 30;
+    }
+    return false;
+  }
+
+  public isInterval(): boolean {
+    if (this.trabalhando) {
+      const ultimaBatida: Batida = this.listaBatidas[this.listaBatidas.length - 1];
+      const diff = differenceInMinutes(new Date(), ultimaBatida.worktime_clock);
+      console.log('diff em minutos: ', diff);
       if (ultimaBatida?.minimum_break === true) {
         return differenceInMinutes(new Date(), ultimaBatida.worktime_clock) < 1;
       }

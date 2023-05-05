@@ -12,13 +12,21 @@
 
 <ion-content [fullscreen]="true">
   <p class="ion-padding-horizontal">Arraste para atualizar</p>
-  <ion-refresher slot="fixed" [snapbackDuration]="200" [closeDuration]="200" pullFactor="0.5" pullMin="120" pullMax="120">
+  <ion-refresher
+    slot="fixed"
+    (ionRefresh)="getTimeLine($event)"
+    [snapbackDuration]="200"
+    [closeDuration]="200"
+    [pullFactor]="0.5"
+    [pullMin]="120"
+    [pullMax]="120"
+  >
     <ion-refresher-content
       pullingIcon="chevron-down-circle-outline"
       pullingText="Arraste para atualizar"
       refreshingSpinner="circles"
-      refreshingText="Atualizando aguarde...">
-    </ion-refresher-content>
+      refreshingText="Atualizando aguarde..."
+    ></ion-refresher-content>
   </ion-refresher>
   <ion-card>
 
@@ -26,7 +34,7 @@
       <ion-item class="title" lines="none">
         <ion-icon color="tertiary" name="planet" slot="start"></ion-icon>
         <ion-badge slot="end">
-          {{(dataAtual | date : 'ccc dd') + ' de ' + (dataAtual | date : 'MMMM')}}
+          {{(dataAtual | date : 'ccc dd \'de\' MMMM')}}
         </ion-badge>
         <ion-label>
           <h5>Produção de hoje</h5>
@@ -40,9 +48,7 @@
         [summary]="summary"
       ></app-banco-de-horas>
 
-      <p>
-        Entradas/Saídas:
-      </p>
+      <p>Entradas/Saídas:</p>
       <app-entradas-saidas
         [loading]="loading.timeline"
         [mostrarSegundos]="!production"
@@ -56,25 +62,30 @@
 
 <ion-footer>
   <ion-toolbar style="padding: 0 10px 10px 10px;">
-    <div style="margin-bottom: 0; margin-top: 0;">
-      <ion-progress-bar
-        [buffer]="1"
-        [color]="'success'"
-        [value]="10 / 100"
-      ></ion-progress-bar>
-    </div>
-    <h1
-      style="margin-top: 9px; margin-bottom: 0; text-align: center; font-size: 2rem;">HH:mm:ss</h1>
-    <ion-button
-      size="large"
-      type="button"
-      expand="block"
-      [color]="'success'"
-      style="margin-top: 4px;"
-      (click)="registrarPonto()"
-    >
-      <ion-icon slot="start" [name]="'enter-outline'"></ion-icon>
-      Entrada
-    </ion-button>
+    <ng-container
+      [ngTemplateOutlet]="progressBar"
+      [ngTemplateOutletContext]="{jornada: jornadaDiaria}"
+    ></ng-container>
+    <ng-template #progressBar let-jornada="jornada">
+      <div style="margin-bottom: 0; margin-top: 0;">
+        <ion-progress-bar
+          [buffer]="ponto && ponto.trabalhando && jornada < 100 ? 0 : 1"
+          [color]="jornada > 99 ? 'success' : 'warning'"
+          [value]="jornada / 100"
+        ></ion-progress-bar>
+      </div>
+      <h1 style="margin-top: 9px; margin-bottom: 0; text-align: center; font-size: 2rem;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>
+      <ion-button
+        size="large"
+        type="button"
+        expand="block"
+        [color]="ponto && ponto.trabalhando ? 'danger' : 'success'"
+        (click)="registrarPonto()"
+        [disabled]="isLoading()"
+        style="margin-top: 4px;">
+        <ion-icon slot="start" [name]="ponto && ponto.trabalhando ? 'exit-outline' : 'enter-outline'"></ion-icon>
+        {{ponto && ponto.trabalhando ? ' Saida ' : ' Entrada '}}
+      </ion-button>
+    </ng-template>
   </ion-toolbar>
 </ion-footer>

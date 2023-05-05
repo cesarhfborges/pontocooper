@@ -1,11 +1,19 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AlertController, AlertInput, LoadingController, Platform, ViewWillEnter} from '@ionic/angular';
-import {Observable, timer} from 'rxjs';
+import {
+  AlertController,
+  AlertInput,
+  IonRouterOutlet,
+  LoadingController,
+  Platform,
+  ToastController,
+  ViewWillEnter
+} from '@ionic/angular';
+import {BehaviorSubject, debounceTime, Observable, Subject, tap, timer} from 'rxjs';
 import {AuthService} from '../core/services/auth.service';
 import {Usuario} from '../core/models/usuario';
 import {DadosService} from '../core/services/dados.service';
 import {Summary} from '../core/interfaces/summary';
-import {addMinutes, format, parseISO} from 'date-fns';
+import {addMinutes, addSeconds, format, getHours, parseISO, set, subMinutes} from 'date-fns';
 import {BancoDeHoras} from '../core/interfaces/banco-de-horas';
 import {Batida} from '../core/models/batida';
 import {Ponto} from '../core/models/ponto';
@@ -13,6 +21,8 @@ import {environment} from '../../environments/environment';
 import {LocalNotifications} from '@capacitor/local-notifications';
 import {Geolocation} from '@capacitor/geolocation';
 import {LocalNotificationSchema} from '@capacitor/local-notifications/dist/esm/definitions';
+import {App} from "@capacitor/app";
+import {distinctUntilChanged} from "rxjs/operators";
 
 interface Coords {
   latitude: number;
@@ -27,6 +37,7 @@ interface Coords {
 export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
 
   production: boolean = environment.production;
+  horasTrabalhadas: Date = set(new Date(), {hours: 0, minutes: 0, seconds: 0});
 
   dataAtual: Date = new Date();
   timer: Observable<number> | undefined;
@@ -55,44 +66,39 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
   };
   ponto: Ponto;
 
+  buttonEvent: Date = new Date();
+
 
   constructor(
     private authService: AuthService,
     private dadosService: DadosService,
     private alertController: AlertController,
     private loadingController: LoadingController,
+    private toastController: ToastController,
     private platform: Platform,
+    private routerOutlet: IonRouterOutlet,
   ) {
     const batidas: Array<Batida> = [];
     this.ponto = new Ponto(batidas);
   }
 
   ngOnInit(): void {
-    console.log('executei o onInit da home');
     this.dataAtual = new Date();
     this.timer = timer(1000, 1000);
     this.timer.subscribe({
       next: () => {
         this.dataAtual = new Date();
-        // console.log(this.dataAtual);
-        // this.horasTrabalhadas = this.ponto.horasTrabalhadas;
+        this.horasTrabalhadas = this.ponto.horasTrabalhadas;
         // // TODO: AJUSTAR AQUI
         // if (this.perfil) {
         //   this.calculaValor(this.perfil.hourly_rate as number);
         // }
       }
     });
+    this.monitorarBtnBack();
   }
 
   ionViewWillEnter(): void {
-    console.log('executei o ionViewWillEnter da home');
-    // const init = (async () => {
-    //   await this.getPerfil();
-    //   await this.getBancoDeHoras();
-    //   await this.getSumario();
-    //   await this.getTimeLine();
-    // });
-    // init().catch();
     this.getPerfil();
     this.getBancoDeHoras();
     this.getSumario();
@@ -101,6 +107,38 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
 
   ngOnDestroy(): void {
     this.timer = undefined;
+  }
+
+  monitorarBtnBack(): void {
+    this.platform.backButton.subscribeWithPriority(-1, async () => {
+      if (!this.routerOutlet.canGoBack()) {
+        const toast = await this.toastController.create({
+          message: `Pressione novamente sair do app.`,
+          duration: 3000,
+          color: 'medium',
+          icon: 'alert-circle-outline',
+          animated: true,
+          mode: 'ios'
+        });
+        if (new Date() <= this.buttonEvent) {
+          toast.dismiss().catch();
+          App.minimizeApp().catch();
+        } else {
+          toast.present().catch();
+          this.buttonEvent = addSeconds(new Date(), 3);
+        }
+      }
+    });
+  }
+
+  get jornadaDiaria(): number {
+    const workingHours = this.summary.workingHours ?? 8;
+    const val = Math.trunc(getHours(this.horasTrabalhadas) / workingHours * 100);
+    return val > 99 ? 100 : val;
+  }
+
+  isLoading(): boolean {
+    return this.loading.summary || this.loading.bancoDeHoras || this.loading.timeline;
   }
 
   getPerfil() {
@@ -114,16 +152,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
       error: () => {
         this.loading.profile = false;
       },
-      // complete: () => {
-      //   console.log('===================================================================');
-      //   console.log('chamei o metodo complete da Home');
-      // }
     });
-    // const request = this.authService.perfil();
-    // const response = await lastValueFrom<any>(request);
-    // this.perfil = response;
-    // this.loading.profile = false;
-    // return response;
   }
 
   getSumario() {
@@ -144,15 +173,6 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         this.loading.summary = false;
       }
     });
-    // const request: any = this.dadosService.getSummary(format(this.dataAtual, 'yyyy'), format(this.dataAtual, 'MM'));
-    // const response = await lastValueFrom<any>(request);
-    // this.summary = {
-    //   workingHours: response.working_hours,
-    //   businessDays: response.business_days,
-    //   hoursToWork: response.hours_to_work,
-    //   remainingHours: response.remaining_hours
-    // };
-    // this.loading.summary = false;
   }
 
   getBancoDeHoras() {
@@ -166,12 +186,9 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         this.loading.bancoDeHoras = false;
       },
     });
-    // const request = this.dadosService.getBancoDeHoras();
-    // this.bancoDeHoras = await lastValueFrom<any>(request);
-    // this.loading.bancoDeHoras = false;
   }
 
-  getTimeLine() {
+  getTimeLine($event?: any) {
     this.loading.timeline = true;
     this.dadosService.getTimeline().subscribe({
       next: (response) => {
@@ -186,58 +203,12 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
       },
       error: () => {
         this.loading.timeline = false;
+        $event?.target?.cancel();
       },
-    });
-    // try {
-    //   this.loading.timeline = true;
-    //   const timeline = await this.dadosService.getTimeline().toPromise();
-    //   this.ponto.limparPontos();
-    //   for (const batida of timeline.timeline) {
-    //     this.ponto.addPonto({
-    //       ...batida,
-    //       worktime_clock: parseISO(batida.worktime_clock)
-    //     });
-    //   }
-    //   this.loading.timeline = false;
-    // } catch (e) {
-    //   // const toast = await this.toastController.create({
-    //   //   message: 'Erro ao obter linha do tempo, verifique a rede.',
-    //   //   duration: 2000,
-    //   //   color: 'danger'
-    //   // });
-    //   // await toast.present();
-    // }
-  }
-
-  async agendarNotificacao(dateTime: Date) {
-    try {
-      const permissionStatus = await LocalNotifications.checkPermissions();
-      if (permissionStatus.display === 'granted') {
-        const schema: LocalNotificationSchema = {
-          id: 1,
-          title: 'CooperSystem',
-          body: 'teste de notificação para: ' + format(dateTime, 'dd/MM/yyyy HH:mm:ss'),
-          largeBody: 'teste de notificação com texto grande para ser exibida de forma expandida. seção expandida.',
-          summaryText: 'teste de notificação com texto grande para ser exibida de forma expandida. seção summary.',
-          channelId: 'ponto',
-          schedule: {
-            at: dateTime,
-            allowWhileIdle: true
-          }
-        };
-        const schedule = await LocalNotifications.schedule({notifications: [schema]});
-        console.log('scheduled: ', format(dateTime, 'dd/MM/yyyy HH:mm:ss'), schedule);
+      complete: () => {
+        $event?.target?.complete();
       }
-    } catch (e) {
-      console.log('error: ', e);
-    }
-  }
-
-  async cancelarNotificacoes() {
-    if (this.platform.is('cordova')) {
-      await LocalNotifications.removeAllDeliveredNotifications();
-    }
-    return Promise.resolve();
+    });
   }
 
   async getCoords(): Promise<Coords> {
@@ -250,86 +221,142 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
   }
 
   async registrarPonto() {
-    try {
-      const input: AlertInput = {
-        name: 'pausa',
-        type: 'checkbox',
-        label: `Essa é minha pausa de $VALOR_TESTE.`,
-        value: true,
-        checked: false
-      };
-      const isWorking: boolean = this.ponto.trabalhando;
-      const alert = await this.alertController.create({
-        cssClass: 'alerta',
-        header: `Deseja confirmar ${isWorking ? 'Saída' : 'Entrada'}?`,
-        buttons: [
-          {
-            text: 'Cancelar',
-            handler: () => {
-              alert.dismiss(undefined, 'cancelar');
-              return false;
+    if (!this.ponto.isMinInterval()) {
+      try {
+        const input: AlertInput = {
+          name: 'pausa',
+          type: 'checkbox',
+          label: `Essa é minha pausa de ${Ponto.intervalo(30).label}.`,
+          value: true,
+          checked: false
+        };
+        const isWorking: boolean = this.ponto.trabalhando;
+        const alert = await this.alertController.create({
+          cssClass: 'alerta',
+          header: `Deseja confirmar ${isWorking ? 'Saída' : 'Entrada'}?`,
+          buttons: [
+            {
+              text: 'Cancelar',
+              cssClass: 'btn-cancel',
+              handler: () => {
+                alert.dismiss(undefined, 'cancelar');
+                return false;
+              }
+            },
+            {
+              text: 'Registrar',
+              cssClass: 'btn-done',
+              handler: (teste: Array<boolean>) => {
+                const r: boolean = teste?.length > 0 ? teste[0] : false;
+                alert.dismiss(r, 'done');
+                return false;
+              }
             }
-          },
-          {
-            text: 'Registrar',
-            handler: (teste: Array<boolean>) => {
-              const r: boolean = teste?.length > 0 ? teste[0] : false;
-              alert.dismiss(r, 'done');
-              return false;
-            }
-          }
-        ],
-        inputs: isWorking ? [input] : []
-      });
-
-      await alert.present();
-      const {data, role} = await alert.onDidDismiss();
-      if (role === 'done') {
-        const loading = await this.loadingController.create({
-          cssClass: 'my-custom-class',
-          message: 'Registrando',
-          backdropDismiss: false,
-          keyboardClose: false,
-          showBackdrop: true,
-          animated: true,
-          spinner: 'bubbles',
+          ],
+          inputs: isWorking ? [input] : []
         });
-        await loading.present();
 
-        await this.cancelarNotificacoes();
-        const {latitude, longitude} = await this.getCoords();
+        await alert.present();
+        const {data, role} = await alert.onDidDismiss();
+        if (role === 'done') {
+          const loading = await this.loadingController.create({
+            cssClass: 'my-custom-class',
+            message: 'Registrando',
+            backdropDismiss: false,
+            keyboardClose: false,
+            showBackdrop: true,
+            animated: true,
+            spinner: 'bubbles',
+          });
+          await loading.present();
 
-        // const response: any = await this.dadosService.baterPonto({
-        //   check_in: !this.ponto.trabalhando,
-        //   latitude,
-        //   longitude,
-        // }).toPromise();
-        await loading.dismiss();
-        this.ponto.baterPonto(data);
-        if (data === true) {
-          const dataHoraAgendamento: Date = addMinutes(new Date(), 30);
-          await this.agendarNotificacao(dataHoraAgendamento);
+          const {latitude, longitude} = await this.getCoords();
+
+          const response: any = await this.dadosService.baterPonto({
+            check_in: !this.ponto.trabalhando,
+            latitude,
+            longitude,
+          }).toPromise();
+          console.log('ponto response: ', response);
+          await loading.dismiss();
+          if (response !== undefined) {
+            this.ponto.baterPonto(data);
+            await this.limparNotificacoes();
+            // if (data === true) {
+            //   await this.agendarNotificacao(dataHoraAgendamento);
+            // }
+            // this.ponto.setIntervalo(data, this.opcoes.intervalo);
+            if (data === true) {
+              // const dataHora: Date = addMinutes(new Date(), this.opcoes.intervalo);
+              const dataHoraAgendamento: Date = addMinutes(new Date(), 30);
+              await this.agendarNotificacao(dataHoraAgendamento);
+              const toast: any = await this.toastController.create({
+                message: `Você será notificado em ${Ponto.intervalo(30).label} para não esquecer o ponto. ;)`,
+                duration: 3000,
+                color: 'success',
+              });
+              toast.present();
+            }
+            // if (this.ponto.isInterval()) {
+            //   // nada
+            // }
+          }
         }
-        // if (response !== undefined) {
-        //   this.ponto.baterPonto(data);
-        //   // this.ponto.setIntervalo(data, this.opcoes.intervalo);
-        //   if (data === true) {
-        //     // const dataHora: Date = addMinutes(new Date(), this.opcoes.intervalo);
-        //     // await this.agendarNotificacao(dataHora);
-        //     // const toast: any = await this.toastController.create({
-        //     //   message: `Você será notificado em ${Ponto.intervalo(this.opcoes.intervalo).label} para não esquecer o ponto. ;)`,
-        //     //   duration: 3000,
-        //     //   color: 'success',
-        //     // });
-        //     // toast.present();
-        //   }
-        //   if (this.ponto.isInterval()) {
-        //     // nada
-        //   }
-        // }
+      } catch (e) {
       }
-    } catch (e) {
+    } else {
+      const loading = await this.loadingController.create({
+        message: 'É Necessário aguardar o mínimo de 30 minutos para registrar o ponto.',
+        animated: true,
+        spinner: 'lines',
+        backdropDismiss: false,
+        duration: 3000,
+      });
+      await loading.present();
+    }
+  }
 
+  async limparNotificacoes() {
+    const permissionStatus = await LocalNotifications.checkPermissions();
+    if (permissionStatus.display === 'granted') {
+      await LocalNotifications.removeAllDeliveredNotifications();
+    }
+  }
+
+  async agendarNotificacao(atDateTime: Date) {
+    const permissionStatus = await LocalNotifications.checkPermissions();
+    if (permissionStatus.display === 'granted') {
+      const schemas: LocalNotificationSchema[] = [
+        {
+          id: 1,
+          title: 'CooperSystem- 1 - Title',
+          body: 'teste de notificação - 1 - body',
+          largeBody: 'teste de notificação - 1 - largeBody',
+          summaryText: 'teste de notificação - 1 - summaryText',
+          channelId: 'ponto',
+          schedule: {
+            at: subMinutes(atDateTime, 5),
+            allowWhileIdle: true
+          }
+        },
+        {
+          id: 2,
+          title: 'CooperSystem- 2 - Title',
+          body: 'teste de notificação - 2 - body',
+          largeBody: 'teste de notificação - 2 - largeBody',
+          summaryText: 'teste de notificação - 2 - summaryText',
+          channelId: 'ponto',
+          schedule: {
+            at: atDateTime,
+            allowWhileIdle: true
+          }
+        },
+      ];
+      const schedule = await LocalNotifications.schedule({notifications: schemas});
+      console.log('scheduled: ', schedule, format(addSeconds(new Date(), 20), 'dd/MM/yyyy HH:mm:ss'));
+    } else {
+      const request = await LocalNotifications.requestPermissions();
+      console.log('request permissions: ', request);
     }
   }
 }

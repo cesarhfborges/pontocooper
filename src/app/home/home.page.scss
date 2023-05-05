@@ -52,7 +52,7 @@ ion-card {
   .alerta {
     .alert-wrapper {
       width: calc(100% - 22px);
-      max-width: 400px;
+      max-width: 470px;
 
       .alert-checkbox-group {
         vertical-align: middle;
@@ -69,8 +69,27 @@ ion-card {
     }
 
     .alert-button-group {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      padding: 26px 16px 16px 16px;
       .alert-button {
         font-weight: bold;
+        width: 100%;
+        .alert-button-inner {
+          justify-content: center;
+        }
+        &.btn-cancel {
+          color: #ffffff;
+          background: var(--ion-color-danger);
+          margin-right: 22px;
+        }
+        &.btn-done {
+          color: #ffffff;
+          background: var(--ion-color-success);
+          margin-right: 0;
+        }
       }
     }
   }

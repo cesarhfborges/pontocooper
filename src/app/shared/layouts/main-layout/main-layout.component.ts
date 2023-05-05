@@ -6,6 +6,7 @@ import {AuthService} from '../../../core/services/auth.service';
 import {Animation, StatusBar, Style} from '@capacitor/status-bar';
 import {PositionService} from '../../services/position.service';
 import {LocalNotifications} from '@capacitor/local-notifications';
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-main-layout',
@@ -78,11 +79,11 @@ export class MainLayoutComponent implements OnInit, AfterViewInit, AfterContentI
   }
 
   ngOnInit() {
-    this.platform.backButton.subscribeWithPriority(-1, () => {
-      // if (!this.routerOutlet.canGoBack()) {
-      //   App.exitApp().catch();
-      // }
-    });
+    // this.platform.backButton.subscribeWithPriority(-1, () => {
+    //   if (!this.routerOutlet.canGoBack()) {
+    //     App.minimizeApp().catch();
+    //   }
+    // });
   }
 
   ngAfterViewInit(): void {
