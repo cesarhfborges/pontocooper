@@ -3,7 +3,7 @@ import {environment} from '../../environments/environment';
 import {PositionService} from '../shared/services/position.service';
 import {PermissionStatus} from '@capacitor/geolocation/dist/esm/definitions';
 import {LocalNotificationSchema} from '@capacitor/local-notifications/dist/esm/definitions';
-import {addMinutes, addSeconds, format} from 'date-fns';
+import {addMinutes, addSeconds, format, subMinutes} from 'date-fns';
 import {Network} from '@capacitor/network';
 import {LocalNotifications} from '@capacitor/local-notifications';
 
@@ -159,27 +159,79 @@ export class DevelopmentPage implements OnInit {
         description: 'canal de teste de notificações',
         visibility: 1
       });
-      const schema: LocalNotificationSchema = {
-        id: 2,
-        title: 'CooperSystem',
-        body: 'teste de notificação',
-        largeBody: 'teste de notificação com texto grande para ser exibida de forma expandida. seção expandida.',
-        summaryText: 'teste de notificação com texto grande para ser exibida de forma expandida. seção summary.',
-        channelId: 'teste',
-        schedule: {
-          at: addSeconds(new Date(), 20),
-          allowWhileIdle: true
-        }
-      };
-      const schedule = await LocalNotifications.schedule({notifications: [
-          {...schema},
-          {...schema, id: 3},
-          {...schema, id: 4},
-          {...schema, id: 5},
-          {...schema, id: 6},
-          {...schema, id: 7},
-        ]
-      });
+      const schemas: LocalNotificationSchema[] = [
+        {
+          id: 97,
+          title: 'Faltam 5 minutos para encerrar seu intervalo.',
+          body: 'Tenha um ótimo dia de trabalho. ;)',
+          largeBody: 'Tenha um ótimo dia de trabalho. ;)',
+          smallIcon: 'favicon.png',
+          groupSummary: true,
+          group: 'aviso',
+          // summaryText: 'teste de notificação - 1 - summaryText',
+          channelId: 'teste',
+          schedule: {
+            at: addSeconds(new Date(), 20),
+            allowWhileIdle: true
+          },
+          attachments: [
+            {
+              id: '1',
+              url: 'res:///assets/public/assets/pin.png',
+            }
+          ],
+        },
+        {
+          id: 98,
+          title: 'Seu tempo de intervalo se encerra no próximo minuto.',
+          body: 'Tenha um ótimo dia de trabalho. ;)',
+          largeBody: 'Tenha um ótimo dia de trabalho. ;)',
+          largeIcon: 'favicon_large.png',
+          groupSummary: true,
+          group: 'aviso',
+          // summaryText: 'teste de notificação - 1 - summaryText',
+          channelId: 'teste',
+          schedule: {
+            at: addSeconds(new Date(), 24),
+            allowWhileIdle: true
+          }
+        },
+        {
+          id: 99,
+          title: 'Seu tempo de intervalo acabou.',
+          body: 'Tenha um ótimo dia de trabalho. ;)',
+          largeBody: 'Tenha um ótimo dia de trabalho. ;)',
+          groupSummary: true,
+          group: 'aviso',
+          // summaryText: 'teste de notificação - 1 - summaryText',
+          smallIcon: 'favicon.png',
+          largeIcon: 'favicon_large.png',
+          channelId: 'teste',
+          schedule: {
+            at: addSeconds(new Date(), 28),
+            allowWhileIdle: true
+          },
+          attachments: [
+            {
+              id: '1',
+              url: 'res:///public/assets/ping.png',
+            }
+          ],
+        },
+        // {
+        //   id: 1,
+        //   title: 'CooperSystem- 1 - Title',
+        //   body: 'teste de notificação - 1 - body',
+        //   largeBody: 'teste de notificação - 1 - largeBody',
+        //   summaryText: 'teste de notificação - 1 - summaryText',
+        //   channelId: 'ponto',
+        //   schedule: {
+        //     at: subMinutes(atDateTime, 5),
+        //     allowWhileIdle: true
+        //   },
+        // },
+      ];
+      const schedule = await LocalNotifications.schedule({notifications: schemas});
       console.log('scheduled: ', schedule, format(addSeconds(new Date(), 20), 'dd/MM/yyyy HH:mm:ss'));
     } else {
       const request = await LocalNotifications.requestPermissions();
