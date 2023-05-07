@@ -1,0 +1,69 @@
+::ng-deep {
+  .alerta {
+    .alert-wrapper {
+      width: calc(100% - 22px);
+      max-width: 470px;
+
+      .alert-checkbox-group {
+        vertical-align: middle;
+        //background: red;
+        .alert-tappable {
+          margin-top: 32px;
+          margin-bottom: 32px;
+
+          .alert-checkbox-label {
+            white-space: unset;
+          }
+        }
+      }
+    }
+
+    .alert-button-group {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      padding: 26px 16px 16px 16px;
+      .alert-button {
+        font-weight: bold;
+        width: 100%;
+        .alert-button-inner {
+          justify-content: center;
+        }
+        &.btn-cancel {
+          color: #ffffff;
+          background: var(--ion-color-danger);
+          margin-right: 22px;
+        }
+        &.btn-done {
+          color: #ffffff;
+          background: var(--ion-color-success);
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  .buttonsCss {
+    ul {
+      padding: 0 1rem;
+      margin: 0;
+    }
+
+    button.alert-button.dismissButton {
+      color: var(--ion-color-medium);
+    }
+
+    button.alert-button.updateButton {
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  ::ng-deep {
+    .alerta {
+      --background: #202020;
+    }
+  }
+}

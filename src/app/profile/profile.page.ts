@@ -49,18 +49,20 @@ export class ProfilePage implements OnInit, ViewWillEnter {
 
   sair(): void {
     this.alertController.create({
-      cssClass: 'my-custom-class',
+      cssClass: 'alerta',
       header: 'Deseja confirmar Saída?',
       buttons: [
         {
           text: 'Cancelar',
           role: 'cancel',
+          cssClass: 'btn-cancel'
         },
         {
           text: 'Sair',
           handler: () => {
             this.authService.logout();
-          }
+          },
+          cssClass: 'btn-done'
         }
       ]
     }).then((alert: any) => {

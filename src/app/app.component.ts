@@ -3,6 +3,8 @@ import {Network} from '@capacitor/network';
 import {ConnectionStatus} from "@capacitor/network/dist/esm/definitions";
 import {Router} from "@angular/router";
 import {NavController} from "@ionic/angular";
+import {ScreenOrientation} from "@capacitor/screen-orientation";
+import {environment} from "../environments/environment";
 
 @Component({
   selector: 'app-root',
@@ -25,6 +27,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     Promise.all([
       Network.getStatus(),
+      environment.production ? ScreenOrientation.lock({orientation: 'portrait'}) : ScreenOrientation.unlock()
     ]).then((response) => {
       this.networkStatus = response[0];
       this.navigate();
