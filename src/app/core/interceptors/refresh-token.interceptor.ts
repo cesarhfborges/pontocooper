@@ -29,37 +29,6 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
   ) {
   }
 
-  // intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-  //   return next.handle(request).pipe(
-  //     delayWhen(() => this.refreshing ? timer(900) : timer(0)),
-  //     catchError(err => {
-  //       if (err instanceof HttpErrorResponse) {
-  //         if ([401].includes(err.status)) {
-  //           if (this.session.credentials !== null && !this.refreshing) {
-  //             this.refreshing = true;
-  //             this.showLoading('Aguarde...');
-  //             return this.authService.refreshToken().pipe(
-  //               flatMap(() => {
-  //                 const customHeaders: any = request.headers.set('Authorization', `Bearer ${this.session?.credentials?.access}`);
-  //                 const req: HttpRequest<any> = request.clone({withCredentials: true, headers: customHeaders});
-  //                 this.refreshing = false;
-  //                 return next.handle(req);
-  //               }),
-  //               catchError(() => {
-  //                 this.showToast('Ooops, Usuário não autenticado, efetue login novamente', 'danger');
-  //                 this.refreshing = false;
-  //                 this.authService.logout();
-  //                 return throwError({...err.error});
-  //               })
-  //             );
-  //           }
-  //         }
-  //       }
-  //       return throwError({...err.error});
-  //     })
-  //   );
-  // }
-
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
     const token = this.session.credentials.access;
     const isApiRequest = request.url.startsWith(environment.apiUrl);
