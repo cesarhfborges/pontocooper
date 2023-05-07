@@ -21,19 +21,19 @@ const routes: Routes = [
       },
       {
         path: 'producao',
-        loadChildren: () => import('./producao/producao.module').then( m => m.ProducaoPageModule)
+        loadChildren: () => import('./producao/producao.module').then(m => m.ProducaoPageModule)
       },
       {
         path: 'profile',
-        loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+        loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
       },
       {
         path: 'historico',
-        loadChildren: () => import('./historico/historico.module').then( m => m.HistoricoPageModule)
+        loadChildren: () => import('./historico/historico.module').then(m => m.HistoricoPageModule)
       },
       {
         path: 'development',
-        loadChildren: () => import('./development/development.module').then( m => m.DevelopmentPageModule)
+        loadChildren: () => import('./development/development.module').then(m => m.DevelopmentPageModule)
       },
     ]
   },
@@ -44,15 +44,21 @@ const routes: Routes = [
     loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
   },
   {
-    path: '**',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    path: 'offline',
+    loadChildren: () => import('./offline/offline.module').then(m => m.OfflinePageModule)
   },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
+    RouterModule.forRoot([
+      ...routes,
+      {
+        path: '**',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      }
+    ], {preloadingStrategy: PreloadAllModules})
   ],
   exports: [RouterModule]
 })
