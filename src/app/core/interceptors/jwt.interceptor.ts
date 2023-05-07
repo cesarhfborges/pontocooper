@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {AuthService} from '../services/auth.service';
 import {SessionService} from '../state/session.service';
 import { Location } from '@angular/common';
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class JwtInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const isApiRequest = request.url.startsWith(this.location.prepareExternalUrl('/api'));
+    const isApiRequest = request.url.startsWith(this.location.prepareExternalUrl(`${environment.apiUrl}`));
 
     if (isApiRequest) {
       let customHeaders: HttpHeaders = new HttpHeaders();
@@ -26,7 +27,7 @@ export class JwtInterceptor implements HttpInterceptor {
       if (this.session.isLoggedIn()) {
         customHeaders = customHeaders.set('Authorization', `Bearer ${this.session.credentials.access}`);
       }
-      const req = request.clone({withCredentials: true, headers: customHeaders});
+      const req = request.clone({headers: customHeaders});
       return next.handle(req);
     }
     return next.handle(request);

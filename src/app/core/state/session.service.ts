@@ -22,9 +22,9 @@ export class SessionService {
   }
 
   set credentials(data: Auth) {
-    const stringfied: string = JSON.stringify(data);
-    const encript: string = btoa(stringfied);
-    window.localStorage.setItem(this.storeKey, encript);
+    const str: string = JSON.stringify(data);
+    const enc: string = btoa(str);
+    window.localStorage.setItem(this.storeKey, enc);
     this.auth = data;
   }
 
@@ -40,8 +40,8 @@ export class SessionService {
   private load(): Auth | null {
     const data: any = window.localStorage.getItem(this.storeKey);
     if (data !== null) {
-      const decript: string = atob(data);
-      return JSON.parse(decript);
+      const dec: string = atob(data);
+      return JSON.parse(dec);
     }
     return null;
   }

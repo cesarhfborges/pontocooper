@@ -4,13 +4,7 @@ import {delay, map, Observable, tap} from 'rxjs';
 import {Usuario} from '../models/usuario';
 import {SessionService} from '../state/session.service';
 import {Router} from '@angular/router';
-import {Auth} from '../models/auth';
-
-interface IAuth {
-  access: string;
-  expire: string;
-  refresh: string;
-}
+import {environment} from "../../../environments/environment";
 
 interface Credentials {
   username: string;
@@ -35,7 +29,7 @@ export class AuthService {
       username: data.username,
       password: data.password
     };
-    return this.http.post<any>(`/api/v1/auth`, credentials).pipe(
+    return this.http.post<any>(`${environment.apiUrl}/auth`, credentials).pipe(
       tap((response: any) => {
         if (response?.access) {
           this.session.credentials = {
@@ -56,14 +50,14 @@ export class AuthService {
   }
 
   perfil(): Observable<Usuario> {
-    return this.http.get<Usuario>(`/api/v1/person/current`);
+    return this.http.get<Usuario>(`${environment.apiUrl}/person/current`);
   }
 
   refreshToken(): Observable<any> {
     const data: any = {
       refresh: `${this.session?.credentials?.refresh}`
     };
-    return this.http.post<any>(`/api/v1/auth/refresh/`, data).pipe(
+    return this.http.post<any>(`${environment.apiUrl}/auth/refresh/`, data).pipe(
       tap((response: any) => {
         if (response?.access !== undefined) {
           this.session.credentials = {

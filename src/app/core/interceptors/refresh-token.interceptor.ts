@@ -8,6 +8,7 @@ import {catchError} from 'rxjs/operators';
 import {LoadingController, ToastController} from '@ionic/angular';
 import {Color} from '@ionic/core';
 import {Location} from '@angular/common';
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -61,14 +62,14 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
     const token = this.session.credentials.access;
-    const isApiRequest = request.url.startsWith(this.location.prepareExternalUrl('/api'));
+    const isApiRequest = request.url.startsWith(environment.apiUrl);
 
     if (token && isApiRequest) {
       request = this.addTokenToRequest(request, token);
     }
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        const isRefreshTokenRequest = request.url.startsWith(this.location.prepareExternalUrl('/api/v1/auth/refresh/'));
+        const isRefreshTokenRequest = request.url.startsWith(this.location.prepareExternalUrl(`${environment.apiUrl}auth/refresh/`));
         if (error.status === 401 && isApiRequest && !isRefreshTokenRequest) {
           if (!this.isRefreshing) {
             this.isRefreshing = true;
@@ -95,7 +96,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
             );
           }
         }
-        return throwError(error);
+        return throwError(() => error);
       }),
       finalize(() => {})
     );
