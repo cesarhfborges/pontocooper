@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {NavController} from "@ionic/angular";
 import {ScreenOrientation} from "@capacitor/screen-orientation";
 import {environment} from "../environments/environment";
+import {AppLauncher} from "@capacitor/app-launcher";
 
 @Component({
   selector: 'app-root',
@@ -27,9 +28,11 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     Promise.all([
       Network.getStatus(),
+      AppLauncher.canOpenUrl({ url: 'br.com.coopersystem.portal' }),
       environment.production ? ScreenOrientation.lock({orientation: 'portrait'}) : ScreenOrientation.unlock()
     ]).then((response) => {
       this.networkStatus = response[0];
+      console.log('Can open url: ', response[1]);
       this.navigate();
       Network.addListener('networkStatusChange', status => {
         this.networkStatus = status;
