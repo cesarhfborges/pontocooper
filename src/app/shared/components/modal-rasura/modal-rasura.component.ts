@@ -1,10 +1,11 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
-import {ModalController, ViewDidEnter} from '@ionic/angular';
-import {Dia} from '../../../core/models/dia';
-import {Observable, of} from 'rxjs';
-import {addSeconds, differenceInSeconds, parseISO, set} from 'date-fns';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { ModalController, ViewDidEnter } from '@ionic/angular';
+import { Dia } from '../../../core/models/dia';
+import { Observable, of } from 'rxjs';
+import { addSeconds, differenceInSeconds, format, parseISO, set } from 'date-fns';
+import { ModalTimePickerComponent } from '../modal-time-picker/modal-time-picker.component';
 
 @Component({
   selector: 'app-modal-rasura',
@@ -15,24 +16,24 @@ import {addSeconds, differenceInSeconds, parseISO, set} from 'date-fns';
       transition('* => *', [
         query(':enter',
           style({opacity: 0, transform: 'translateX(30px)'}),
-          {optional: true}
+          {optional: true},
         ),
         query(':enter', stagger(150, [
           style({opacity: 0, transform: 'translateX(30px)'}),
-          animate('250ms ease-in-out', style({opacity: 1, transform: 'translateX(0)'}))
+          animate('250ms ease-in-out', style({opacity: 1, transform: 'translateX(0)'})),
         ]), {optional: true}),
         query(':leave',
           style({opacity: 1}),
-          {optional: true}
+          {optional: true},
         ),
         query(':leave', [
             style({opacity: 1}),
             animate('250ms ease-in-out', style({opacity: 0, transform: 'translateX(30px)'}))],
-          {optional: true}
-        )
-      ])
-    ])
-  ]
+          {optional: true},
+        ),
+      ]),
+    ]),
+  ],
 })
 export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
 
@@ -74,7 +75,7 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
         f.patchValue({
           checkIn: dia.check_in,
           position: dia.position.toString(),
-          worktimeClock: dia.worktime_clock
+          worktimeClock: dia.worktime_clock,
         });
         // f.disable();
         this.retificacoes.push(f);
@@ -98,7 +99,7 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
       const posicao: boolean = this.retificacoes.controls.length % 2 === 0;
       f.patchValue({
         checkIn: posicao,
-        position: posicao ? ((size / 2) + 1).toFixed(0) : (size / 2).toFixed(0)
+        position: posicao ? ((size / 2) + 1).toFixed(0) : (size / 2).toFixed(0),
       });
       this.retificacoes.push(f);
       this.form.updateValueAndValidity();
@@ -112,7 +113,7 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
 
   async cancelar() {
     await this.modalCtrl.dismiss({
-      success: false
+      success: false,
     });
   }
 
@@ -149,6 +150,21 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
   salvar(): void {
     this.form.markAllAsTouched();
     if (this.form.valid) {
+    }
+  }
+
+  async updateRetificacao(index: number) {
+    const dataHora: Date = this.retificacoes?.at(index)?.get('worktimeClock')?.value;
+    const modal = await this.modalCtrl.create({
+      component: ModalTimePickerComponent,
+      cssClass: 'timePicker',
+      showBackdrop: true,
+      componentProps: {horaSelecionada: dataHora !== null ? dataHora : this.dados?.date},
+    });
+    await modal.present();
+    const {data, role} = await modal.onWillDismiss();
+    if (role === 'confirm') {
+      this.retificacoes?.at(index)?.get('worktimeClock')?.patchValue(data);
     }
   }
 }

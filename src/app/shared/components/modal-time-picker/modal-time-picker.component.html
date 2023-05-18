@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center">Selecione o mês/ano</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-datetime
+    id="datetime"
+    presentation="time"
+    [(ngModel)]="horaSelecionada"
+    [showDefaultButtons]="false"
+  ></ion-datetime>
+
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button class="btnSized" (click)="cancel()">Cancelar</ion-button>
+      <ion-button class="btnSized" (click)="confirm()">Ok</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

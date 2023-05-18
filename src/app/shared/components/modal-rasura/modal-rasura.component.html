@@ -30,7 +30,7 @@
               [name]="item?.get('checkIn')?.value ? 'arrow-forward-outline' : 'arrow-back-outline'"
               slot="start"
             ></ion-icon>
-            <ion-label>
+            <ion-label (click)="updateRetificacao(i)">
               <h4>{{item?.get('position')?.value}}&deg; {{item?.get('checkIn')?.value ? 'Entrada' : 'Saída'}}</h4>
               <h2>{{item?.get('worktimeClock')?.value !== null ? (item?.get('worktimeClock')?.value | date : 'HH:mm') : 'Informe a hora'}}</h2>
             </ion-label>
