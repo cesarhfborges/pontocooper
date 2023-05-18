@@ -44,10 +44,8 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
             this.isRefreshing = true;
             this.refreshTokenSubject.next(null);
             this.showLoading('Aguarde...');
-            console.log('vou fazer o refresh');
             return this.authService.refreshToken().pipe(
               switchMap((response: any) => {
-                console.log('Cheguei no switch map');
                 const newToken = response.access;
                 this.refreshTokenSubject.next(newToken);
                 this.isRefreshing = false;
@@ -55,7 +53,6 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
                 return next.handle(this.addTokenToRequest(request, newToken));
               }),
               catchError((e: any) => {
-                console.log('não consegui fazer refresh');
                 this.showToast('Ooops, Usuário não autenticado, efetue login novamente', 'danger');
                 this.authService.logout();
                 return throwError(e);

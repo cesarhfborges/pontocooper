@@ -43,6 +43,17 @@ export class ProfilePage implements OnInit, ViewWillEnter {
     );
   }
 
+  getAvatar(): string {
+    if (this.perfil?.avatar) {
+      const regex = new RegExp('b\'([^\']+)\'');
+      const match = this.perfil.avatar.match(regex);
+      if (match !== null) {
+        return `data:image/png;base64,${match[1]}`;
+      }
+    }
+    return '';
+  }
+
   toggleAmount(): void {
     this.showAmount = !this.showAmount;
   }
