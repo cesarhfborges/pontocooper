@@ -10,6 +10,7 @@ import {LoadingTextComponent} from './components/loading-text/loading-text.compo
 import {OpenLayersComponent} from './components/open-layers/open-layers.component';
 import {ModalDatePickerComponent} from './components/modal-date-picker/modal-date-picker.component';
 import {ModalRasuraComponent} from './components/modal-rasura/modal-rasura.component';
+import { PreventFocusDirective } from './directives/prevent-focus.directive';
 
 @NgModule({
   declarations: [
@@ -19,16 +20,18 @@ import {ModalRasuraComponent} from './components/modal-rasura/modal-rasura.compo
     LoadingTextComponent,
     OpenLayersComponent,
     ModalDatePickerComponent,
-    ModalRasuraComponent
+    ModalRasuraComponent,
+    PreventFocusDirective
   ],
-  exports: [
-    InvalidMessageComponent,
-    InputPasswordToggleComponent,
-    LoadingTextComponent,
-    OpenLayersComponent,
-    ModalDatePickerComponent,
-    ModalRasuraComponent
-  ],
+    exports: [
+        InvalidMessageComponent,
+        InputPasswordToggleComponent,
+        LoadingTextComponent,
+        OpenLayersComponent,
+        ModalDatePickerComponent,
+        ModalRasuraComponent,
+        PreventFocusDirective
+    ],
   imports: [
     IonicModule,
     CommonModule,

@@ -41,6 +41,13 @@
       height: 1.575em;
       width: 1.575em;
 
+      &.ol-zoom-in,&.ol-zoom-out {
+        &:focus,&:hover,&:visited,&:active {
+          outline: unset;
+          color: #ffffff;
+        }
+      }
+
       &.ol-zoom-in {
         border-bottom: 2px solid #000000;
         //font-size: 1.9em;
