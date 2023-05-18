@@ -26,9 +26,14 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+//@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
 body {
-  font-family: 'Roboto';
+  //font-family: 'Roboto';
   color: var(--text-color);
   margin: 0;
   --header-color: #D1DFB7;
@@ -42,8 +47,4 @@ body {
 
 ion-item {
   --background: unset;
-}
-
-ion-badge {
-  //padding: 7px 7px 6px 6px;
 }

@@ -36,9 +36,6 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const isRefreshTokenRequest = request.url.startsWith(`${environment.apiUrl}/auth/refresh/`);
-        // if (error.status === 401 && isRefreshTokenRequest) {
-        //   return throwError(() => error);
-        // }
         if (error.status === 401 && isApiRequest && !isRefreshTokenRequest) {
           if (!this.isRefreshing) {
             this.isRefreshing = true;
@@ -49,7 +46,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
                 const newToken = response.access;
                 this.refreshTokenSubject.next(newToken);
                 this.isRefreshing = false;
-                // this.refreshTokenSubject.complete();
+                this.refreshTokenSubject.complete();
                 return next.handle(this.addTokenToRequest(request, newToken));
               }),
               catchError((e: any) => {

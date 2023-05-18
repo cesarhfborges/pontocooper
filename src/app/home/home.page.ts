@@ -8,7 +8,7 @@ import {
   ToastController,
   ViewWillEnter
 } from '@ionic/angular';
-import {Observable, timer} from 'rxjs';
+import {lastValueFrom, Observable, switchMap, throwError, timer} from 'rxjs';
 import {AuthService} from '../core/services/auth.service';
 import {Usuario} from '../core/models/usuario';
 import {DadosService} from '../core/services/dados.service';
@@ -89,7 +89,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
 
   ngOnInit(): void {
     this.dataAtual = new Date();
-    this.timer = timer(1000, 1000);
+    this.timer = timer(0, 1000);
     this.timer.subscribe({
       next: () => {
         this.dataAtual = new Date();
@@ -104,14 +104,31 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
   }
 
   ionViewWillEnter(): void {
-    this.getPerfil();
-    this.getBancoDeHoras();
-    this.getSumario();
-    this.getTimeLine();
+    Promise.all([
+      this.getPerfil(),
+      this.getBancoDeHoras(),
+      this.getSumario(),
+      this.getTimeLine()
+    ]).catch((e: any) => {
+      console.log('error: ', e);
+    });
   }
 
   ngOnDestroy(): void {
     this.timer = undefined;
+  }
+
+  loadData($event: any): void {
+    Promise.all([
+      this.getPerfil(),
+      this.getBancoDeHoras(),
+      this.getSumario(),
+      this.getTimeLine()
+    ]).then(() => {
+      $event?.target?.complete();
+    }).catch(() => {
+      $event?.target?.cancel();
+    });
   }
 
   monitorarBtnBack(): void {
@@ -140,74 +157,43 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
     return this.loading.summary || this.loading.bancoDeHoras || this.loading.timeline;
   }
 
-  getPerfil() {
+  async getPerfil() {
     this.loading.profile = true;
-    this.authService.perfil().subscribe({
-      next: (response) => {
-        console.log('valor recebido: ', response);
-        this.perfil = response;
-        this.loading.profile = false;
-      },
-      error: () => {
-        this.loading.profile = false;
-      },
-    });
+    this.perfil = await lastValueFrom(this.authService.perfil());
+    this.loading.profile = false;
   }
 
-  getSumario() {
+  async getSumario() {
     this.loading.summary = true;
     const year: string = format(this.dataAtual, 'yyyy');
     const month: string = format(this.dataAtual, 'MM');
-    this.dadosService.getSummary(year, month).subscribe({
-      next: (response) => {
-        this.summary = {
-          workingHours: response.working_hours,
-          businessDays: response.business_days,
-          hoursToWork: response.hours_to_work,
-          remainingHours: response.remaining_hours
-        };
-        this.loading.summary = false;
-      },
-      error: () => {
-        this.loading.summary = false;
-      }
-    });
+    const response: any = await lastValueFrom(this.dadosService.getSummary(year, month));
+    this.summary = {
+      workingHours: response.working_hours,
+      businessDays: response.business_days,
+      hoursToWork: response.hours_to_work,
+      remainingHours: response.remaining_hours
+    };
+    this.loading.summary = false;
   }
 
-  getBancoDeHoras() {
+  async getBancoDeHoras() {
     this.loading.bancoDeHoras = true;
-    this.dadosService.getBancoDeHoras().subscribe({
-      next: (response) => {
-        this.bancoDeHoras = response;
-        this.loading.bancoDeHoras = false;
-      },
-      error: () => {
-        this.loading.bancoDeHoras = false;
-      },
-    });
+    this.bancoDeHoras = await lastValueFrom(this.dadosService.getBancoDeHoras());
+    this.loading.bancoDeHoras = false;
   }
 
-  getTimeLine($event?: any) {
+  async getTimeLine() {
     this.loading.timeline = true;
-    this.dadosService.getTimeline().subscribe({
-      next: (response) => {
-        this.ponto.limparPontos();
-        for (const batida of response.timeline) {
-          this.ponto.addPonto({
-            ...batida,
-            worktime_clock: parseISO(batida.worktime_clock)
-          });
-        }
-        this.loading.timeline = false;
-      },
-      error: () => {
-        this.loading.timeline = false;
-        $event?.target?.cancel();
-      },
-      complete: () => {
-        $event?.target?.complete();
-      }
-    });
+    const response: any = await lastValueFrom(this.dadosService.getTimeline());
+    this.ponto.limparPontos();
+    for (const batida of response.timeline) {
+      this.ponto.addPonto({
+        ...batida,
+        worktime_clock: parseISO(batida.worktime_clock)
+      });
+    }
+    this.loading.timeline = false;
   }
 
   async getCoords(): Promise<Coords> {

@@ -14,9 +14,9 @@
   <p class="ion-padding-horizontal">Arraste para atualizar</p>
   <ion-refresher
     slot="fixed"
-    (ionRefresh)="getTimeLine($event)"
-    [snapbackDuration]="200"
-    [closeDuration]="200"
+    (ionRefresh)="loadData($event)"
+    [snapbackDuration]="8000"
+    [closeDuration]="8000"
     [pullFactor]="0.5"
     [pullMin]="120"
     [pullMax]="120"
