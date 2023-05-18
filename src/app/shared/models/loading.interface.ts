@@ -10,4 +10,4 @@ interface LoadingStatus {
   timeline: ItemStatus;
 }
 
-export {LoadingStatus, ItemStatus}
+export {LoadingStatus, ItemStatus};

@@ -23,7 +23,7 @@ import {Geolocation} from '@capacitor/geolocation';
 import {LocalNotificationSchema} from '@capacitor/local-notifications/dist/esm/definitions';
 import {App} from '@capacitor/app';
 import {LoadingStatus} from '../shared/models/loading.interface';
-import {Coords} from "../shared/models/coords.interface";
+import {Coords} from '../shared/models/coords.interface';
 
 @Component({
   selector: 'app-home',
