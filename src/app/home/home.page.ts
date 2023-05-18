@@ -22,11 +22,8 @@ import {LocalNotifications} from '@capacitor/local-notifications';
 import {Geolocation} from '@capacitor/geolocation';
 import {LocalNotificationSchema} from '@capacitor/local-notifications/dist/esm/definitions';
 import {App} from '@capacitor/app';
-
-interface Coords {
-  latitude: number;
-  longitude: number;
-}
+import {LoadingStatus} from '../shared/models/loading.interface';
+import {Coords} from "../shared/models/coords.interface";
 
 @Component({
   selector: 'app-home',
@@ -37,21 +34,14 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
 
   production: boolean = environment.production;
   horasTrabalhadas: Date = set(new Date(), {hours: 0, minutes: 0, seconds: 0});
-
   dataAtual: Date = new Date();
   timer: Observable<number> | undefined;
-  loading: {
-    profile: boolean;
-    summary: boolean;
-    bancoDeHoras: boolean;
-    timeline: boolean;
-  } = {
-    profile: true,
-    summary: true,
-    bancoDeHoras: true,
-    timeline: true
+  loading: LoadingStatus = {
+    profile: {loading: true, error: false},
+    summary: {loading: true, error: false},
+    bancoDeHoras: {loading: true, error: false},
+    timeline: {loading: true, error: false}
   };
-
   perfil: Usuario | undefined;
   summary: Summary = {
     workingHours: 0,
@@ -64,9 +54,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
     pending: ''
   };
   ponto: Ponto;
-
   buttonEvent: Date = new Date();
-
 
   constructor(
     private authService: AuthService,
@@ -104,21 +92,14 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
   }
 
   ionViewWillEnter(): void {
-    Promise.all([
-      this.getPerfil(),
-      this.getBancoDeHoras(),
-      this.getSumario(),
-      this.getTimeLine()
-    ]).catch((e: any) => {
-      console.log('error: ', e);
-    });
+    this.loadData();
   }
 
   ngOnDestroy(): void {
     this.timer = undefined;
   }
 
-  loadData($event: any): void {
+  loadData($event: any = undefined): void {
     Promise.all([
       this.getPerfil(),
       this.getBancoDeHoras(),
@@ -126,8 +107,15 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
       this.getTimeLine()
     ]).then(() => {
       $event?.target?.complete();
-    }).catch(() => {
+    }).catch((error) => {
       $event?.target?.cancel();
+      this.toastController.create({
+        message: error,
+        duration: 3000,
+        color: 'danger',
+      }).then(toast => {
+        toast.present().catch();
+      });
     });
   }
 
@@ -154,46 +142,66 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
   }
 
   isLoading(): boolean {
-    return this.loading.summary || this.loading.bancoDeHoras || this.loading.timeline;
+    return this.loading.summary.loading || this.loading.bancoDeHoras.loading || this.loading.timeline.loading;
   }
 
   async getPerfil() {
-    this.loading.profile = true;
-    this.perfil = await lastValueFrom(this.authService.perfil());
-    this.loading.profile = false;
+    try {
+      this.loading.profile.loading = true;
+      this.perfil = await lastValueFrom(this.authService.perfil());
+      this.loading.profile.loading = false;
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject('Não foi possível obter os dados de perfil.');
+    }
   }
 
   async getSumario() {
-    this.loading.summary = true;
-    const year: string = format(this.dataAtual, 'yyyy');
-    const month: string = format(this.dataAtual, 'MM');
-    const response: any = await lastValueFrom(this.dadosService.getSummary(year, month));
-    this.summary = {
-      workingHours: response.working_hours,
-      businessDays: response.business_days,
-      hoursToWork: response.hours_to_work,
-      remainingHours: response.remaining_hours
-    };
-    this.loading.summary = false;
+    try {
+      this.loading.summary.loading = true;
+      const year: string = format(this.dataAtual, 'yyyy');
+      const month: string = format(this.dataAtual, 'MM');
+      const response: any = await lastValueFrom(this.dadosService.getSummary(year, month));
+      this.summary = {
+        workingHours: response.working_hours,
+        businessDays: response.business_days,
+        hoursToWork: response.hours_to_work,
+        remainingHours: response.remaining_hours
+      };
+      this.loading.summary.loading = false;
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject('Não foi possível obter a carga horária.');
+    }
   }
 
   async getBancoDeHoras() {
-    this.loading.bancoDeHoras = true;
-    this.bancoDeHoras = await lastValueFrom(this.dadosService.getBancoDeHoras());
-    this.loading.bancoDeHoras = false;
+    try {
+      this.loading.bancoDeHoras.loading = true;
+      this.bancoDeHoras = await lastValueFrom(this.dadosService.getBancoDeHoras());
+      this.loading.bancoDeHoras.loading = false;
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject('Não foi possível obter os dados do banco de horas.');
+    }
   }
 
   async getTimeLine() {
-    this.loading.timeline = true;
-    const response: any = await lastValueFrom(this.dadosService.getTimeline());
-    this.ponto.limparPontos();
-    for (const batida of response.timeline) {
-      this.ponto.addPonto({
-        ...batida,
-        worktime_clock: parseISO(batida.worktime_clock)
-      });
+    try {
+      this.loading.timeline.loading = true;
+      const response: any = await lastValueFrom(this.dadosService.getTimeline());
+      this.ponto.limparPontos();
+      for (const batida of response.timeline) {
+        this.ponto.addPonto({
+          ...batida,
+          worktime_clock: parseISO(batida.worktime_clock)
+        });
+      }
+      this.loading.timeline.loading = false;
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject('Não foi possível obter a lista de ponto.');
     }
-    this.loading.timeline = false;
   }
 
   async getCoords(): Promise<Coords> {

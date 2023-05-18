@@ -43,14 +43,14 @@
 
       <h5>Banco de horas:</h5>
       <app-banco-de-horas
-        [loading]="{bancoDeHoras: loading.bancoDeHoras, summary: loading.summary}"
+        [loading]="{bancoDeHoras: loading.bancoDeHoras.loading, summary: loading.summary.loading}"
         [bancoDeHoras]="bancoDeHoras"
         [summary]="summary"
       ></app-banco-de-horas>
 
       <p>Entradas/Saídas:</p>
       <app-entradas-saidas
-        [loading]="loading.timeline"
+        [loading]="loading.timeline.loading"
         [mostrarSegundos]="!production"
         [ponto]="ponto"
       ></app-entradas-saidas>
