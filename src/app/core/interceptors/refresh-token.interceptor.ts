@@ -1,15 +1,15 @@
-import {Injectable} from '@angular/core';
-import {HttpErrorResponse, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {ActivatedRoute, Router} from '@angular/router';
-import {SessionService} from '../state/session.service';
-import {AuthService} from '../services/auth.service';
-import {BehaviorSubject, catchError, filter, finalize, Observable, switchMap, throwError} from 'rxjs';
-import {LoadingController, ToastController} from '@ionic/angular';
-import {Color} from '@ionic/core';
-import {environment} from '../../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpErrorResponse, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SessionService } from '../state/session.service';
+import { AuthService } from '../services/auth.service';
+import { BehaviorSubject, catchError, filter, finalize, Observable, switchMap, throwError } from 'rxjs';
+import { LoadingController, ToastController } from '@ionic/angular';
+import { Color } from '@ionic/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RefreshTokenInterceptor implements HttpInterceptor {
 
@@ -22,7 +22,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
     private toastController: ToastController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
   ) {
   }
 
@@ -53,7 +53,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
                 this.showToast('Ooops, Usuário não autenticado, efetue login novamente', 'danger');
                 this.authService.logout();
                 return throwError(e);
-              })
+              }),
             );
           } else {
             return this.refreshTokenSubject.pipe(
@@ -65,7 +65,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
         return throwError(() => error);
       }),
       finalize(() => {
-      })
+      }),
     );
   }
 
@@ -73,8 +73,8 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
     return request.clone({
       setHeaders: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -88,7 +88,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
         showBackdrop: true,
         animated: true,
         spinner: 'bubbles',
-        cssClass: 'my-custom-class'
+        cssClass: 'my-custom-class',
       });
       await loading.present();
     });
