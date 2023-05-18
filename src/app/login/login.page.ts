@@ -5,7 +5,7 @@ import {AuthService} from '../core/services/auth.service';
 import {Router} from '@angular/router';
 import {environment} from '../../environments/environment';
 import {ToastsService} from '../shared/services/toasts.service';
-import {Animation, StatusBar, Style} from "@capacitor/status-bar";
+import {Animation, StatusBar, Style} from '@capacitor/status-bar';
 
 @Component({
   selector: 'app-login',

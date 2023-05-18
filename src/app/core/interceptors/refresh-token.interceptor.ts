@@ -8,7 +8,7 @@ import {catchError} from 'rxjs/operators';
 import {LoadingController, ToastController} from '@ionic/angular';
 import {Color} from '@ionic/core';
 import {Location} from '@angular/common';
-import {environment} from "../../../environments/environment";
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -38,21 +38,27 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
     }
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        const isRefreshTokenRequest = request.url.startsWith(this.location.prepareExternalUrl(`${environment.apiUrl}auth/refresh/`));
+        const isRefreshTokenRequest = request.url.startsWith(`${environment.apiUrl}/auth/refresh/`);
+        if (error.status === 401 && isRefreshTokenRequest) {
+          return throwError(() => error);
+        }
         if (error.status === 401 && isApiRequest && !isRefreshTokenRequest) {
           if (!this.isRefreshing) {
             this.isRefreshing = true;
             this.refreshTokenSubject.next(null);
             this.showLoading('Aguarde...');
+            console.log('vou fazer o refresh');
             return this.authService.refreshToken().pipe(
               switchMap((response: any) => {
+                console.log('Cheguei no switch map');
                 const newToken = response.access;
-                this.isRefreshing = false;
                 this.refreshTokenSubject.next(newToken);
+                this.isRefreshing = false;
                 // this.refreshTokenSubject.complete();
                 return next.handle(this.addTokenToRequest(request, newToken));
               }),
               catchError((e: any) => {
+                console.log('não consegui fazer refresh');
                 this.showToast('Ooops, Usuário não autenticado, efetue login novamente', 'danger');
                 this.authService.logout();
                 return throwError(e);
@@ -67,7 +73,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
         }
         return throwError(() => error);
       }),
-      finalize(() => {})
+      // finalize(() => {})
     );
   }
 

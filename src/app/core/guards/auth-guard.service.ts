@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
 import {Observable} from 'rxjs';
 import {SessionService} from '../state/session.service';
-import {NavController} from "@ionic/angular";
+import {NavController} from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'

@@ -8,7 +8,7 @@ import {
   ToastController,
   ViewWillEnter
 } from '@ionic/angular';
-import {BehaviorSubject, debounceTime, Observable, Subject, tap, timer} from 'rxjs';
+import {Observable, timer} from 'rxjs';
 import {AuthService} from '../core/services/auth.service';
 import {Usuario} from '../core/models/usuario';
 import {DadosService} from '../core/services/dados.service';
@@ -21,8 +21,7 @@ import {environment} from '../../environments/environment';
 import {LocalNotifications} from '@capacitor/local-notifications';
 import {Geolocation} from '@capacitor/geolocation';
 import {LocalNotificationSchema} from '@capacitor/local-notifications/dist/esm/definitions';
-import {App} from "@capacitor/app";
-import {distinctUntilChanged} from "rxjs/operators";
+import {App} from '@capacitor/app';
 
 interface Coords {
   latitude: number;
@@ -82,6 +81,12 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
     this.ponto = new Ponto(batidas);
   }
 
+  get jornadaDiaria(): number {
+    const workingHours = this.summary.workingHours ?? 8;
+    const val = Math.trunc(getHours(this.horasTrabalhadas) / workingHours * 100);
+    return val > 99 ? 100 : val;
+  }
+
   ngOnInit(): void {
     this.dataAtual = new Date();
     this.timer = timer(1000, 1000);
@@ -129,12 +134,6 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         }
       }
     });
-  }
-
-  get jornadaDiaria(): number {
-    const workingHours = this.summary.workingHours ?? 8;
-    const val = Math.trunc(getHours(this.horasTrabalhadas) / workingHours * 100);
-    return val > 99 ? 100 : val;
   }
 
   isLoading(): boolean {

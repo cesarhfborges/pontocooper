@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {AuthService} from '../services/auth.service';
 import {SessionService} from '../state/session.service';
 import { Location } from '@angular/common';
-import {environment} from "../../../environments/environment";
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
