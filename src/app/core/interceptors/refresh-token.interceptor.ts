@@ -3,11 +3,9 @@ import {HttpErrorResponse, HttpHandler, HttpInterceptor, HttpRequest} from '@ang
 import {ActivatedRoute, Router} from '@angular/router';
 import {SessionService} from '../state/session.service';
 import {AuthService} from '../services/auth.service';
-import {BehaviorSubject, filter, finalize, Observable, switchMap, throwError,} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {BehaviorSubject, catchError, filter, finalize, Observable, switchMap, throwError} from 'rxjs';
 import {LoadingController, ToastController} from '@ionic/angular';
 import {Color} from '@ionic/core';
-import {Location} from '@angular/common';
 import {environment} from '../../../environments/environment';
 
 @Injectable({
@@ -24,8 +22,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
     private toastController: ToastController,
-    private loadingController: LoadingController,
-    private location: Location
+    private loadingController: LoadingController
   ) {
   }
 
@@ -39,9 +36,9 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const isRefreshTokenRequest = request.url.startsWith(`${environment.apiUrl}/auth/refresh/`);
-        if (error.status === 401 && isRefreshTokenRequest) {
-          return throwError(() => error);
-        }
+        // if (error.status === 401 && isRefreshTokenRequest) {
+        //   return throwError(() => error);
+        // }
         if (error.status === 401 && isApiRequest && !isRefreshTokenRequest) {
           if (!this.isRefreshing) {
             this.isRefreshing = true;
@@ -73,7 +70,8 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
         }
         return throwError(() => error);
       }),
-      // finalize(() => {})
+      finalize(() => {
+      })
     );
   }
 
