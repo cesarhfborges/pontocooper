@@ -11,3 +11,16 @@ ion-datetime {
 ion-buttons {
   transition: opacity 800ms;
 }
+
+ion-button.actionButtons {
+  word-break: break-word;
+  white-space: pre-wrap;
+  margin: unset;
+  font-size: 12px;
+}
+
+@media only screen and (max-width: 400px) {
+  ion-button {
+    font-size: 10px;
+  }
+}
