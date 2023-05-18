@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {Network} from '@capacitor/network';
-import {ConnectionStatus} from '@capacitor/network/dist/esm/definitions';
-import {Router} from '@angular/router';
-import {NavController, Platform} from '@ionic/angular';
-import {ScreenOrientation} from '@capacitor/screen-orientation';
-import {environment} from '../environments/environment';
-import {AppLauncher} from '@capacitor/app-launcher';
+import { Component, OnInit } from '@angular/core';
+import { Network } from '@capacitor/network';
+import { ConnectionStatus } from '@capacitor/network/dist/esm/definitions';
+import { Router } from '@angular/router';
+import { NavController, Platform } from '@ionic/angular';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
+import { environment } from '../environments/environment';
+import { AppLauncher } from '@capacitor/app-launcher';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
 
   networkStatus: ConnectionStatus = {
     connected: true,
-    connectionType: 'unknown'
+    connectionType: 'unknown',
   };
 
   constructor(
@@ -32,8 +32,8 @@ export class AppComponent implements OnInit {
         if (this.platform.is('android') || this.platform.is('ios')) {
           Promise.all([
             Network.getStatus(),
-            AppLauncher.canOpenUrl({ url: 'br.com.coopersystem.portal' }),
-            environment.production ? ScreenOrientation.lock({orientation: 'portrait'}) : ScreenOrientation.unlock()
+            AppLauncher.canOpenUrl({url: 'br.com.coopersystem.portal'}),
+            environment.production ? ScreenOrientation.lock({orientation: 'portrait'}) : ScreenOrientation.unlock(),
           ]).then((response) => {
             this.networkStatus = response[0];
             console.log('Can open url: ', response[1]);
