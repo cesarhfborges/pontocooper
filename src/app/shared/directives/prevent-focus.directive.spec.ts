@@ -52,10 +52,4 @@ describe('PreventFocusDirective', () => {
     expect(clickEvent.preventDefault).toHaveBeenCalled();
     expect(clickEvent.stopImmediatePropagation).toHaveBeenCalled();
   });
-
-  // it('should create an instance', () => {
-  //   const el = new HTMLElement();
-  //   const directive = new PreventFocusDirective();
-  //   expect(directive).toBeTruthy();
-  // });
 });
