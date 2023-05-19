@@ -34,19 +34,19 @@
 <!--      </ion-item>-->
       <ion-item>
         <ion-label position="stacked">Matricula:</ion-label>
-        <ion-input [value]="perfil?.csys_registration_number" [readonly]="true"></ion-input>
+        <ion-input id="csys_registration_number" [value]="perfil?.csys_registration_number" [readonly]="true"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Email:</ion-label>
-        <ion-input [value]="perfil?.corporate_email" [readonly]="true"></ion-input>
+        <ion-input id="corporate_email" [value]="perfil?.corporate_email" [readonly]="true"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Cargo:</ion-label>
-        <ion-textarea [value]="perfil?.position_display?.position_display" [readonly]="true"></ion-textarea>
+        <ion-textarea id="position_display" [value]="perfil?.position_display?.position_display" [readonly]="true"></ion-textarea>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Valor/Hora: R$</ion-label>
-        <ion-input [value]="showAmount ? (perfil?.hourly_rate | number : '0.2-2') : ''" [readonly]="true"></ion-input>
+        <ion-input id="hourly_rate" [value]="showAmount ? (perfil?.hourly_rate | number : '0.2-2') : ''" [readonly]="true"></ion-input>
         <ion-icon
           slot="end"
           (click)="toggleAmount()"
@@ -56,15 +56,15 @@
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Data de adesão:</ion-label>
-        <ion-input [value]="perfil?.affiliation_date | date : 'dd/MM/yyyy'" [readonly]="true"></ion-input>
+        <ion-input id="affiliation_date" [value]="perfil?.affiliation_date | date : 'dd/MM/yyyy'" [readonly]="true"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Data de início:</ion-label>
-        <ion-input [value]="perfil?.start_date | date : 'dd/MM/yyyy'" [readonly]="true"></ion-input>
+        <ion-input id="start_date" [value]="perfil?.start_date | date : 'dd/MM/yyyy'" [readonly]="true"></ion-input>
       </ion-item>
-      <ion-item *ngFor="let budget of perfil?.budgets">
+      <ion-item *ngFor="let budget of perfil?.budgets; let i = index">
         <ion-label position="stacked">{{budget.budget_kind_display}}</ion-label>
-        <ion-input [value]="budget['has'] ? 'Sim' : 'Não'" [readonly]="true"></ion-input>
+        <ion-input id="budget-{{i}}" [value]="budget['has'] ? 'Sim' : 'Não'" [readonly]="true"></ion-input>
       </ion-item>
 
       <ion-button

@@ -8,7 +8,7 @@ import {AuthService} from '../core/services/auth.service';
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage implements OnInit, ViewWillEnter {
+export class ProfilePage implements OnInit {
 
   perfil: Usuario | undefined;
   showAmount = false;
@@ -21,32 +21,27 @@ export class ProfilePage implements OnInit, ViewWillEnter {
   }
 
   ngOnInit() {
-    console.log('executei o onInit do profile');
     this.getPerfil();
-  }
-
-  ionViewWillEnter(): void {
-    console.log('executei o ionViewWillEnter do profile');
   }
 
   getPerfil(): void {
     this.loading = true;
-    this.authService.perfil().subscribe(
-      response => {
+    this.authService.perfil().subscribe({
+      next: (response) => {
         this.perfil = response;
         this.loading = false;
       },
-      error => {
+      error: (error) => {
         this.loading = false;
         console.log(error);
       }
-    );
+    });
   }
 
   getAvatar(): string {
     if (this.perfil?.avatar) {
-      const regex = new RegExp('b\'([^\']+)\'');
-      const match = this.perfil.avatar.match(regex);
+      const regex: RegExp = new RegExp('b\'([^\']+)\'');
+      const match: RegExpMatchArray | null = this.perfil.avatar.match(regex);
       if (match !== null) {
         return `data:image/png;base64,${match[1]}`;
       }

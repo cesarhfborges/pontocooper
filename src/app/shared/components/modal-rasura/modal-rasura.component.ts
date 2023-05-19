@@ -4,7 +4,7 @@ import { animate, query, stagger, style, transition, trigger } from '@angular/an
 import { ModalController, ViewDidEnter } from '@ionic/angular';
 import { Dia } from '../../../core/models/dia';
 import { Observable, of } from 'rxjs';
-import { addSeconds, differenceInSeconds, format, parseISO, set } from 'date-fns';
+import { addSeconds, differenceInSeconds, format, formatISO, parse, parseISO, set } from 'date-fns';
 import { ModalTimePickerComponent } from '../modal-time-picker/modal-time-picker.component';
 
 @Component({
@@ -108,6 +108,7 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
 
   deleteRetificacao(posicao: number): void {
     this.retificacoes.removeAt(posicao);
+    this.updatePositionsForm();
     this.form.updateValueAndValidity();
   }
 
@@ -159,12 +160,28 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
       component: ModalTimePickerComponent,
       cssClass: 'timePicker',
       showBackdrop: true,
-      componentProps: {horaSelecionada: dataHora !== null ? dataHora : this.dados?.date},
+      componentProps: {
+        horaSelecionada: dataHora !== null ? dataHora : this.dados?.date,
+      },
     });
     await modal.present();
     const {data, role} = await modal.onWillDismiss();
     if (role === 'confirm') {
-      this.retificacoes?.at(index)?.get('worktimeClock')?.patchValue(data);
+      const dateISO = format(parseISO(data), 'yyyy-MM-dd\'T\'HH:mm:ss');
+      this.retificacoes?.at(index)?.get('worktimeClock')?.patchValue(dateISO);
+    }
+  }
+
+  updatePositionsForm(): void {
+    const size: number = this.retificacoes.controls.length;
+    let position: number = 0;
+    for (let i = 0; i < size; i++) {
+      const checkIn: boolean = i % 2 === 0;
+      this.retificacoes.at(i).get('checkIn')?.patchValue(checkIn);
+      if (checkIn) {
+        position++;
+      }
+      this.retificacoes.at(i).get('position')?.patchValue(position);
     }
   }
 }
