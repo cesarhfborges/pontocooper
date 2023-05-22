@@ -1,12 +1,10 @@
-import {AfterContentInit, AfterViewInit, Component, OnInit} from '@angular/core';
-import {IonRouterOutlet, Platform} from '@ionic/angular';
-import {environment} from 'src/environments/environment';
-import {Menu} from './menu';
-import {AuthService} from '../../../core/services/auth.service';
-import {Animation, StatusBar, Style} from '@capacitor/status-bar';
-import {PositionService} from '../../services/position.service';
-import {LocalNotifications} from '@capacitor/local-notifications';
-import { App } from '@capacitor/app';
+import { AfterContentInit, AfterViewInit, Component, OnInit } from '@angular/core';
+import { Platform } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
+import { Menu } from './menu';
+import { Animation, StatusBar, Style } from '@capacitor/status-bar';
+import { PositionService } from '../../services/position.service';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 @Component({
   selector: 'app-main-layout',
@@ -24,66 +22,59 @@ export class MainLayoutComponent implements OnInit, AfterViewInit, AfterContentI
       label: 'Home',
       link: '/home',
       icon: 'planet',
-      visible: true
+      visible: true,
     },
     {
       label: 'Produção',
       link: '/producao',
       icon: 'calendar-outline',
-      visible: true
+      visible: true,
     },
     {
       label: 'Histórico (GPS)',
       link: '/historico',
       icon: 'navigate-outline',
-      visible: true
+      visible: true,
     },
     {
       label: 'Férias e Abonos',
       link: '/ferias-abonos',
       icon: 'planet-outline',
-      visible: false
+      visible: false,
     },
     {
       label: 'Ausências e Horas extras',
       link: '/ausencias-horas-extras',
       icon: 'planet-outline',
-      visible: false
+      visible: false,
     },
     {
       label: 'Opções',
       link: '/opcoes',
       icon: 'settings-outline',
-      visible: false
+      visible: false,
     },
     {
       label: 'Perfil',
       link: '/profile',
       icon: 'person-outline',
-      visible: true
+      visible: true,
     },
     {
       label: 'Dev',
       link: '/development',
       icon: 'code-working-outline',
-      visible: !environment.production
-    }
+      visible: !environment.production,
+    },
   ];
 
   constructor(
     private platform: Platform,
     private positionService: PositionService,
-    private routerOutlet: IonRouterOutlet,
-    private authService: AuthService
   ) {
   }
 
   ngOnInit() {
-    // this.platform.backButton.subscribeWithPriority(-1, () => {
-    //   if (!this.routerOutlet.canGoBack()) {
-    //     App.minimizeApp().catch();
-    //   }
-    // });
   }
 
   ngAfterViewInit(): void {
@@ -96,9 +87,8 @@ export class MainLayoutComponent implements OnInit, AfterViewInit, AfterContentI
           await StatusBar.setStyle({style: Style.Dark});
         }
         if (this.platform.is('ios')) {
-          // await StatusBar.show({animation: Animation.Slide});
-          // await StatusBar.setStyle({style: Style.Dark});
-          // await StatusBar.setBackgroundColor({color: '#178865'});
+          await StatusBar.setBackgroundColor({color: '#1da57a'});
+          await StatusBar.setStyle({style: Style.Dark});
         }
       }
     }).catch(e => {
@@ -133,7 +123,7 @@ export class MainLayoutComponent implements OnInit, AfterViewInit, AfterContentI
           sound: 'cool.wav',
           lights: true,
           description: 'canal de notificações para ponto eletronico.',
-          visibility: 1
+          visibility: 1,
         });
       }
     }
