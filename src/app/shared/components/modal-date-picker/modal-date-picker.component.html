@@ -16,17 +16,8 @@
 
 </ion-content>
 <ion-footer>
-  <ion-toolbar>
-    <ion-buttons>
-      <ion-button class="btnSized" (click)="cancel()">Cancelar</ion-button>
-      <ion-button class="btnSized" (click)="confirm()">Ok</ion-button>
-    </ion-buttons>
-<!--    <ion-buttons slot="start">-->
-<!--      <ion-button class="btnSized" (click)="cancel()">Cancelar</ion-button>-->
-<!--    </ion-buttons>-->
-<!--    <ion-title class="ion-text-center"></ion-title>-->
-<!--    <ion-buttons slot="end">-->
-<!--      <ion-button class="btnSized" (click)="confirm()">Ok</ion-button>-->
-<!--    </ion-buttons>-->
-  </ion-toolbar>
+  <div class="actionButtons">
+    <ion-button color="danger" class="btnSized" (click)="cancel()">Cancelar</ion-button>
+    <ion-button color="success" class="btnSized" (click)="confirm()">Ok</ion-button>
+  </div>
 </ion-footer>
