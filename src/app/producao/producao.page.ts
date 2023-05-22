@@ -63,6 +63,7 @@ export class ProducaoPage implements OnInit {
 
     if (role === 'confirm') {
       this.dataAtual = parseISO(data);
+      this.getProducao();
     }
   }
 
