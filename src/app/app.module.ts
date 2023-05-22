@@ -1,5 +1,6 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -11,7 +12,6 @@ import { SessionService } from './core/state/session.service';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { RefreshTokenInterceptor } from './core/interceptors/refresh-token.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import ptBr from '@angular/common/locales/pt';
 
 registerLocaleData(ptBr);
