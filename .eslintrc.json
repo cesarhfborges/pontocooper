@@ -55,7 +55,8 @@
               "camelCase"
             ]
           }
-        ]
+        ],
+        "@typescript-eslint/no-inferrable-types": "off"
       }
     },
     {

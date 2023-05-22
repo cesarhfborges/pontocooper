@@ -19,7 +19,7 @@ export class JwtInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const isApiRequest = request.url.startsWith(this.location.prepareExternalUrl(`${environment.apiUrl}`));
+    const isApiRequest = request.url.startsWith(`${environment.apiUrl}`);
 
     if (isApiRequest) {
       let customHeaders: HttpHeaders = new HttpHeaders();
