@@ -55,6 +55,7 @@
     "@capacitor/screen-orientation": "^4.1.1",
     "@capacitor/status-bar": "^4.1.1",
     "@ionic/angular": "^6.1.9",
+    "capacitor-android-shortcuts": "^5.0.5",
     "date-fns": "^2.29.3",
     "ionicons": "^6.0.3",
     "jetifier": "^2.0.0",

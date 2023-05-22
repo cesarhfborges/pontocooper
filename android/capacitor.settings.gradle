@@ -31,3 +31,6 @@ project(':capacitor-screen-orientation').projectDir = new File('../node_modules/
 
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
+
+include ':capacitor-android-shortcuts'
+project(':capacitor-android-shortcuts').projectDir = new File('../node_modules/capacitor-android-shortcuts/android')

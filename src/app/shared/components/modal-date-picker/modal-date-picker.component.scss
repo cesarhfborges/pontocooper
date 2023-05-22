@@ -39,8 +39,7 @@
     .actionButtons {
       display: flex;
       height: 56px;
-      //background: red;
-      background: #2c2c2c;
+      background: #e7e7e7;
       padding: 8px;
       gap: 6px;
 
@@ -50,6 +49,14 @@
         align-self: stretch;
         flex-grow: 1;
         margin: 0;
+      }
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    ion-modal.datePicker {
+      .actionButtons {
+        background: #2c2c2c;
       }
     }
   }

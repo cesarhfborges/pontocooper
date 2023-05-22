@@ -38,5 +38,9 @@
 	{
 		"pkg": "@capacitor/status-bar",
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
+	},
+	{
+		"pkg": "capacitor-android-shortcuts",
+		"classpath": "nepheus.capacitor.androidshortcuts.AndroidShortcutsPlugin"
 	}
 ]

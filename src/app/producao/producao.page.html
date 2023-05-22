@@ -14,7 +14,7 @@
 
   <ion-item lines="none" fill="outline" color="tertiary" class="ion-margin" (click)="openModal()">
     <ion-label>{{dataAtual | date : 'MMMM \'de\' yyyy'}}</ion-label>
-    <ion-icon name="calendar-number-sharp" color="light" slot="end"></ion-icon>
+    <ion-icon name="calendar-number-sharp" color="tertiary" slot="end"></ion-icon>
   </ion-item>
 
   <div *ngIf="!loading.producao" [@slideOutAnimation]="producao.length > 0">
