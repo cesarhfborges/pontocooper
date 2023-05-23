@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Opcoes } from '../shared/models';
+import { ViewWillEnter } from '@ionic/angular';
 
 @Component({
   selector: 'app-opcoes',
   templateUrl: './opcoes.page.html',
   styleUrls: ['./opcoes.page.scss'],
 })
-export class OpcoesPage implements OnInit {
+export class OpcoesPage implements OnInit, ViewWillEnter {
 
   form: FormGroup;
 
@@ -24,11 +25,14 @@ export class OpcoesPage implements OnInit {
       ],
     };
     this.form = this.fb.group({
-      darkMode: ['', [Validators.required]]
-    })
+      darkMode: ['', [Validators.required]],
+    });
   }
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter(): void {
   }
 
 }
