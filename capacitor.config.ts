@@ -5,9 +5,6 @@ const config: CapacitorConfig = {
   appName: "Cooper System",
   webDir: "www",
   bundledWebRuntime: false,
-  // npmClient: "npm",
-  // windowsAndroidStudioPath: "C:\\Users\\cesar\\AppData\\Local\\JetBrains\\Toolbox\\apps\\AndroidStudio\\ch-0\\203.7935034\\bin\\studio64.exe",
-  // linuxAndroidStudioPath: "/home/cesar/.local/share/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7784292/bin/studio.sh",
   loggingBehavior: "debug",
   cordova: {
     preferences: {}
