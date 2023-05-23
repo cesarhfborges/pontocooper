@@ -61,6 +61,12 @@ export class MainLayoutComponent implements OnInit, AfterViewInit, AfterContentI
       visible: true,
     },
     {
+      label: 'Opções',
+      link: '/opcoes',
+      icon: 'settings-outline',
+      visible: true,
+    },
+    {
       label: 'Dev',
       link: '/development',
       icon: 'code-working-outline',
