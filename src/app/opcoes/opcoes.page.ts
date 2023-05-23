@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Opcoes } from '../shared/models';
 
 @Component({
   selector: 'app-opcoes',
@@ -7,7 +9,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OpcoesPage implements OnInit {
 
-  constructor() { }
+  form: FormGroup;
+
+  opcoes: Opcoes;
+
+  constructor(
+    private fb: FormBuilder,
+  ) {
+    this.opcoes = {
+      darkMode: [
+        {label: 'Automático', value: 'automatico'},
+        {label: 'Escuro', value: 'escuro'},
+        {label: 'Claro', value: 'claro'},
+      ],
+    };
+    this.form = this.fb.group({
+      darkMode: ['', [Validators.required]]
+    })
+  }
 
   ngOnInit() {
   }

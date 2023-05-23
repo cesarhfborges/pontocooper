@@ -13,10 +13,34 @@
 <ion-content>
 
   <ion-card>
-    <ion-card-title>
-      <p>Opções</p>
-    </ion-card-title>
+<!--    <ion-card-header>-->
+<!--      <ion-card-title>-->
+<!--        <h3>Opções</h3>-->
+<!--      </ion-card-title>-->
+<!--    </ion-card-header>-->
+
+    <ion-item>
+      <ion-icon color="tertiary" name="options-outline" slot="start"></ion-icon>
+      <ion-label>Opções</ion-label>
+    </ion-item>
+
     <ion-card-content>
+
+      <form [formGroup]="form">
+        <ion-list>
+
+          <ion-item>
+            <ion-label>Modo escuro</ion-label>
+            <ion-select cancelText="Cancelar" formControlName="darkMode" okText="Selecionar">
+              <ion-select-option
+                *ngFor="let opt of opcoes.darkMode"
+                [value]="opt.value"
+              >{{opt.label}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </form>
+
 
     </ion-card-content>
   </ion-card>
