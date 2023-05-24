@@ -20,7 +20,7 @@
     "android-build-production": "ionic cap build android --no-open --prod && ionic cap sync && cd android && gradlew assembleRelease && cd .. && npm run copy-apk-release",
     "android-studio-build": "ionic build && ionic cap sync && ionic capacitor build android",
     "android-run": "ionic build && ionic cap run android",
-    "android-run-live": "ionic cap run android -l --external",
+    "android-run-live": "ionic cap run android -l --external --target=3837c06d",
     "android-open": "ionic cap copy && ionic cap open android",
     "android-open-live": "ionic cap run android --open --livereload --external --host=192.168.68.100",
     "ios-run": "ionic build && ionic cap sync && ionic cap run ios",

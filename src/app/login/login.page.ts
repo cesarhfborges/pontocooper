@@ -4,7 +4,7 @@ import {Platform, ViewWillEnter} from '@ionic/angular';
 import {AuthService} from '../core/services/auth.service';
 import {Router} from '@angular/router';
 import {environment} from '../../environments/environment';
-import {ToastsService} from '../shared/services/toasts.service';
+import {ToastsService} from '../shared/services';
 import {Animation, StatusBar, Style} from '@capacitor/status-bar';
 
 @Component({
@@ -78,8 +78,9 @@ export class LoginPage implements OnInit, ViewWillEnter {
       if (this.platform.is('capacitor')) {
         if (this.platform.is('android')) {
           await StatusBar.show({animation: Animation.Fade});
-          await StatusBar.setOverlaysWebView({overlay: true});
+          await StatusBar.setOverlaysWebView({overlay: false});
           await StatusBar.setStyle({style: Style.Dark});
+          await StatusBar.setBackgroundColor({color: '#025955'});
         }
         if (this.platform.is('ios')) {
           // await StatusBar.show({animation: Animation.Slide});
