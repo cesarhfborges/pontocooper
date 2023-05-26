@@ -16,6 +16,7 @@ export class SlideUnlockComponent implements OnInit {
   @ViewChild('inputSlider') inputSlider: ElementRef | undefined;
   @Input() title: string | null = null;
   @Input() color: Colors = 'primary';
+  @Input() emitIncomplete: boolean = false;
   @Output() onComplete: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
@@ -25,10 +26,18 @@ export class SlideUnlockComponent implements OnInit {
   ngOnInit() {
   }
 
+  reset() {
+
+  }
+
   onDropped($event: boolean) {
     if ($event) {
-      console.log('Complete slide')
+      console.log('Complete slide');
       this.onComplete.emit(true);
+    } else {
+      if (this.emitIncomplete) {
+        this.onComplete.emit(false);
+      }
     }
   }
 }

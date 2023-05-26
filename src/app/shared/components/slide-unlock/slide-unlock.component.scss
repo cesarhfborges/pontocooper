@@ -3,12 +3,12 @@
   justify-content: center;
   align-items: stretch;
   flex-direction: column;
-  background-color: #4d4d4d;
+  background-color: unset;
   height: 100%;
 
   .item {
     align-self:stretch;
-    background: blue;
+    background: unset;
     display: block;
     line-height: 0!important;
 
@@ -25,103 +25,80 @@
       cursor: pointer;
 
       &::-webkit-slider-runnable-track {
-        background-color: #add8e6;
+        background-color: #eeeeee;
         border-radius: 6px;
-        padding: 1px;
-        //height: 30px;
+        padding: 2px;
+        border: 1px solid #c7c7c7;
       }
 
       &::-webkit-slider-thumb {
-        -webkit-appearance: none; /* Override default look */
+        -webkit-appearance: none;
         appearance: none;
-        //margin-top: 4.75px; /* Centers thumb on the track */
-        background-color: #808080;
         border-radius: 6px;
         height: 40px;
         width: 80px;
+        border-width: 1px;
+        border-style: solid;
 
         &:active, &:focus {
           outline: none;
         }
       }
-      //&:active {
-      //  @include thumb() {
-      //    transform: scale(1.1);
-      //    cursor: grabbing;
-      //  }
-      //}
-      //
-      //&:focus {
-      //  outline: none;
-      //}
-      //
-      //@include thumb() {
-      //  display: block;
-      //  width: 30px;
-      //  height: 30px;
-      //  border-radius: 50%;
-      //  background: #5990DD;
-      //  transform-origin: 50% 50%;
-      //  transform: scale(1);
-      //  transition: transform ease-out 100ms;
-      //  cursor: grab;
-      //}
-      //
-      //// track styles
-      //@include track(#DDE0E3, 1rem) {
-      //  height: 1rem;
-      //  padding: .55rem;
-      //  box-sizing: content-box;
-      //}
+
+      &.slide-primary {
+        &::-webkit-slider-thumb {
+          background: var(--ion-color-primary);
+          border-color: var(--ion-color-primary-shade);
+        }
+      }
+
+      &.slide-secondary {
+        &::-webkit-slider-thumb {
+          background: var(--ion-color-secondary);
+          border-color: var(--ion-color-secondary-shade);
+        }
+      }
+
+      &.slide-tertiary {
+        &::-webkit-slider-thumb {
+          background: var(--ion-color-tertiary);
+          border-color: var(--ion-color-tertiary-shade);
+        }
+      }
+
+      &.slide-success {
+        &::-webkit-slider-thumb {
+          background: var(--ion-color-success);
+          border-color: var(--ion-color-success-shade);
+        }
+      }
+
+      &.slide-warning {
+        &::-webkit-slider-thumb {
+          background: var(--ion-color-warning);
+          border-color: var(--ion-color-warning-shade);
+        }
+      }
+
+      &.slide-danger {
+        &::-webkit-slider-thumb {
+          background: var(--ion-color-danger);
+          border-color: var(--ion-color-danger-shade);
+        }
+      }
     }
   }
 }
 
-//@mixin track($color: red, $radius: 0) {
-//  &::-webkit-slider-runnable-track {
-//    @content;
-//    border-radius: $radius;
-//    background-color: $color;
-//    background: red;
-//  }
-//  &::-moz-range-track {
-//    @content;
-//    border-radius: $radius;
-//    background-color: $color;
-//    background: red;
-//  }
-//  &::-moz-focus-outer {
-//    border: 0;
-//    background: red;
-//  }
-//  &::-ms-track {
-//    border: 0;
-//    @content;
-//    border-radius: $radius;
-//    background-color: $color;
-//    color: transparent;
-//    background: red;
-//  }
-//  &::-ms-fill-lower, &::-ms-fill-upper {
-//    background-color: transparent;
-//    background: red;
-//  }
-//  &::-ms-tooltip {
-//    display: none;
-//    background: red;
-//  }
-//}
-//
-//@mixin thumb() {
-//  &::-webkit-slider-thumb {
-//    appearance: none;
-//    @content;
-//  }
-//  &::-moz-range-thumb {
-//    border: 0;
-//    @content;
-//  }
-//  &::-ms-thumb {
-//    @content;
-//  }
-//}
+@media (prefers-color-scheme: dark) {
+  .slider {
+    .item {
+      input[type="range"] {
+        &::-webkit-slider-runnable-track {
+          background-color: #3f3f3f;
+          border-color: #737373;
+        }
+      }
+    }
+  }
+}

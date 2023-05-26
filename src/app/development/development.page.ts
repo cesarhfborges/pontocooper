@@ -238,4 +238,6 @@ export class DevelopmentPage implements OnInit {
       console.log('request permissions: ', request);
     }
   }
+
+  protected readonly window = window;
 }

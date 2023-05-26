@@ -28,7 +28,34 @@
   <ion-card>
     <ion-card-content>
       <app-slide-unlock
-        title="Teste"
+        title="primary"
+        color="primary"
+        (onComplete)="window.alert('Complete method primary')"
+      ></app-slide-unlock>
+      <app-slide-unlock
+        title="secondary"
+        color="secondary"
+        (onComplete)="window.alert('Complete method secondary')"
+      ></app-slide-unlock>
+      <app-slide-unlock
+        title="tertiary"
+        color="tertiary"
+        (onComplete)="window.alert('Complete method tertiary')"
+      ></app-slide-unlock>
+      <app-slide-unlock
+        title="success"
+        color="success"
+        (onComplete)="window.alert('Complete method success')"
+      ></app-slide-unlock>
+      <app-slide-unlock
+        title="warning"
+        color="warning"
+        (onComplete)="window.alert('Complete method warning')"
+      ></app-slide-unlock>
+      <app-slide-unlock
+        title="danger"
+        color="danger"
+        (onComplete)="window.alert('Complete method danger')"
       ></app-slide-unlock>
     </ion-card-content>
   </ion-card>

@@ -67,11 +67,13 @@ export class SlideEventsDirective implements AfterViewInit {
     this.currentValue = value;
     if(this.currentValue >= this.maxValue) {
       this.onDrop.emit(true);
-      setTimeout(() => {
-        this.currentValue = 0;
-        this.element.value = 0;
-      }, 3500);
+      // this.element.disable();
+      // setTimeout(() => {
+      //   this.currentValue = 0;
+      //   this.element.value = 0;
+      // }, 3500);
     } else {
+      this.onDrop.emit(false);
       this.rafID = window.requestAnimationFrame(this.animateHandler.bind(this));
     }
   }
