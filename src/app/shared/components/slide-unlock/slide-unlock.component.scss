@@ -5,25 +5,17 @@
   flex-direction: column;
   background-color: #4d4d4d;
   height: 100%;
-  //padding: 15px;
-  gap: 5px;
 
-  .slide {
+  .item {
     align-self:stretch;
     background: blue;
+    display: block;
+    line-height: 0!important;
 
-    //position: relative;
-    //z-index: 9980;
-    //
-    //&::before {
-    //  content: '';
-    //  position: absolute;
-    //  top: 0;
-    //  left: 0;
-    //  width: 30px;
-    //  height: 30px;
-    //  background: blue;
-    //}
+    h1 {
+      margin: 0;
+      padding: 0;
+    }
 
     input[type="range"] {
       width: 100%;

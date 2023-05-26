@@ -27,6 +27,7 @@ export class SlideUnlockComponent implements OnInit {
 
   onDropped($event: boolean) {
     if ($event) {
+      console.log('Complete slide')
       this.onComplete.emit(true);
     }
   }

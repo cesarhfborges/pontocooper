@@ -17,7 +17,7 @@ export class SlideEventsDirective implements AfterViewInit {
   private currentValue = 0;
   private minValue: number = 0;
   private maxValue: number = 100;
-  private speed: number = 12;
+  private speed: number = 5;
   private rafID: any | undefined;
 
   @Output() onDrop: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -67,6 +67,10 @@ export class SlideEventsDirective implements AfterViewInit {
     this.currentValue = value;
     if(this.currentValue >= this.maxValue) {
       this.onDrop.emit(true);
+      setTimeout(() => {
+        this.currentValue = 0;
+        this.element.value = 0;
+      }, 3500);
     } else {
       this.rafID = window.requestAnimationFrame(this.animateHandler.bind(this));
     }

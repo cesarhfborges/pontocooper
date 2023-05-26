@@ -1,6 +1,8 @@
 <div class="slider">
-  <h1 *ngIf="title">{{title}}</h1>
-  <div class="slide">
+  <div *ngIf="title" class="item">
+    <h1>{{title}}</h1>
+  </div>
+  <div class="item">
     <input
       #inputSlider
       [class.slide-primary]="color === 'primary'"
@@ -11,8 +13,8 @@
       [class.slide-danger]="color === 'danger'"
       type="range"
       class="inputSlider"
-      (onDrop)="onDropped($event)"
       appSlideEvents
+      (onDrop)="onDropped($event)"
     />
   </div>
 </div>
