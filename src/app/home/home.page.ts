@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AlertController,
   AlertInput,
@@ -6,24 +6,24 @@ import {
   LoadingController,
   Platform,
   ToastController,
-  ViewWillEnter
+  ViewWillEnter,
 } from '@ionic/angular';
-import {lastValueFrom, Observable, switchMap, throwError, timer} from 'rxjs';
-import {AuthService} from '../core/services/auth.service';
-import {Usuario} from '../core/models/usuario';
-import {DadosService} from '../core/services/dados.service';
-import {Summary} from '../core/interfaces/summary';
-import {addMinutes, addSeconds, format, getHours, parseISO, set, subMinutes} from 'date-fns';
-import {BancoDeHoras} from '../core/interfaces/banco-de-horas';
-import {Batida} from '../core/models/batida';
-import {Ponto} from '../core/models/ponto';
-import {environment} from '../../environments/environment';
-import {LocalNotifications} from '@capacitor/local-notifications';
-import {Geolocation} from '@capacitor/geolocation';
-import {LocalNotificationSchema} from '@capacitor/local-notifications/dist/esm/definitions';
-import {App} from '@capacitor/app';
-import {LoadingStatus} from '../shared/models/loading.interface';
-import {Coords} from '../shared/models/coords.interface';
+import { lastValueFrom, Observable, timer } from 'rxjs';
+import { AuthService } from '../core/services/auth.service';
+import { Usuario } from '../core/models/usuario';
+import { DadosService } from '../core/services/dados.service';
+import { Summary } from '../core/interfaces/summary';
+import { addMinutes, addSeconds, format, getHours, parseISO, set, subMinutes } from 'date-fns';
+import { BancoDeHoras } from '../core/interfaces/banco-de-horas';
+import { Batida } from '../core/models/batida';
+import { Ponto } from '../core/models/ponto';
+import { environment } from '../../environments/environment';
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { Geolocation } from '@capacitor/geolocation';
+import { LocalNotificationSchema } from '@capacitor/local-notifications/dist/esm/definitions';
+import { App } from '@capacitor/app';
+import { LoadingStatus } from '../shared/models';
+import { Coords } from '../shared/models';
 
 @Component({
   selector: 'app-home',
@@ -40,7 +40,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
     profile: {loading: true, error: false},
     summary: {loading: true, error: false},
     bancoDeHoras: {loading: true, error: false},
-    timeline: {loading: true, error: false}
+    timeline: {loading: true, error: false},
   };
   perfil: Usuario | undefined;
   summary: Summary = {
@@ -51,7 +51,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
   };
   bancoDeHoras: BancoDeHoras = {
     balance: '',
-    pending: ''
+    pending: '',
   };
   ponto: Ponto;
   buttonEvent: Date = new Date();
@@ -86,7 +86,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         // if (this.perfil) {
         //   this.calculaValor(this.perfil.hourly_rate as number);
         // }
-      }
+      },
     });
     this.monitorarBtnBack();
   }
@@ -104,7 +104,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
       this.getPerfil(),
       this.getBancoDeHoras(),
       this.getSumario(),
-      this.getTimeLine()
+      this.getTimeLine(),
     ]).then(() => {
       $event?.target?.complete();
     }).catch((error) => {
@@ -128,7 +128,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
           color: 'medium',
           icon: 'alert-circle-outline',
           animated: true,
-          mode: 'ios'
+          mode: 'ios',
         });
         if (new Date() <= this.buttonEvent) {
           toast.dismiss().catch();
@@ -166,7 +166,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         workingHours: response.working_hours,
         businessDays: response.business_days,
         hoursToWork: response.hours_to_work,
-        remainingHours: response.remaining_hours
+        remainingHours: response.remaining_hours,
       };
       this.loading.summary.loading = false;
       return Promise.resolve();
@@ -194,7 +194,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
       for (const batida of response.timeline) {
         this.ponto.addPonto({
           ...batida,
-          worktime_clock: parseISO(batida.worktime_clock)
+          worktime_clock: parseISO(batida.worktime_clock),
         });
       }
       this.loading.timeline.loading = false;
@@ -221,7 +221,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
           type: 'checkbox',
           label: `Essa é minha pausa de ${Ponto.intervalo(30).label}.`,
           value: true,
-          checked: false
+          checked: false,
         };
         const isWorking: boolean = this.ponto.trabalhando;
         const alert = await this.alertController.create({
@@ -234,7 +234,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
               handler: () => {
                 alert.dismiss(undefined, 'cancelar');
                 return false;
-              }
+              },
             },
             {
               text: 'Registrar',
@@ -243,10 +243,10 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
                 const r: boolean = teste?.length > 0 ? teste[0] : false;
                 alert.dismiss(r, 'done');
                 return false;
-              }
-            }
+              },
+            },
           ],
-          inputs: isWorking ? [input] : []
+          inputs: isWorking ? [input] : [],
         });
 
         await alert.present();
@@ -329,8 +329,8 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
           channelId: 'ponto',
           schedule: {
             at: subMinutes(atDateTime, 5),
-            allowWhileIdle: true
-          }
+            allowWhileIdle: true,
+          },
         },
         {
           id: 2,
@@ -341,8 +341,8 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
           channelId: 'ponto',
           schedule: {
             at: atDateTime,
-            allowWhileIdle: true
-          }
+            allowWhileIdle: true,
+          },
         },
       ];
       const schedule = await LocalNotifications.schedule({notifications: schemas});
