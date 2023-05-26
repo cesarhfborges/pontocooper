@@ -12,6 +12,8 @@ import { ModalDatePickerComponent } from './components/modal-date-picker/modal-d
 import { ModalRasuraComponent } from './components/modal-rasura/modal-rasura.component';
 import { PreventFocusDirective } from './directives/prevent-focus.directive';
 import { ModalTimePickerComponent } from './components/modal-time-picker/modal-time-picker.component';
+import { SlideUnlockComponent } from './components/slide-unlock/slide-unlock.component';
+import { SlideEventsDirective } from './components/slide-unlock/directives/slide-events.directive';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { ModalTimePickerComponent } from './components/modal-time-picker/modal-t
     ModalTimePickerComponent,
     ModalRasuraComponent,
     PreventFocusDirective,
+    SlideUnlockComponent,
+    SlideEventsDirective,
   ],
   exports: [
     InvalidMessageComponent,
@@ -33,6 +37,7 @@ import { ModalTimePickerComponent } from './components/modal-time-picker/modal-t
     ModalDatePickerComponent,
     ModalRasuraComponent,
     PreventFocusDirective,
+    SlideUnlockComponent
   ],
   imports: [
     IonicModule,
