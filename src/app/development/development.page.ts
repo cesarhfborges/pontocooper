@@ -244,17 +244,17 @@ export class DevelopmentPage implements OnInit {
 
   async checkBiometryAvaliable() {
     const res = await BiometricAuth.checkBiometry();
-    console.log(res.isAvailable);
+    console.log('biometry: ', res);
     this.biometryAvaliable = res.isAvailable;
   }
 
   async authenticate() {
     try {
       const options: AuthenticateOptions = {
-        reason: 'reason',
+        reason: 'Validação necessária para acessar o app.',
         allowDeviceCredential: true,
-        androidSubtitle: 'subtitle',
-        androidTitle: 'title',
+        androidSubtitle: 'Verificação de identidade.',
+        androidTitle: 'Autenticação Biométrica',
         cancelTitle: 'Cancelar',
         iosFallbackTitle: 'Fallback',
       };
