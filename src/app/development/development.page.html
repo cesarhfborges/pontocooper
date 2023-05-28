@@ -26,6 +26,17 @@
   </ion-card>
 
   <ion-card>
+    <ion-card-header>
+      <ion-card-title>Biometry</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h1 class="ion-margin-bottom ion-padding-bottom">Biometria disponivel: {{biometryAvaliable}}</h1>
+      <ion-button type="button" class="ion-margin-bottom" color="tertiary" expand="block" (click)="checkBiometryAvaliable()">Verificar</ion-button>
+      <ion-button type="button" class="ion-margin-bottom" color="tertiary" expand="block" (click)="authenticate()">Testar</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
     <ion-card-content>
       <app-slide-unlock
         title="primary"

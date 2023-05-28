@@ -1,11 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {environment} from '../../environments/environment';
-import {PositionService} from '../shared/services/position.service';
-import {PermissionStatus} from '@capacitor/geolocation/dist/esm/definitions';
-import {LocalNotificationSchema} from '@capacitor/local-notifications/dist/esm/definitions';
-import {addMinutes, addSeconds, format, subMinutes} from 'date-fns';
-import {Network} from '@capacitor/network';
-import {LocalNotifications} from '@capacitor/local-notifications';
+import { Component, OnInit } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { PositionService } from '../shared/services';
+import { PermissionStatus } from '@capacitor/geolocation/dist/esm/definitions';
+import { LocalNotificationSchema } from '@capacitor/local-notifications/dist/esm/definitions';
+import { addSeconds, format } from 'date-fns';
+import { Network } from '@capacitor/network';
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { AuthenticateOptions, BiometricAuth, BiometryType } from '@aparajita/capacitor-biometric-auth';
 
 
 @Component({
@@ -21,20 +22,22 @@ export class DevelopmentPage implements OnInit {
     network: boolean;
   } = {
     gps: true,
-    network: true
+    network: true,
   };
   gpsPermissions: PermissionStatus = {
     location: 'denied',
-    coarseLocation: 'denied'
+    coarseLocation: 'denied',
   };
   networkStatus: {
     connected: boolean;
     connectionType: string;
   } = {
     connected: false,
-    connectionType: 'none'
+    connectionType: 'none',
   };
   notificationPermissions = false;
+  biometryAvaliable: boolean = false;
+  protected readonly window = window;
 
   constructor(
     private positionService: PositionService,
@@ -85,7 +88,7 @@ export class DevelopmentPage implements OnInit {
     Promise.all([
       this.getPosition(),
       this.getNetworkStatus(),
-      this.getNotificationPermission()
+      this.getNotificationPermission(),
     ]).catch();
   }
 
@@ -96,7 +99,7 @@ export class DevelopmentPage implements OnInit {
     } catch (e) {
       this.networkStatus = {
         connectionType: 'none',
-        connected: false
+        connected: false,
       };
     } finally {
       this.loading.network = false;
@@ -110,7 +113,7 @@ export class DevelopmentPage implements OnInit {
     } catch (e) {
       this.gpsPermissions = {
         location: 'denied',
-        coarseLocation: 'denied'
+        coarseLocation: 'denied',
       };
     } finally {
       this.loading.gps = false;
@@ -157,7 +160,7 @@ export class DevelopmentPage implements OnInit {
         sound: 'cool.wav',
         lights: true,
         description: 'canal de teste de notificações',
-        visibility: 1
+        visibility: 1,
       });
       const schemas: LocalNotificationSchema[] = [
         {
@@ -172,13 +175,13 @@ export class DevelopmentPage implements OnInit {
           channelId: 'teste',
           schedule: {
             at: addSeconds(new Date(), 20),
-            allowWhileIdle: true
+            allowWhileIdle: true,
           },
           attachments: [
             {
               id: '1',
               url: 'res:///assets/public/assets/pin.png',
-            }
+            },
           ],
         },
         {
@@ -193,8 +196,8 @@ export class DevelopmentPage implements OnInit {
           channelId: 'teste',
           schedule: {
             at: addSeconds(new Date(), 24),
-            allowWhileIdle: true
-          }
+            allowWhileIdle: true,
+          },
         },
         {
           id: 99,
@@ -209,13 +212,13 @@ export class DevelopmentPage implements OnInit {
           channelId: 'teste',
           schedule: {
             at: addSeconds(new Date(), 28),
-            allowWhileIdle: true
+            allowWhileIdle: true,
           },
           attachments: [
             {
               id: '1',
               url: 'res:///public/assets/ping.png',
-            }
+            },
           ],
         },
         // {
@@ -239,5 +242,26 @@ export class DevelopmentPage implements OnInit {
     }
   }
 
-  protected readonly window = window;
+  async checkBiometryAvaliable() {
+    const res = await BiometricAuth.checkBiometry();
+    console.log(res.isAvailable);
+    this.biometryAvaliable = res.isAvailable;
+  }
+
+  async authenticate() {
+    try {
+      const options: AuthenticateOptions = {
+        reason: 'reason',
+        allowDeviceCredential: true,
+        androidSubtitle: 'subtitle',
+        androidTitle: 'title',
+        cancelTitle: 'Cancelar',
+        iosFallbackTitle: 'Fallback',
+      };
+      const res = await BiometricAuth.authenticate(options);
+      console.log('response: ', res);
+    } catch (e) {
+      console.log('error: ', e);
+    }
+  }
 }
