@@ -13,11 +13,11 @@
 <ion-content>
 
   <ion-card>
-<!--    <ion-card-header>-->
-<!--      <ion-card-title>-->
-<!--        <h3>Opções</h3>-->
-<!--      </ion-card-title>-->
-<!--    </ion-card-header>-->
+    <!--    <ion-card-header>-->
+    <!--      <ion-card-title>-->
+    <!--        <h3>Opções</h3>-->
+    <!--      </ion-card-title>-->
+    <!--    </ion-card-header>-->
 
     <ion-item>
       <ion-icon color="tertiary" name="options-outline" slot="start"></ion-icon>
@@ -38,11 +38,22 @@
               >{{opt.label}}</ion-select-option>
             </ion-select>
           </ion-item>
+
+          <ion-item *ngIf="biometryAvaliable">
+            <ion-label>Ativar bloqueio por digital</ion-label>
+            <ion-toggle formControlName="biometry" (ionChange)="toggleBiometry($event)" color="tertiary" slot="end"></ion-toggle>
+          </ion-item>
         </ion-list>
       </form>
 
 
     </ion-card-content>
   </ion-card>
+  <pre>
+    <code>
+      {{form.value|json}}
+    </code>
+  </pre>
+
 
 </ion-content>
