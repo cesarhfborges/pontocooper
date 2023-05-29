@@ -140,7 +140,7 @@ export class LoginPage implements OnInit, ViewWillEnter {
         subtitle: 'Verificação de identidade.',
         description: 'Validação necessária para acessar o app.',
         fallbackTitle: 'Cancelar',
-        maxAttempts: 3,
+        maxAttempts: 5,
         useFallback: false,
         negativeButtonText: 'Cancelar',
       };
