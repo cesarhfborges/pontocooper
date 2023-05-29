@@ -86,7 +86,7 @@ export class AppComponent implements OnInit, OnDestroy {
             type: 'Bitmap',
             name: ICONS_PACK.TICKET,
           },
-          data: 'ponto',
+          data: 'ponto-automatico',
         },
         {
           id: 'producao',

@@ -24,21 +24,21 @@ export class SessionService {
   set credentials(data: Auth) {
     const str: string = JSON.stringify(data);
     const enc: string = btoa(str);
-    window.localStorage.setItem(this.storeKey, enc);
+    window.sessionStorage.setItem(this.storeKey, enc);
     this.auth = data;
   }
 
   public isLoggedIn(): boolean {
-    return !!window.localStorage.getItem(this.storeKey);
+    return !!window.sessionStorage.getItem(this.storeKey);
   }
 
   public clear(): void {
     this.auth = null;
-    window.localStorage.removeItem(this.storeKey);
+    window.sessionStorage.removeItem(this.storeKey);
   }
 
   private load(): Auth | null {
-    const data: any = window.localStorage.getItem(this.storeKey);
+    const data: any = window.sessionStorage.getItem(this.storeKey);
     if (data !== null) {
       const dec: string = atob(data);
       return JSON.parse(dec);

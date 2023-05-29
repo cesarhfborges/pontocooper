@@ -51,6 +51,10 @@ const routes: Routes = [
     path: 'offline',
     loadChildren: () => import('./offline/offline.module').then(m => m.OfflinePageModule),
   },
+  {
+    path: 'ponto-automatico',
+    loadChildren: () => import('./ponto-automatico/ponto-automatico.module').then( m => m.PontoAutomaticoPageModule)
+  },
 ];
 
 @NgModule({

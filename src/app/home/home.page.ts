@@ -299,7 +299,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
       }
     } else {
       const loading = await this.loadingController.create({
-        message: 'É Necessário aguardar o mínimo de 30 minutos para registrar o ponto.',
+        message: 'É Necessário ter um mínimo de 30 minutos de diferença entre a batida anterior para registrar o ponto.',
         animated: true,
         spinner: 'lines',
         backdropDismiss: false,
