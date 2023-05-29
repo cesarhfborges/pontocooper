@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Opcoes } from '../shared/models';
 import { ViewWillEnter } from '@ionic/angular';
-import { AuthenticateOptions, BiometricAuth } from '@aparajita/capacitor-biometric-auth';
+import { NativeBiometric } from 'capacitor-native-biometric';
+import { BiometricOptions, Credentials } from 'capacitor-native-biometric/dist/esm/definitions';
+import { OptionsService } from '../shared/services';
 
 @Component({
   selector: 'app-opcoes',
@@ -16,6 +18,7 @@ export class OpcoesPage implements OnInit, ViewWillEnter {
   opcoes: Opcoes;
 
   biometryAvaliable: boolean = false;
+  private biometricServer: string = 'portal.coopersystem.com.br';
 
   constructor(
     private fb: FormBuilder,
@@ -33,55 +36,52 @@ export class OpcoesPage implements OnInit, ViewWillEnter {
     });
   }
 
-  get biometryEnabled(): boolean {
-    return this.form.get('biometry')?.value ?? false;
-  }
-
   ngOnInit() {
-    Promise.all([
-      this.checkBiometryAvaliable(),
-    ]).then(r => {
-      this.biometryAvaliable = r[0];
-    })
   }
 
   ionViewWillEnter(): void {
+    Promise.all([
+      this.checkBiometryAvaliable(),
+      this.getBiometryCredentials(),
+    ]).then(r => {
+      this.biometryAvaliable = r[0];
+      if (r[0]) {
+        this.form.get('biometry')?.patchValue(r[1])
+      }
+    })
   }
 
-  async toggleBiometry($event: any) {
-    if ($event.detail) {
-      if ($event.detail.checked) {
-        const auth = await this.authenticate();
-        this.form.get('biometry')?.patchValue(auth);
-      } else {
-        this.form.get('biometry')?.patchValue(false);
-      }
+  async getBiometryCredentials(): Promise<boolean> {
+    try {
+      const response = await NativeBiometric.getCredentials({
+        server: this.biometricServer,
+      });
+      return Promise.resolve(!!response);
+    } catch (e: any) {
+      return Promise.resolve(false);
     }
   }
 
   async checkBiometryAvaliable() {
     try {
-      const res = await BiometricAuth.checkBiometry();
-      return Promise.resolve(res.isAvailable);
+      const result = await NativeBiometric.isAvailable();
+      return Promise.resolve(result.isAvailable);
     } catch (e) {
       return Promise.resolve(false);
     }
   }
 
-  async authenticate(): Promise<boolean> {
+  get biometryEnabled(): boolean {
+    return this.form.get('biometry')?.value ?? false;
+  }
+
+  async disableBiometry() {
     try {
-      const options: AuthenticateOptions = {
-        reason: 'Validação necessária para acessar o app.',
-        allowDeviceCredential: true,
-        androidSubtitle: 'Verificação de identidade.',
-        androidTitle: 'Autenticação Biométrica',
-        cancelTitle: 'Cancelar',
-        iosFallbackTitle: 'Fallback',
-      };
-      await BiometricAuth.authenticate(options);
-      return Promise.resolve(true);
+      await NativeBiometric.deleteCredentials({server: this.biometricServer});
+      this.form.get('biometry')?.patchValue(false);
+      console.log('sucesso');
     } catch (e) {
-      return Promise.resolve(false);
+      console.log('error: ', e);
     }
   }
 }

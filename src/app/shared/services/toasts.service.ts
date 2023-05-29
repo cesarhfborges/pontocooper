@@ -26,7 +26,7 @@ export class ToastsService {
   showToastDanger(mensagem: string): void {
     this.toastController.create({
       message: mensagem,
-      duration: 2000,
+      duration: 3000,
       animated: true,
       color: 'danger'
     }).then(
@@ -42,6 +42,19 @@ export class ToastsService {
       duration: 2000,
       animated: true,
       color: 'success'
+    }).then(
+      toast => {
+        toast.present().then();
+      }
+    );
+  }
+
+  showToastWarning(mensagem: string): void {
+    this.toastController.create({
+      message: mensagem,
+      duration: 3000,
+      animated: true,
+      color: 'warning'
     }).then(
       toast => {
         toast.present().then();

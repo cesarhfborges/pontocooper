@@ -36,7 +36,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const isRefreshTokenRequest = request.url.startsWith(`${environment.apiUrl}/auth/refresh/`);
-        if (error.status === 401 && isApiRequest && !isRefreshTokenRequest) {
+        if (this.session.isLoggedIn() && error.status === 401 && isApiRequest && !isRefreshTokenRequest) {
           if (!this.isRefreshing) {
             this.isRefreshing = true;
             this.refreshTokenSubject.next(null);

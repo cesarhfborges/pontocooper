@@ -6,10 +6,9 @@ import { SessionService } from '../state/session.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 
-interface Credentials {
+export interface Credenciais {
   username: string;
   password: string;
-  remember?: boolean;
 }
 
 @Injectable({
@@ -24,12 +23,8 @@ export class AuthService {
   ) {
   }
 
-  login(data: Credentials): Observable<boolean> {
-    const credentials: Credentials = {
-      username: data.username,
-      password: data.password,
-    };
-    return this.http.post<any>(`${environment.apiUrl}/auth`, credentials).pipe(
+  login(data: Credenciais): Observable<boolean> {
+    return this.http.post<any>(`${environment.apiUrl}/auth`, data).pipe(
       tap((response: any) => {
         if (response?.access) {
           this.session.credentials = {

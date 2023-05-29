@@ -30,7 +30,7 @@
         <ion-list>
 
           <ion-item>
-            <ion-label>Modo escuro</ion-label>
+            <ion-label>Modo escuro (em breve)</ion-label>
             <ion-select cancelText="Cancelar" formControlName="darkMode" okText="Selecionar">
               <ion-select-option
                 *ngFor="let opt of opcoes.darkMode"
@@ -41,19 +41,27 @@
 
           <ion-item *ngIf="biometryAvaliable">
             <ion-label>Ativar bloqueio por digital</ion-label>
-            <ion-toggle formControlName="biometry" (ionChange)="toggleBiometry($event)" color="tertiary" slot="end"></ion-toggle>
+            <ng-template [ngIf]="biometryEnabled" [ngIfElse]="biometryDisabled">
+              <ion-icon slot="end" color="success" name="checkmark-outline"></ion-icon>
+            </ng-template>
+            <ng-template #biometryDisabled>
+              <ion-icon slot="end" color="danger" name="close-outline"></ion-icon>
+            </ng-template>
           </ion-item>
+          <ion-button
+            *ngIf="biometryEnabled"
+            class="ion-margin biometricSpace" size="default"
+            type="button"
+            expand="block"
+            color="danger"
+            (click)="disableBiometry()"
+          >
+            <ion-icon slot="start" name="finger-print-outline"></ion-icon>Desativar Biometria
+          </ion-button>
         </ion-list>
       </form>
 
 
     </ion-card-content>
   </ion-card>
-  <pre>
-    <code>
-      {{form.value|json}}
-    </code>
-  </pre>
-
-
 </ion-content>

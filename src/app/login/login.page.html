@@ -44,15 +44,30 @@
                 </app-input-password-toggle>
                 <app-invalid-message [control]="form.get('password')"></app-invalid-message>
               </ion-item>
-              <ion-item lines="none">
-                <ion-label>Lembrar</ion-label>
-                <ion-checkbox slot="start" formControlName="remember"></ion-checkbox>
+              <ion-button [disabled]="loading" class="ion-margin" type="submit" expand="block" size="default">
+                <ion-icon slot="start" name="checkmark-outline"></ion-icon>Entrar
+              </ion-button>
+              <ion-button
+                *ngIf="biometryAvaliable && biometricAccessEnabled"
+                [disabled]="loading"
+                (click)="ionViewWillEnter()"
+                class="ion-margin biometricSpace" size="default"
+                type="button"
+                expand="block"
+                color="tertiary"
+              >
+                <ion-icon slot="start" name="finger-print-outline"></ion-icon>Usar Biometria
+              </ion-button>
+              <ion-item lines="none" *ngIf="biometryAvaliable && !biometricAccessEnabled">
+                <ion-icon slot="start" color="tertiary" name="finger-print-outline"></ion-icon>
+                <ion-label>Ativar acesso com biometria</ion-label>
+                <ion-toggle slot="end" color="tertiary" formControlName="biometry"></ion-toggle>
               </ion-item>
-              <ion-button class="ion-margin" type="submit" expand="block">Entrar</ion-button>
             </ion-card-content>
           </ion-card>
         </form>
       </ion-col>
     </ion-row>
   </ion-grid>
+
 </ion-content>

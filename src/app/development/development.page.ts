@@ -6,7 +6,7 @@ import { LocalNotificationSchema } from '@capacitor/local-notifications/dist/esm
 import { addSeconds, format } from 'date-fns';
 import { Network } from '@capacitor/network';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { AuthenticateOptions, BiometricAuth, BiometryType } from '@aparajita/capacitor-biometric-auth';
+import { NativeBiometric } from "capacitor-native-biometric";
 
 
 @Component({
@@ -243,25 +243,51 @@ export class DevelopmentPage implements OnInit {
   }
 
   async checkBiometryAvaliable() {
-    const res = await BiometricAuth.checkBiometry();
-    console.log('biometry: ', res);
-    this.biometryAvaliable = res.isAvailable;
+    // const res = await BiometricAuth.checkBiometry();
+    // console.log('biometry: ', res);
+    // this.biometryAvaliable = res.isAvailable;
+    const result = await NativeBiometric.isAvailable();
+    console.log('biometry: ', result);
+    this.biometryAvaliable = result.isAvailable;
   }
 
   async authenticate() {
     try {
-      const options: AuthenticateOptions = {
-        reason: 'Validação necessária para acessar o app.',
-        allowDeviceCredential: true,
-        androidSubtitle: 'Verificação de identidade.',
-        androidTitle: 'Autenticação Biométrica',
-        cancelTitle: 'Cancelar',
-        iosFallbackTitle: 'Fallback',
-      };
-      const res = await BiometricAuth.authenticate(options);
-      console.log('response: ', res);
+      const result = await NativeBiometric.isAvailable();
+      if (result.isAvailable) {
+        await NativeBiometric.verifyIdentity({
+          reason: 'Testing',
+          title: 'Autenticação Biométrica',
+          subtitle: 'Verificação de identidade.',
+          description: 'Validação necessária para acessar o app.',
+          fallbackTitle: 'Cancelar',
+          maxAttempts: 3,
+          useFallback: false,
+          negativeButtonText: 'Cancelar'
+        });
+
+        const credentials = await NativeBiometric.getCredentials({
+          server: 'teste.coopersystem.com.br',
+        });
+        console.log('credentials: ', credentials);
+      }
     } catch (e) {
       console.log('error: ', e);
+    }
+  }
+
+  async saveCredentials() {
+    try {
+      await NativeBiometric.deleteCredentials({
+        server: 'teste.coopersystem.com.br'
+      })
+      await NativeBiometric.setCredentials({
+        username: "teste",
+        password: "123456",
+        server: 'teste.coopersystem.com.br'
+      });
+    } catch (e) {
+      console.log(e);
     }
   }
 }
