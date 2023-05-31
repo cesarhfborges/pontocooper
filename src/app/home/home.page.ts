@@ -275,13 +275,11 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
           if (response !== undefined) {
             this.ponto.baterPonto(data);
             await this.limparNotificacoes();
-            // if (data === true) {
-            //   await this.agendarNotificacao(dataHoraAgendamento);
-            // }
-            // this.ponto.setIntervalo(data, this.opcoes.intervalo);
             if (data === true) {
-              // const dataHora: Date = addMinutes(new Date(), this.opcoes.intervalo);
               const dataHoraAgendamento: Date = addMinutes(new Date(), 30);
+              // if (!this.ponto.trabalhando) {
+              //
+              // }
               await this.agendarNotificacao(dataHoraAgendamento);
               const toast: any = await this.toastController.create({
                 message: `Você será notificado em ${Ponto.intervalo(30).label} para não esquecer o ponto. ;)`,
@@ -290,9 +288,6 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
               });
               toast.present();
             }
-            // if (this.ponto.isInterval()) {
-            //   // nada
-            // }
           }
         }
       } catch (e) {
@@ -316,16 +311,14 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
     }
   }
 
-  async agendarNotificacao(atDateTime: Date) {
+  async agendarNotificacao(atDateTime: Date, isInterval: boolean = true) {
     const permissionStatus = await LocalNotifications.checkPermissions();
     if (permissionStatus.display === 'granted') {
       const schemas: LocalNotificationSchema[] = [
         {
           id: 1,
-          title: 'CooperSystem- 1 - Title',
-          body: 'teste de notificação - 1 - body',
-          largeBody: 'teste de notificação - 1 - largeBody',
-          summaryText: 'teste de notificação - 1 - summaryText',
+          title: 'CooperSystem - portal',
+          body: isInterval ? 'Faltam cinco minutos para terminar seu intervalo.' : 'Faltam cinco minutos para terminar seu expediente.',
           channelId: 'ponto',
           schedule: {
             at: subMinutes(atDateTime, 5),
@@ -334,10 +327,8 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         },
         {
           id: 2,
-          title: 'CooperSystem- 2 - Title',
-          body: 'teste de notificação - 2 - body',
-          largeBody: 'teste de notificação - 2 - largeBody',
-          summaryText: 'teste de notificação - 2 - summaryText',
+          title: 'CooperSystem - portal',
+          body: isInterval ? 'Seu intervalo terminou, não esqueça de registrar seu ponto.' : 'Seu expediente terminou, não esqueça de registrar seu ponto.',
           channelId: 'ponto',
           schedule: {
             at: atDateTime,
