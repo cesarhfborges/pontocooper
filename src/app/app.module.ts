@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
@@ -41,8 +41,6 @@ registerLocaleData(ptBr);
 export class AppModule {
 
 
-  constructor(
-    private session: SessionService,
-  ) {
+  constructor() {
   }
 }

@@ -1,9 +1,56 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>ponto-automatico</ion-title>
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-img style="height: 45px;" src="assets/logo-horizontal-white.png"></ion-img>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-content>
+            <ion-list>
+              <ion-item>
+                <ng-container [ngTemplateOutlet]="iconView" [ngTemplateOutletContext]="{ etapa: getEtapa('biometry') }"></ng-container>
+                <ion-label>Verificando biometria</ion-label>
+              </ion-item>
+              <ion-item>
+                <ng-container [ngTemplateOutlet]="iconView" [ngTemplateOutletContext]="{ etapa: getEtapa('credentials') }"></ng-container>
+                <ion-label>Obtendo credenciais</ion-label>
+              </ion-item>
+              <ion-item>
+                <ng-container [ngTemplateOutlet]="iconView" [ngTemplateOutletContext]="{ etapa: getEtapa('authentication') }"></ng-container>
+                <ion-label>Autenticando</ion-label>
+              </ion-item>
+              <ion-item>
+                <ng-container [ngTemplateOutlet]="iconView" [ngTemplateOutletContext]="{ etapa: getEtapa('timeline') }"></ng-container>
+                <ion-label>Obtendo dados do ponto</ion-label>
+              </ion-item>
+              <ion-item>
+                <ng-container [ngTemplateOutlet]="iconView" [ngTemplateOutletContext]="{ etapa: getEtapa('ponto') }"></ng-container>
+                <ion-label>Registro do ponto</ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <pre>
+    <code>
+      {{etapas|json}}
+    </code>
+  </pre>
+
 </ion-content>
+
+
+<ng-template #iconView let-data="etapa">
+  <ion-icon *ngIf="data === 'waiting'" slot="start" color="warning" name="hourglass-outline"></ion-icon>
+  <ion-spinner *ngIf="data === 'loading'" color="tertiary" slot="start" name="crescent"></ion-spinner>
+  <ion-icon *ngIf="data === 'success'" color="success" name="checkmark-circle-outline" slot="start"></ion-icon>
+  <ion-icon *ngIf="data === 'error'" color="danger" name="close-circle-outline" slot="start"></ion-icon>
+</ng-template>

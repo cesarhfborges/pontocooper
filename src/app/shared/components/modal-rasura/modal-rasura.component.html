@@ -16,7 +16,7 @@
 
 <ion-content>
   <form [formGroup]="form">
-    <ion-card>
+    <ion-card class="rectification">
       <ion-item>
         <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
         <ion-label>{{dados?.date | date : 'dd/MM/yyyy'}}</ion-label>
@@ -25,20 +25,16 @@
       <ion-card-content>
         <ion-list formArrayName="rectifications" [@slideOutAnimation]="retificacoes.length > 0">
           <ion-item *ngFor="let item of retificacoes.controls; let i = index" [formGroupName]="i">
-            <ion-icon
-              [color]="item?.get('checkIn')?.value ? 'success' : 'danger'"
-              [name]="item?.get('checkIn')?.value ? 'arrow-forward-outline' : 'arrow-back-outline'"
-              slot="start"
-            ></ion-icon>
             <ion-label (click)="updateRetificacao(i)">
               <h4>{{item?.get('position')?.value}}&deg; {{item?.get('checkIn')?.value ? 'Entrada' : 'Saída'}}</h4>
-              <h2>{{item?.get('worktimeClock')?.value !== null ? (item?.get('worktimeClock')?.value | date : 'HH:mm') : 'Informe a hora'}}</h2>
+              <h2 class="hours">{{item?.get('worktimeClock')?.value !== null ? (item?.get('worktimeClock')?.value | date : 'HH:mm') : 'Informe a hora'}}</h2>
+              <app-invalid-message [control]="item.get('worktimeClock')"></app-invalid-message>
             </ion-label>
-            <ion-button *ngIf="checkDeletePossible(i)" fill="clear" size="large" slot="end" (click)="deleteRetificacao(i)">
+            <ion-button class="delete" *ngIf="checkDeletePossible(i)" fill="clear" size="large" slot="end" (click)="deleteRetificacao(i)">
               <ion-icon color="danger" name="trash"></ion-icon>
             </ion-button>
-            <app-invalid-message [control]="item.get('worktimeClock')"></app-invalid-message>
           </ion-item>
+          <app-invalid-message style="display: inline-block;" class="ion-padding-horizontal" [control]="retificacoes"></app-invalid-message>
           <ion-item lines="none">
             <ion-label>
               <h3>Total: {{(diferenca() | async) | date : 'HH:mm' }}</h3>
@@ -48,7 +44,9 @@
         </ion-list>
         <ion-list>
           <ion-item>
-            <ion-label position="stacked">Motivo (opcional):</ion-label>
+            <ion-label position="stacked">
+              <h4>Motivo (opcional):</h4>
+            </ion-label>
             <ion-textarea formControlName="reason"></ion-textarea>
             <app-invalid-message [control]="form.get('reason')"></app-invalid-message>
           </ion-item>
@@ -63,15 +61,15 @@
     </ion-fab-button>
   </ion-fab>
 
-    <pre>
-      <code>
-        {{form.value | json}}
-      </code>
-      <code>
-        {{retificacoes.length | json}}
-      </code>
-      <code>
-        {{dados | json}}
-      </code>
-    </pre>
+<!--    <pre>-->
+<!--      <code>-->
+<!--        {{form.value | json}}-->
+<!--      </code>-->
+<!--      <code>-->
+<!--        {{retificacoes.length | json}}-->
+<!--      </code>-->
+<!--      <code>-->
+<!--        {{dados | json}}-->
+<!--      </code>-->
+<!--    </pre>-->
 </ion-content>

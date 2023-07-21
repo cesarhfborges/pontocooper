@@ -1,26 +1,17 @@
-import {
-  AfterContentInit,
-  AfterViewInit,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  Output,
-} from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Directive({
   selector: '[appSlideEvents]',
 })
 export class SlideEventsDirective implements AfterViewInit {
 
+  @Output() onDrop: EventEmitter<boolean> = new EventEmitter<boolean>();
   private element: any | undefined;
   private currentValue = 0;
   private minValue: number = 0;
   private maxValue: number = 100;
   private speed: number = 5;
   private rafID: any | undefined;
-
-  @Output() onDrop: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(
     private elementRef: ElementRef,
@@ -65,7 +56,7 @@ export class SlideEventsDirective implements AfterViewInit {
 
   private unlockEndHandler(value: number) {
     this.currentValue = value;
-    if(this.currentValue >= this.maxValue) {
+    if (this.currentValue >= this.maxValue) {
       this.onDrop.emit(true);
       // this.element.disable();
       // setTimeout(() => {
@@ -80,7 +71,7 @@ export class SlideEventsDirective implements AfterViewInit {
 
   private animateHandler() {
     this.element.value = this.currentValue;
-    if(this.currentValue > -1) {
+    if (this.currentValue > -1) {
       window.requestAnimationFrame(this.animateHandler.bind(this));
     }
     this.currentValue = this.currentValue - this.speed;

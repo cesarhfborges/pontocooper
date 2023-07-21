@@ -22,8 +22,8 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Geolocation } from '@capacitor/geolocation';
 import { LocalNotificationSchema } from '@capacitor/local-notifications/dist/esm/definitions';
 import { App } from '@capacitor/app';
-import { LoadingStatus } from '../shared/models';
-import { Coords } from '../shared/models';
+import { Coords, LoadingStatus } from '../shared/models';
+import { PredefinedColors } from '@ionic/core';
 
 @Component({
   selector: 'app-home',
@@ -71,8 +71,25 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
 
   get jornadaDiaria(): number {
     const workingHours = this.summary.workingHours ?? 8;
-    const val = Math.trunc(getHours(this.horasTrabalhadas) / workingHours * 100);
+    const val = Math.trunc((getHours(this.horasTrabalhadas) / workingHours) * 100);
     return val > 99 ? 100 : val;
+  }
+
+  get progressColor(): PredefinedColors {
+    if (this.ponto?.batidas?.length > 0) {
+      if (this.ponto.estaNoIntervalo()) {
+        return 'tertiary';
+      }
+      return this.jornadaDiaria > 99 ? 'success' : 'warning'
+    }
+    return 'medium';
+  }
+
+  get progressValue(): number {
+    if (this.jornadaDiaria > 99) {
+      return 1;
+    }
+    return this.jornadaDiaria / 100
   }
 
   ngOnInit(): void {
@@ -219,7 +236,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         const input: AlertInput = {
           name: 'pausa',
           type: 'checkbox',
-          label: `Essa é minha pausa de ${Ponto.intervalo(30).label}.`,
+          label: `Exibir notificação em ${Ponto.intervalo(30).description}.`,
           value: true,
           checked: false,
         };
@@ -270,16 +287,12 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
             latitude,
             longitude,
           }).toPromise();
-          console.log('ponto response: ', response);
           await loading.dismiss();
           if (response !== undefined) {
             this.ponto.baterPonto(data);
             await this.limparNotificacoes();
             if (data === true) {
               const dataHoraAgendamento: Date = addMinutes(new Date(), 30);
-              // if (!this.ponto.trabalhando) {
-              //
-              // }
               await this.agendarNotificacao(dataHoraAgendamento);
               const toast: any = await this.toastController.create({
                 message: `Você será notificado em ${Ponto.intervalo(30).label} para não esquecer o ponto. ;)`,
@@ -318,7 +331,9 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         {
           id: 1,
           title: 'CooperSystem - portal',
-          body: isInterval ? 'Faltam cinco minutos para terminar seu intervalo.' : 'Faltam cinco minutos para terminar seu expediente.',
+          body: isInterval
+            ? 'Faltam cinco minutos para terminar seu intervalo.'
+            : 'Faltam cinco minutos para terminar seu expediente.',
           channelId: 'ponto',
           schedule: {
             at: subMinutes(atDateTime, 5),
@@ -328,7 +343,9 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         {
           id: 2,
           title: 'CooperSystem - portal',
-          body: isInterval ? 'Seu intervalo terminou, não esqueça de registrar seu ponto.' : 'Seu expediente terminou, não esqueça de registrar seu ponto.',
+          body: isInterval
+            ? 'Seu intervalo terminou, não esqueça de registrar seu ponto.'
+            : 'Seu expediente terminou, não esqueça de registrar seu ponto.',
           channelId: 'ponto',
           schedule: {
             at: atDateTime,
@@ -337,10 +354,8 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
         },
       ];
       const schedule = await LocalNotifications.schedule({notifications: schemas});
-      console.log('scheduled: ', schedule, format(addSeconds(new Date(), 20), 'dd/MM/yyyy HH:mm:ss'));
     } else {
-      const request = await LocalNotifications.requestPermissions();
-      console.log('request permissions: ', request);
+      await LocalNotifications.requestPermissions();
     }
   }
 }

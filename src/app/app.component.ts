@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Network } from '@capacitor/network';
 import { ConnectionStatus } from '@capacitor/network/dist/esm/definitions';
 import { Router } from '@angular/router';
 import { NavController, Platform } from '@ionic/angular';
+import { SessionService } from './core/state/session.service';
+import { ShortcutItem } from 'capacitor-android-shortcuts/dist/esm/definitions';
+import { Network } from '@capacitor/network';
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { environment } from '../environments/environment';
 import { AppLauncher } from '@capacitor/app-launcher';
 import { AndroidShortcuts } from 'capacitor-android-shortcuts';
-import { SessionService } from './core/state/session.service';
-import { ShortcutItem } from 'capacitor-android-shortcuts/dist/esm/definitions';
 import { ICONS_PACK } from './shared/icons/icons-pack';
 
 @Component({

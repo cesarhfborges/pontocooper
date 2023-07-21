@@ -70,8 +70,8 @@
       <div style="margin-bottom: 0; margin-top: 0;">
         <ion-progress-bar
           [buffer]="ponto && ponto.trabalhando && jornada < 100 ? 0 : 1"
-          [color]="jornada > 99 ? 'success' : 'warning'"
-          [value]="jornada / 100"
+          [color]="progressColor"
+          [value]="progressValue"
         ></ion-progress-bar>
       </div>
       <h1 style="margin-top: 9px; margin-bottom: 0; text-align: center; font-size: 2rem;">{{horasTrabalhadas | date : 'HH:mm:ss'}}</h1>

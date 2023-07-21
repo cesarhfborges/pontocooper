@@ -6,7 +6,7 @@ import { LocalNotificationSchema } from '@capacitor/local-notifications/dist/esm
 import { addSeconds, format } from 'date-fns';
 import { Network } from '@capacitor/network';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { NativeBiometric } from "capacitor-native-biometric";
+import { NativeBiometric } from 'capacitor-native-biometric';
 
 
 @Component({
@@ -18,9 +18,11 @@ export class DevelopmentPage implements OnInit {
 
   versao = environment.appVersion;
   loading: {
+    biometry: boolean;
     gps: boolean;
     network: boolean;
   } = {
+    biometry: true,
     gps: true,
     network: true,
   };
@@ -89,6 +91,7 @@ export class DevelopmentPage implements OnInit {
       this.getPosition(),
       this.getNetworkStatus(),
       this.getNotificationPermission(),
+      this.checkBiometryAvaliable()
     ]).catch();
   }
 
@@ -243,12 +246,15 @@ export class DevelopmentPage implements OnInit {
   }
 
   async checkBiometryAvaliable() {
-    // const res = await BiometricAuth.checkBiometry();
-    // console.log('biometry: ', res);
-    // this.biometryAvaliable = res.isAvailable;
-    const result = await NativeBiometric.isAvailable();
-    console.log('biometry: ', result);
-    this.biometryAvaliable = result.isAvailable;
+    try {
+      this.loading.biometry = true;
+      const result = await NativeBiometric.isAvailable();
+      this.biometryAvaliable = result.isAvailable;
+      this.loading.biometry = false;
+    } catch (e) {
+      this.biometryAvaliable = false;
+      this.loading.biometry = false;
+    }
   }
 
   async authenticate() {
@@ -280,10 +286,10 @@ export class DevelopmentPage implements OnInit {
     try {
       await NativeBiometric.deleteCredentials({
         server: 'teste.coopersystem.com.br'
-      })
+      });
       await NativeBiometric.setCredentials({
-        username: "teste",
-        password: "123456",
+        username: 'teste',
+        password: '123456',
         server: 'teste.coopersystem.com.br'
       });
     } catch (e) {

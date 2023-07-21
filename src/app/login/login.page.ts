@@ -8,6 +8,7 @@ import { Animation, StatusBar, Style } from '@capacitor/status-bar';
 import { NativeBiometric } from 'capacitor-native-biometric';
 import { BiometricOptions, Credentials } from 'capacitor-native-biometric/dist/esm/definitions';
 import { lastValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -39,6 +40,13 @@ export class LoginPage implements OnInit, ViewWillEnter {
       remember: this.fb.control(false, [Validators.required]),
       biometry: [false, []],
     });
+    if (!environment.production) {
+      this.form.patchValue({
+        username: 'cesar.borges',
+        password: '@Dj.91344356',
+        remember: true
+      });
+    }
   }
 
   ngOnInit() {
@@ -174,7 +182,7 @@ export class LoginPage implements OnInit, ViewWillEnter {
       const res = await lastValueFrom(this.authService.login(credenciais));
       return Promise.resolve();
     } catch (e) {
-      return Promise.reject('Não foi possível autenticar.')
+      return Promise.reject('Não foi possível autenticar.');
     }
   }
 

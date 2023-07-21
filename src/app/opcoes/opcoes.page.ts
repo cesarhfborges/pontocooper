@@ -3,8 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Opcoes } from '../shared/models';
 import { ViewWillEnter } from '@ionic/angular';
 import { NativeBiometric } from 'capacitor-native-biometric';
-import { BiometricOptions, Credentials } from 'capacitor-native-biometric/dist/esm/definitions';
-import { OptionsService } from '../shared/services';
 
 @Component({
   selector: 'app-opcoes',
@@ -36,6 +34,10 @@ export class OpcoesPage implements OnInit, ViewWillEnter {
     });
   }
 
+  get biometryEnabled(): boolean {
+    return this.form.get('biometry')?.value ?? false;
+  }
+
   ngOnInit() {
   }
 
@@ -46,9 +48,9 @@ export class OpcoesPage implements OnInit, ViewWillEnter {
     ]).then(r => {
       this.biometryAvaliable = r[0];
       if (r[0]) {
-        this.form.get('biometry')?.patchValue(r[1])
+        this.form.get('biometry')?.patchValue(r[1]);
       }
-    })
+    });
   }
 
   async getBiometryCredentials(): Promise<boolean> {
@@ -69,10 +71,6 @@ export class OpcoesPage implements OnInit, ViewWillEnter {
     } catch (e) {
       return Promise.resolve(false);
     }
-  }
-
-  get biometryEnabled(): boolean {
-    return this.form.get('biometry')?.value ?? false;
   }
 
   async disableBiometry() {

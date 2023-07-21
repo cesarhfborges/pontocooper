@@ -3,7 +3,6 @@ import {HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from 
 import {Observable} from 'rxjs';
 import {AuthService} from '../services/auth.service';
 import {SessionService} from '../state/session.service';
-import { Location } from '@angular/common';
 import {environment} from '../../../environments/environment';
 
 @Injectable({
@@ -14,7 +13,6 @@ export class JwtInterceptor implements HttpInterceptor {
   constructor(
     private authService: AuthService,
     private session: SessionService,
-    private location: Location
   ) {
   }
 

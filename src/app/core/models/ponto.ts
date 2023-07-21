@@ -5,16 +5,17 @@ import {Batida} from './batida';
 interface Intervalo {
   label: string;
   value: number;
+  description: string;
 }
 
 export class Ponto {
 
   static intervalos: Intervalo[] = [
-    {value: 30, label: '00:30'},
-    {value: 45, label: '00:45'},
-    {value: 60, label: '01:00'},
-    {value: 90, label: '01:30'},
-    {value: 120, label: '02:00'},
+    {value: 30, label: '00:30', description: '30 minutos'},
+    {value: 45, label: '00:45', description: '45 minutos'},
+    {value: 60, label: '01:00', description: '1 hora'},
+    {value: 90, label: '01:30', description: '1 hora e 30 minutos'},
+    {value: 120, label: '02:00', description: '2 horas'},
   ];
 
   private listaBatidas: Array<Batida>;
@@ -60,7 +61,7 @@ export class Ponto {
         return item;
       }
     }
-    return {value: 30, label: '00:30'};
+    return Ponto.intervalos[0];
   }
 
   public baterPonto(pausa: boolean = false): void {
@@ -117,7 +118,11 @@ export class Ponto {
     return false;
   }
 
-  public isInterval(): boolean {
+  public estaNoIntervalo(): boolean {
+    return this.listaBatidas.length === 2;
+  }
+
+  public verificarIntervaloMinimo(): boolean {
     if (this.trabalhando) {
       const ultimaBatida: Batida = this.listaBatidas[this.listaBatidas.length - 1];
       const diff = differenceInMinutes(new Date(), ultimaBatida.worktime_clock);

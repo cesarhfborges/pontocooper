@@ -19,7 +19,7 @@
       <ion-item>
         <ion-label>Versão Aplicativo:</ion-label>
         <ion-note slot="end">
-          <p>{{versao}}</p>
+          <h5 class="ion-no-margin">{{versao}}</h5>
         </ion-note>
       </ion-item>
     </ion-list>
@@ -27,13 +27,114 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Biometry</ion-card-title>
+      <ion-card-title>Biometria</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <h1 class="ion-margin-bottom ion-padding-bottom">Biometria disponivel: {{biometryAvaliable}}</h1>
+      <ion-list lines="inset">
+        <ion-item>
+          <ion-label>Status:</ion-label>
+          <ion-note slot="end">{{biometryAvaliable ? 'Disponível' : 'Indisponível'}}</ion-note>
+          <ion-icon
+            slot="end"
+            [name]="biometryAvaliable ? 'checkmark-outline' : 'close-circle-outline'"
+            [color]="biometryAvaliable ? 'success' : 'danger'"
+          ></ion-icon>
+        </ion-item>
+      </ion-list>
       <ion-button type="button" class="ion-margin-bottom" color="tertiary" expand="block" (click)="checkBiometryAvaliable()">Verificar</ion-button>
-      <ion-button type="button" class="ion-margin-bottom" color="tertiary" expand="block" (click)="saveCredentials()">Salvar credenciais</ion-button>
-      <ion-button type="button" class="ion-margin-bottom" color="tertiary" expand="block" (click)="authenticate()">Testar</ion-button>
+      <ion-button [disabled]="!biometryAvaliable" type="button" class="ion-margin-bottom" color="tertiary" expand="block" (click)="saveCredentials()">Salvar credenciais</ion-button>
+      <ion-button [disabled]="!biometryAvaliable" type="button" class="ion-margin-bottom" color="tertiary" expand="block" (click)="authenticate()">Testar</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Notificações</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="full">
+        <ion-item>
+          <ion-label>Status:</ion-label>
+          <ion-note slot="end">{{notificationPermissions ? 'Permitido' : 'Bloqueado'}}</ion-note>
+          <ion-icon
+            slot="end"
+            [name]="notificationPermissions ? 'checkmark-outline' : 'close-circle-outline'"
+            [color]="notificationPermissions ? 'success' : 'danger'"
+          ></ion-icon>
+        </ion-item>
+      </ion-list>
+
+      <ion-button
+        class="ion-margin-bottom"
+        expand="block"
+        (click)="requestNotificationPermission()"
+        fill="outline">
+        Req. permissão de Notificações
+      </ion-button>
+
+      <ion-button
+        class="ion-margin-bottom"
+        expand="block"
+        (click)="scheduleNotification()"
+        fill="outline">
+        Agendar notificação
+      </ion-button>
+
+      <ion-label>Here's a small text description for the card content. Nothing more, nothing less.</ion-label>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>CPG</ion-card-title>
+    </ion-card-header>
+    <ion-list lines="inset">
+      <ion-item>
+        <ion-label>Acesso ao GPS:</ion-label>
+        <ion-note slot="end">{{gpsStatusText}}</ion-note>
+        <ion-icon
+          slot="end"
+          [name]="gpsStatusIcon"
+          [color]="gpsStatusColor"
+        ></ion-icon>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Conectividade</ion-card-title>
+    </ion-card-header>
+    <ion-list lines="inset">
+      <ion-item>
+        <ion-label>Status da rede:</ion-label>
+        <ion-note slot="end">{{networkStatus.connectionType | uppercase}}</ion-note>
+        <ion-icon
+          *ngIf="networkStatus.connected"
+          slot="end"
+          [name]="networkStatus.connectionType === 'wifi' ? 'wifi-outline' : 'phone-portrait-outline'"
+          color="tertiary"
+        ></ion-icon>
+        <ion-icon
+          slot="end"
+          [name]="networkStatus.connected ? 'checkmark-outline' : 'close-circle-outline'"
+          [color]="networkStatus.connected ? 'success' : 'danger'"
+        ></ion-icon>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Páginas de teste</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="ion-padding-top">
+      <ion-button
+        expand="block"
+        [routerLink]="['/offline']"
+        fill="outline">
+        Mostrar página offline
+      </ion-button>
     </ion-card-content>
   </ion-card>
 
@@ -70,81 +171,6 @@
         (onComplete)="window.alert('Complete method danger')"
       ></app-slide-unlock>
     </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Notificações</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list lines="full">
-        <ion-item>
-          <ion-label>Permissão:</ion-label>
-          <ion-note slot="end">{{notificationPermissions ? 'Permitido' : 'Bloqueado'}}</ion-note>
-          <ion-icon
-            slot="end"
-            [name]="notificationPermissions ? 'checkmark-outline' : 'close-circle-outline'"
-            [color]="notificationPermissions ? 'success' : 'danger'"
-          ></ion-icon>
-        </ion-item>
-      </ion-list>
-
-      <ion-button
-        class="ion-margin-bottom"
-        expand="block"
-        (click)="requestNotificationPermission()"
-        fill="outline">
-        Req. permissão de Notificações
-      </ion-button>
-
-      <ion-button
-        class="ion-margin-bottom"
-        expand="block"
-        (click)="scheduleNotification()"
-        fill="outline">
-        Agendar notificação
-      </ion-button>
-
-      <ion-label>Here's a small text description for the card content. Nothing more, nothing less.</ion-label>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-list lines="inset">
-      <ion-item>
-        <ion-label>Acesso ao GPS:</ion-label>
-        <ion-note slot="end">{{gpsStatusText}}</ion-note>
-        <ion-icon
-          slot="end"
-          [name]="gpsStatusIcon"
-          [color]="gpsStatusColor"
-        ></ion-icon>
-      </ion-item>
-    </ion-list>
-  </ion-card>
-
-  <ion-card>
-    <ion-list lines="inset">
-      <ion-item>
-        <ion-label>Status da rede:</ion-label>
-        <ion-note slot="end">{{networkStatus.connectionType}}</ion-note>
-        <ion-icon
-          slot="end"
-          [name]="networkStatus.connected ? 'checkmark-outline' : 'close-circle-outline'"
-          [color]="networkStatus.connected ? 'success' : 'danger'"
-        ></ion-icon>
-      </ion-item>
-    </ion-list>
-  </ion-card>
-
-  <ion-card>
-    <ion-button
-      class="ion-margin-bottom"
-      expand="block"
-      [routerLink]="['/offline']"
-      fill="outline">
-      Mostrar página offline
-    </ion-button>
   </ion-card>
 
   <!--  <pre>-->

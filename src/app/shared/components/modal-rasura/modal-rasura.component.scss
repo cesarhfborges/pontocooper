@@ -1,1 +1,23 @@
+.rectification {
+  margin-bottom: 30px;
+}
 
+.hours {
+  border: 1px solid #a1a1a1;
+  border-radius: 3px;
+  padding: 1px 8px;
+  background: #373737;
+}
+
+ion-button.delete {
+  --padding-start: 0;
+  --padding-end: 0;
+  margin-left: 22px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .hours {
+    border-color: #a1a1a1;
+    background: #373737;
+  }
+}

@@ -1,11 +1,12 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
-import { ModalController, ViewDidEnter } from '@ionic/angular';
+import { AlertController, ModalController, ViewDidEnter } from '@ionic/angular';
 import { Dia } from '../../../core/models/dia';
 import { Observable, of } from 'rxjs';
 import { addSeconds, differenceInSeconds, format, formatISO, parse, parseISO, set } from 'date-fns';
 import { ModalTimePickerComponent } from '../modal-time-picker/modal-time-picker.component';
+import { CustomValidatorService } from '../invalid-message/custom-validator.service';
 
 @Component({
   selector: 'app-modal-rasura',
@@ -46,11 +47,12 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
   constructor(
     private fb: FormBuilder,
     private modalCtrl: ModalController,
+    private alertController: AlertController
   ) {
     this.form = this.fb.group({
       date: ['', [Validators.required]],
       reason: [''],
-      rectifications: this.fb.array([]),
+      rectifications: this.fb.array([], [CustomValidatorService.validateHours]),
     });
   }
 
@@ -123,7 +125,7 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
   }
 
   diferenca(): Observable<Date> {
-    if (this.dados?.date) {
+    if (this.dados?.date && this.form.get('rectifications')?.valid) {
       const baseDate: Date = set(parseISO(this.dados.date), {hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
       const batidas: Array<Date> = this.retificacoes.controls
         .filter(r => r.get('worktimeClock')?.value !== null && r.get('worktimeClock')?.value !== '')
@@ -151,6 +153,19 @@ export class ModalRasuraComponent implements OnInit, OnDestroy, ViewDidEnter {
   salvar(): void {
     this.form.markAllAsTouched();
     if (this.form.valid) {
+      console.log('Válido.');
+    } else {
+      this.alertController.create({
+        header: 'Atenção',
+        subHeader: 'Verifique os campos.',
+        message: 'Um ou mais campos estão inválidos.',
+        backdropDismiss: false,
+        keyboardClose: false,
+        translucent: false,
+        buttons: ['OK'],
+      }).then(alert => {
+        alert.present().catch();
+      });
     }
   }
 
