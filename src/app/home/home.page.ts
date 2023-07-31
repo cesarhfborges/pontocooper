@@ -80,7 +80,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
       if (this.ponto.estaNoIntervalo()) {
         return 'tertiary';
       }
-      return this.jornadaDiaria > 99 ? 'success' : 'warning'
+      return this.jornadaDiaria > 99 ? 'success' : 'warning';
     }
     return 'medium';
   }
@@ -89,7 +89,7 @@ export class HomePage implements OnInit, ViewWillEnter, OnDestroy {
     if (this.jornadaDiaria > 99) {
       return 1;
     }
-    return this.jornadaDiaria / 100
+    return this.jornadaDiaria / 100;
   }
 
   ngOnInit(): void {
